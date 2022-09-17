@@ -6,12 +6,14 @@
           <p>{{currentQuestion.question}}</p>
         </div>
         <div class="alternatives-section">
-          <ul class="alternatives-list">
-            <li :class="{
+          <b-list-group class="alternatives-list">
+            <b-list-group-item :class="{
              selected:selectedAnswer === alternative,
              alternative:true 
-            }" :key="alternative" v-for="alternative in currentQuestion.alternatives" @click="selectAnswer(alternative)">{{alternative}}</li>
-          </ul>
+            }" :key="alternative" v-for="alternative in currentQuestion.alternatives"
+              @click="selectAnswer(alternative)">{{alternative}}</b-list-group-item>
+          </b-list-group>
+
         </div>
       </div>
       <div class="question-box-buttons-container">
