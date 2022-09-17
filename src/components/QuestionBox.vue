@@ -10,7 +10,7 @@
             <li :class="{
              selected:selectedAnswer === alternative,
              alternative:true 
-            }" :key="alternative" v-for="alternative in alternatives " @click="selectAnswer(alternative)">{{alternative}}</li>
+            }" :key="alternative" v-for="alternative in question.alternatives" @click="selectAnswer(alternative)">{{alternative}}</li>
           </ul>
         </div>
       </div>
@@ -26,23 +26,17 @@
 <script>
 export default {
   props: {
-    question: Object
+    question: Object,
+    alternatives:Array
   },
   data() {
     return {
-      alternatives: [],
       selectedAnswer: ''
     }
-  },
-  mounted() {
-    this.setAlternatives()
   },
   methods: {
     emitNextQuestionEvent() {
       this.$emit('nextQuestionEvent')
-    },
-    setAlternatives() {
-      this.alternatives = [...this.question.incorrect_answers, this.question.correct_answer].sort(() => Math.random() - 0.5)
     },
     handleSubmit() {
       if (this.selectedAnswer === this.question.correct_answer) {
