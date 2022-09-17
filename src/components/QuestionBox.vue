@@ -3,14 +3,14 @@
     <b-jumbotron class="question-box-content">
       <div class="question-container">
         <div class="question-section">
-          <p>{{question.question}}</p>
+          <p>{{currentQuestion.question}}</p>
         </div>
         <div class="alternatives-section">
           <ul class="alternatives-list">
             <li :class="{
              selected:selectedAnswer === alternative,
              alternative:true 
-            }" :key="alternative" v-for="alternative in question.alternatives" @click="selectAnswer(alternative)">{{alternative}}</li>
+            }" :key="alternative" v-for="alternative in currentQuestion.alternatives" @click="selectAnswer(alternative)">{{alternative}}</li>
           </ul>
         </div>
       </div>
@@ -26,7 +26,7 @@
 <script>
 export default {
   props: {
-    question: Object,
+    currentQuestion: Object,
   },
   data() {
     return {
@@ -38,7 +38,7 @@ export default {
       this.$emit('nextQuestionEvent')
     },
     handleSubmit() {
-      if (this.selectedAnswer === this.question.correct_answer) {
+      if (this.selectedAnswer === this.currentQuestion.correct_answer) {
         alert("You got it right")
       } else {
         alert("You got it wrong")

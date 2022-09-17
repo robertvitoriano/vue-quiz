@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header :questionsCount="questions.length" :currentQuestionIndex="currentQuestionIndex"></Header>
-    <QuestionBox :question="currentQuestion" @nextQuestionEvent="updatedCurrentQuestionIndex"></QuestionBox>
+    <QuestionBox :currentQuestion="currentQuestion" @nextQuestionEvent="updatedCurrentQuestionIndex" v-if="questions.length > 0"></QuestionBox>
   </div>
 </template>
 
