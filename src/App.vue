@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <Header :questionsCount="questions.length" :currentQuestionIndex="currentQuestionIndex"></Header>
-    <QuestionBox :currentQuestion="currentQuestion" @nextQuestionEvent="updatedCurrentQuestionIndex" v-if="questions.length > 0"></QuestionBox>
+    <QuestionBox :currentQuestion="currentQuestion" @nextQuestionEvent="updatedCurrentQuestionIndex"
+      v-if="(questions.length > 0) &&(currentQuestionIndex !== questions.length - 1)"></QuestionBox>
   </div>
 </template>
 
@@ -33,13 +34,13 @@ export default {
       this.currentQuestion = this.questions[this.currentQuestionIndex]
     },
     updatedCurrentQuestionIndex() {
-      if (this.currentQuestionIndex < this.questions.length -1) {
+      if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
         this.currentQuestion = this.questions[this.currentQuestionIndex]
       }
     },
-    getShuffledAlternatives(questions){
-     return questions.map(question =>({...question, alternatives:[...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5)}))
+    getShuffledAlternatives(questions) {
+      return questions.map(question => ({ ...question, alternatives: [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5) }))
     }
   }
 }
