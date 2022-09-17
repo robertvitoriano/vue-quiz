@@ -1,20 +1,30 @@
 <template>
   <div id="app">
     <Header :questionsCount="questions.length" :currentQuestionIndex="currentQuestionIndex"></Header>
-    <QuestionBox :currentQuestion="currentQuestion" @nextQuestionEvent="updatedCurrentQuestionIndex"
-      v-if="(questions.length > 0) &&(currentQuestionIndex !== questions.length - 1)"></QuestionBox>
+    <QuestionBox
+     :currentQuestion="currentQuestion" 
+     :currentQuestionIndex="currentQuestionIndex"
+     :questionsCount="questions.length"
+     @nextQuestionEvent="updatedCurrentQuestionIndex"
+     @increaseScoreEvent= "score++"
+     @hasFinishedEvent = "finishQuiz"
+      v-if="(questions.length > 0) && !hasFinished"></QuestionBox>
+    <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
+
   </div>
 </template>
 
 <script>
 import Header from './components/Header.vue';
 import QuestionBox from './components/QuestionBox.vue';
+import RestartSection from './components/RestartSection.vue';
 import axios from 'axios'
 export default {
   name: 'App',
   components: {
     Header,
-    QuestionBox
+    QuestionBox,
+    RestartSection
   },
   mounted: function () {
     this.loadQuestions()
@@ -23,7 +33,9 @@ export default {
     return {
       questions: [],
       currentQuestionIndex: 0,
-      currentQuestion: {}
+      currentQuestion: {},
+      score:0,
+      hasFinished:false
     }
   },
   methods: {
@@ -41,6 +53,13 @@ export default {
     },
     getShuffledAlternatives(questions) {
       return questions.map(question => ({ ...question, alternatives: [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5) }))
+    },
+    finishQuiz(){
+      this.hasFinished = true
+    },
+    restart(){
+      this.loadQuestions()
+      this.hasFinished = false
     }
   }
 }
@@ -52,4 +71,5 @@ export default {
   margin: 0;
   box-sizing: border-box;
 }
+
 </style>

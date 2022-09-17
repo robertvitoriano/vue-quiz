@@ -17,9 +17,9 @@
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" @click="handleSubmit">Submit
+        <b-button variant="primary" href="#" :disabled = 'disableSubmitButton' @click="handleSubmit">{{submitButtonText}}
         </b-button>
-        <b-button variant="success" href="#" @click="emitNextQuestionEvent">Next Question</b-button>
+        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{nextButtonText}}</b-button>
       </div>
     </b-jumbotron>
   </div>
@@ -29,28 +29,52 @@
 export default {
   props: {
     currentQuestion: Object,
+    currentQuestionIndex:Number,
+    questionsCount:Number
   },
   data() {
     return {
-      selectedAnswer: ''
+      selectedAnswer: '',
+      hasAnswered:false,
+      submitButtonText:'Save Answer',
+      nextButtonText:'Next Question',
+      disableSubmitButton:false
     }
   },
   methods: {
     emitNextQuestionEvent() {
+      console.log({
+        currentQuestionIndex:this.currentQuestionIndex
+      })
+      if(this.currentQuestionIndex + 2  === this.questionsCount){
+        this.nextButtonText = "Finish Quiz"
+      }
+      if(this.currentQuestionIndex + 1  === this.questionsCount){
+        this.$emit('hasFinishedEvent')
+      }
       this.$emit('nextQuestionEvent')
+      this.resetAnswerState()
     },
     handleSubmit() {
       if (this.selectedAnswer === this.currentQuestion.correct_answer) {
         alert("You got it right")
+        this.$emit('increaseScoreEvent')
       } else {
         alert("You got it wrong")
       }
+      this.submitButtonText = 'Answered'
+      this.disableSubmitButton = true
+      this.hasAnswered = true
     },
     selectAnswer(answer) {
-      this.selectedAnswer = answer
-      console.log({
-        selectedAnswer: this.selectedAnswer
-      })
+     if(!this.hasAnswered){
+       this.selectedAnswer = answer
+     }
+    },
+    resetAnswerState(){
+      this.submitButtonText = 'Save Answer'
+      this.disableSubmitButton = false
+      this.hasAnswered = false
     }
   }
 }
