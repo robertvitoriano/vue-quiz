@@ -33,7 +33,7 @@ export default {
       this.currentQuestion = this.questions[this.currentQuestionIndex]
     },
     updatedCurrentQuestionIndex() {
-      if (this.currentQuestionIndex < this.questions.length) {
+      if (this.currentQuestionIndex < this.questions.length -1) {
         this.currentQuestionIndex++;
         this.currentQuestion = this.questions[this.currentQuestionIndex]
       }

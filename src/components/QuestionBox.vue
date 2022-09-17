@@ -27,7 +27,6 @@
 export default {
   props: {
     question: Object,
-    alternatives:Array
   },
   data() {
     return {
