@@ -7,15 +7,10 @@
         </div>
         <div class="alternatives-section">
           <ul class="alternatives-list">
-            <li
-             :class="{
-              selected:selectedAnswer === alternative,
-              alternative:true 
-             }"
-            :key="alternative" 
-            v-for="alternative in [...this.question.incorrect_answers,this.question.correct_answer].sort(() => Math.random() - 0.5)"
-            @click="selectAnswer(alternative)"
-            >{{alternative}}</li>
+            <li :class="{
+             selected:selectedAnswer === alternative,
+             alternative:true 
+            }" :key="alternative" v-for="alternative in alternatives " @click="selectAnswer(alternative)">{{alternative}}</li>
           </ul>
         </div>
       </div>
@@ -29,33 +24,41 @@
 </template>
 
 <script>
-  export default {
-    props:['question'],
-    data(){
-      return{
-        alternatives:[],
-        selectedAnswer:''
+export default {
+  props: {
+    question: Object
+  },
+  data() {
+    return {
+      alternatives: [],
+      selectedAnswer: ''
+    }
+  },
+  mounted() {
+    this.setAlternatives()
+  },
+  methods: {
+    emitNextQuestionEvent() {
+      this.$emit('nextQuestionEvent')
+    },
+    setAlternatives() {
+      this.alternatives = [...this.question.incorrect_answers, this.question.correct_answer].sort(() => Math.random() - 0.5)
+    },
+    handleSubmit() {
+      if (this.selectedAnswer === this.question.correct_answer) {
+        alert("You got it right")
+      } else {
+        alert("You got it wrong")
       }
     },
-    methods:{
-      emitNextQuestionEvent(){
-        this.$emit('nextQuestionEvent')
-      },
-      handleSubmit(){
-        if(this.selectedAnswer === this.question.correct_answer){
-          alert("You got it right")
-        }else{
-          alert("You got it wrong")
-        }
-      },
-      selectAnswer(answer){
-        this.selectedAnswer  = answer
-        console.log({
-          selectedAnswer:this.selectedAnswer
-        })
-      }
+    selectAnswer(answer) {
+      this.selectedAnswer = answer
+      console.log({
+        selectedAnswer: this.selectedAnswer
+      })
     }
   }
+}
 </script>
 
 <style scoped>
@@ -95,12 +98,12 @@
 }
 
 .alternatives-section::-webkit-scrollbar-thumb {
-  background:black;
+  background: black;
   border-radius: 10px;
 }
 
 .alternatives-section::-webkit-scrollbar-thumb:hover {
-  opacity: 30%;  
+  opacity: 30%;
 }
 
 .question-section {
@@ -110,23 +113,26 @@
   align-items: center;
   flex-direction: column;
 }
-.question-box-buttons-container{
+
+.question-box-buttons-container {
   width: 20%;
   display: flex;
   justify-content: space-between;
 }
 
-.selected{
+.selected {
   background-color: aqua;
 }
-.alternative{
+
+.alternative {
   cursor: pointer;
 }
-@media only screen and (max-width: 600px){
-	/*Big smartphones [426px -> 600px]*/
-  .question-box-buttons-container{
+
+@media only screen and (max-width: 600px) {
+
+  /*Big smartphones [426px -> 600px]*/
+  .question-box-buttons-container {
     width: 60%;
   }
 }
-
 </style>
