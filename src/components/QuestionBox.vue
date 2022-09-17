@@ -5,16 +5,24 @@
         <div class="question-section">
           <p>{{question.question}}</p>
         </div>
-        <div class="answers-section">
-          <ul class="answers-list">
-            <li :key="alternative" v-for="alternative in alternatives">{{alternative}}</li>
+        <div class="alternatives-section">
+          <ul class="alternatives-list">
+            <li
+             :class="{
+              selected:selectedAnswer === alternative,
+              alternative:true 
+             }"
+            :key="alternative" 
+            v-for="alternative in [...this.question.incorrect_answers,this.question.correct_answer].sort(() => Math.random() - 0.5)"
+            @click="selectAnswer(alternative)"
+            >{{alternative}}</li>
           </ul>
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#">Submit
+        <b-button variant="primary" href="#" @click="handleSubmit">Submit
         </b-button>
-        <b-button variant="success" href="#">Next Question</b-button>
+        <b-button variant="success" href="#" @click="emitNextQuestionEvent">Next Question</b-button>
       </div>
     </b-jumbotron>
   </div>
@@ -23,14 +31,28 @@
 <script>
   export default {
     props:['question'],
-    mounted(){
-    },
-    methods:{
-
-    },
     data(){
       return{
-        alternatives:[...this.question.incorrect_answers,this.question.correct_answer]
+        alternatives:[],
+        selectedAnswer:''
+      }
+    },
+    methods:{
+      emitNextQuestionEvent(){
+        this.$emit('nextQuestionEvent')
+      },
+      handleSubmit(){
+        if(this.selectedAnswer === this.question.correct_answer){
+          alert("You got it right")
+        }else{
+          alert("You got it wrong")
+        }
+      },
+      selectAnswer(answer){
+        this.selectedAnswer  = answer
+        console.log({
+          selectedAnswer:this.selectedAnswer
+        })
       }
     }
   }
@@ -55,7 +77,7 @@
   border-radius: 15px;
 }
 
-.answers-section {
+.alternatives-section {
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   height: 50%;
@@ -63,22 +85,21 @@
   overflow: auto;
 }
 
-.answers-section::-webkit-scrollbar {
+.alternatives-section::-webkit-scrollbar {
   width: 10px;
 }
 
-.answers-section::-webkit-scrollbar-track {
+.alternatives-section::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
-
 }
 
-.answers-section::-webkit-scrollbar-thumb {
+.alternatives-section::-webkit-scrollbar-thumb {
   background:black;
   border-radius: 10px;
 }
 
-.answers-section::-webkit-scrollbar-thumb:hover {
+.alternatives-section::-webkit-scrollbar-thumb:hover {
   opacity: 30%;  
 }
 
@@ -93,6 +114,13 @@
   width: 20%;
   display: flex;
   justify-content: space-between;
+}
+
+.selected{
+  background-color: aqua;
+}
+.alternative{
+  cursor: pointer;
 }
 @media only screen and (max-width: 600px){
 	/*Big smartphones [426px -> 600px]*/
