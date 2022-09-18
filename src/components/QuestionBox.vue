@@ -82,7 +82,7 @@ export default {
     getAlternativeBackground(validationType, index) {
       const hasSelected = this.selectedAnswerIndex === index
       const isRight = index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)
-      const hasSelectedAndIsNotRight = hasSelected && !isRight
+      const hasSelectedAndIsNotRight = hasSelected && !isRight && this.hasAnswered
       switch (validationType) {
         case 'selected-alternative':
           return hasSelected
