@@ -9,10 +9,10 @@
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="{
               alternative:true,
-              selected:validateAnswer('selected-alternative', index),
-             'list-group-item-hover':validateAnswer('hover-alternative', index),
-             'correct-alternative':validateAnswer('correct-alternative', index),
-             'wrong-alternative': validateAnswer('wrong-alternative', index)
+              selected:getAlternativeBackground('selected-alternative', index),
+             'list-group-item-hover':getAlternativeBackground('hover-alternative', index),
+             'correct-alternative':getAlternativeBackground('correct-alternative', index),
+             'wrong-alternative': getAlternativeBackground('wrong-alternative', index)
             }" :key="index" v-for="alternative, index in currentQuestion.alternatives"
               @click="selectAnswerIndex(index)">{{alternative}}</b-list-group-item>
           </b-list-group>
@@ -41,7 +41,7 @@ export default {
       hasAnswered: false,
       submitButtonText: 'Save Answer',
       nextButtonText: 'Next Question',
-      disableSubmitButton: false
+      disableSubmitButton: false,
     }
   },
   methods: {
@@ -79,16 +79,19 @@ export default {
       this.hasAnswered = false
       this.selectedAnswerIndex = null
     },
-    validateAnswer(validationType, index) {
+    getAlternativeBackground(validationType, index) {
+      const hasSelected = this.selectedAnswerIndex === index
+      const isRight = index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)
+      const hasSelectedAndIsNotRight = hasSelected && !isRight
       switch (validationType) {
         case 'selected-alternative':
-          return this.selectedAnswerIndex === index
+          return hasSelected
         case 'hover-alternative':
-          return !(this.selectedAnswerIndex === index)
+          return !hasSelected
         case 'wrong-alternative':
-          return !(index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)) && this.hasAnswered && this.selectedAnswerIndex === index
+          return !isRight && this.hasAnswered || hasSelectedAndIsNotRight
         case 'correct-alternative':
-          return index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer) && this.hasAnswered
+          return isRight && this.hasAnswered
       }
     }
   }
