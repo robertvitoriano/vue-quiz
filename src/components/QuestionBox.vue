@@ -44,6 +44,11 @@ export default {
       disableSubmitButton: false,
     }
   },
+  watch: {
+    currentQuestion() {
+      this.shuffleAlternatives()
+    }
+  },
   methods: {
     emitNextQuestionEvent() {
       if (!this.hasAnswered) return alert('You have to answer !')
@@ -93,6 +98,9 @@ export default {
         case 'correct-alternative':
           return isRight && this.hasAnswered
       }
+    },
+    shuffleAlternatives() {
+      this.currentQuestion.alternatives = this.currentQuestion.alternatives.sort(() => Math.random() - 0.5)
     }
   }
 }

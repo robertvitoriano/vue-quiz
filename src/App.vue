@@ -40,7 +40,7 @@ export default {
   methods: {
     async loadQuestions() {
       const questionsResponse = await axios.get('https://opentdb.com/api.php?amount=10&category=15&type=multiple')
-      this.questions = this.getShuffledAlternatives(questionsResponse.data.results)
+      this.questions = this.getAlternativesWithCorrectAnswer(questionsResponse.data.results)
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]
     },
@@ -50,8 +50,8 @@ export default {
         this.currentQuestion = this.questions[this.currentQuestionIndex]
       }
     },
-    getShuffledAlternatives(questions) {
-      return questions.map(question => ({ ...question, alternatives: [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5) }))
+    getAlternativesWithCorrectAnswer(questions) {
+      return questions.map(question => ({ ...question, alternatives: [...question.incorrect_answers, question.correct_answer] }))
     },
     finishQuiz(){
       this.hasFinished = true
