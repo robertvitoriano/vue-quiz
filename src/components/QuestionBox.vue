@@ -45,8 +45,11 @@ export default {
     }
   },
   watch: {
-    currentQuestion() {
-      this.shuffleAlternatives()
+    currentQuestion:{
+      immediate:true,
+      handler(){
+        this.shuffleAlternatives()
+      }
     }
   },
   methods: {
