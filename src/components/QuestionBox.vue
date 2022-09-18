@@ -9,7 +9,8 @@
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="{
              selected:selectedAnswer === alternative,
-             alternative:true 
+             alternative:true,
+             'alternative-hover':!selectedAnswer === alternative
             }" :key="alternative" v-for="alternative in currentQuestion.alternatives"
               @click="selectAnswer(alternative)">{{alternative}}</b-list-group-item>
           </b-list-group>
@@ -106,6 +107,11 @@ export default {
   overflow: auto;
 }
 
+.alternative-hover:hover{
+  background-color: lightseagreen;
+
+}
+
 .alternatives-section::-webkit-scrollbar {
   width: 10px;
 }
@@ -139,7 +145,7 @@ export default {
 }
 
 .selected {
-  background-color: aqua;
+  background-color: lightseagreen;
 }
 
 .alternative {

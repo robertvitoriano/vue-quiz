@@ -1,7 +1,7 @@
 <template>
   <div class="restart-section-container">
     <h3>Do you want to try again ?</h3>
-    <h1>{{getPerformanceText()}}</h1>
+    <h1>{{performanceText}}</h1>
     <div class='restart-buttons-container'>
       <b-button variant="danger" href="#">
         no
@@ -15,8 +15,13 @@ export default {
   props: {
     score: Number
   },
+  data(){
+    return{
+      performanceText:''
+    }
+  },
   mounted(){
-    
+    this.performanceText = this.getPerformanceText()
   },
   methods:{
     emitRestart(){
