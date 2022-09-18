@@ -8,11 +8,10 @@
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="{
-             selected:selectedAnswer === alternative,
+             selected:selectedAnswerIndex === index,
              alternative:true,
-             'alternative-hover':!selectedAnswer === alternative
-            }" :key="alternative" v-for="alternative in currentQuestion.alternatives"
-              @click="selectAnswer(alternative)">{{alternative}}</b-list-group-item>
+            }" :key="index" v-for="alternative, index in currentQuestion.alternatives"
+              @click="selectAnswerIndex(index)">{{alternative}}</b-list-group-item>
           </b-list-group>
 
         </div>
@@ -35,7 +34,7 @@ export default {
   },
   data() {
     return {
-      selectedAnswer: '',
+      selectedAnswerIndex: null,
       hasAnswered:false,
       submitButtonText:'Save Answer',
       nextButtonText:'Next Question',
@@ -56,7 +55,7 @@ export default {
       this.resetAnswerState()
     },
     handleSubmit() {
-      if (this.selectedAnswer === this.currentQuestion.correct_answer) {
+      if (this.selectedAnswerIndex === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)) {
         alert("You got it right")
         this.$emit('increaseScoreEvent')
       } else {
@@ -66,15 +65,16 @@ export default {
       this.disableSubmitButton = true
       this.hasAnswered = true
     },
-    selectAnswer(answer) {
+    selectAnswerIndex(index) {
      if(!this.hasAnswered){
-       this.selectedAnswer = answer
+       this.selectedAnswerIndex = index
      }
     },
     resetAnswerState(){
       this.submitButtonText = 'Save Answer'
       this.disableSubmitButton = false
       this.hasAnswered = false
+      this.selectedAnswerIndex = null
     }
   }
 }
@@ -107,10 +107,7 @@ export default {
   overflow: auto;
 }
 
-.alternative-hover:hover{
-  background-color: lightseagreen;
 
-}
 
 .alternatives-section::-webkit-scrollbar {
   width: 10px;
