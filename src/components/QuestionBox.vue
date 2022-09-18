@@ -91,14 +91,13 @@ export default {
       const hasSelected = this.selectedAnswerIndex === index
       const isRight = index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)
       const hasSelectedAndIsWrong = hasSelected && !isRight && this.hasAnswered
-      const notSelectedAndWrong = !isRight && this.hasAnswered && !hasSelected
       switch (validationType) {
         case 'selected-alternative':
           return hasSelected
         case 'hover-alternative':
           return !hasSelected
         case 'wrong-alternative':
-          return  notSelectedAndWrong || hasSelectedAndIsWrong
+          return  hasSelectedAndIsWrong
         case 'correct-alternative':
           return isRight && this.hasAnswered
       }
