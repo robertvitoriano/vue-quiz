@@ -1,12 +1,13 @@
 <template>
   <div class="restart-section-container">
-    <h3>Do you want to try again ?</h3>
+
     <h1>{{performanceText}}</h1>
+    <h3>Do you want to try again ?</h3>
     <div class='restart-buttons-container'>
-      <b-button variant="danger" href="#">
-        no
+      <b-button class="restart-button" variant="danger" href="#">
+        finish course
       </b-button>
-      <b-button variant="success" href="#" @click="emitRestart">yes</b-button>
+      <b-button class="restart-button" variant="success" href="#" @click="emitRestart">try again ?</b-button>
     </div>
   </div>
 </template>
@@ -39,7 +40,7 @@ export default {
 <style scoped>
 
   .restart-buttons-container{
-    width:10%;
+    width:20%;
     display: flex;
     justify-content: space-between;
 
@@ -50,5 +51,8 @@ export default {
   align-items: center;
   flex-direction: column;
   height:100vh;
+  background-color: gray;
+  height:60vh;
 }
+
 </style>
