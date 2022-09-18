@@ -10,7 +10,6 @@
      @hasFinishedEvent = "finishQuiz"
       v-if="(questions.length > 0) && !hasFinished"></QuestionBox>
     <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
-
   </div>
 </template>
 

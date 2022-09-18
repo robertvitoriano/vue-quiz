@@ -43,9 +43,8 @@ export default {
   },
   methods: {
     emitNextQuestionEvent() {
-      console.log({
-        currentQuestionIndex:this.currentQuestionIndex
-      })
+      if(!this.hasAnswered) return  alert('You have to answer !')
+
       if(this.currentQuestionIndex + 2  === this.questionsCount){
         this.nextButtonText = "Finish Quiz"
       }
