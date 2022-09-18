@@ -8,9 +8,11 @@
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="{
-             selected:selectedAnswerIndex === index,
-             alternative:true,
-             'list-group-item-hover':!(selectedAnswerIndex === index)
+              alternative:true,
+              selected:validateAnswer('selected-alternative', index),
+             'list-group-item-hover':validateAnswer('hover-alternative', index),
+             'correct-alternative':validateAnswer('correct-alternative', index),
+             'wrong-alternative': validateAnswer('wrong-alternative', index)
             }" :key="index" v-for="alternative, index in currentQuestion.alternatives"
               @click="selectAnswerIndex(index)">{{alternative}}</b-list-group-item>
           </b-list-group>
@@ -18,7 +20,7 @@
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" :disabled = 'disableSubmitButton' @click="handleSubmit">{{submitButtonText}}
+        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{submitButtonText}}
         </b-button>
         <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{nextButtonText}}</b-button>
       </div>
@@ -30,26 +32,26 @@
 export default {
   props: {
     currentQuestion: Object,
-    currentQuestionIndex:Number,
-    questionsCount:Number
+    currentQuestionIndex: Number,
+    questionsCount: Number
   },
   data() {
     return {
       selectedAnswerIndex: null,
-      hasAnswered:false,
-      submitButtonText:'Save Answer',
-      nextButtonText:'Next Question',
-      disableSubmitButton:false
+      hasAnswered: false,
+      submitButtonText: 'Save Answer',
+      nextButtonText: 'Next Question',
+      disableSubmitButton: false
     }
   },
   methods: {
     emitNextQuestionEvent() {
-      if(!this.hasAnswered) return  alert('You have to answer !')
+      if (!this.hasAnswered) return alert('You have to answer !')
 
-      if(this.currentQuestionIndex + 2  === this.questionsCount){
+      if (this.currentQuestionIndex + 2 === this.questionsCount) {
         this.nextButtonText = "Finish Quiz"
       }
-      if(this.currentQuestionIndex + 1  === this.questionsCount){
+      if (this.currentQuestionIndex + 1 === this.questionsCount) {
         this.$emit('hasFinishedEvent')
       }
       this.$emit('nextQuestionEvent')
@@ -67,15 +69,27 @@ export default {
       this.hasAnswered = true
     },
     selectAnswerIndex(index) {
-     if(!this.hasAnswered){
-       this.selectedAnswerIndex = index
-     }
+      if (!this.hasAnswered) {
+        this.selectedAnswerIndex = index
+      }
     },
-    resetAnswerState(){
+    resetAnswerState() {
       this.submitButtonText = 'Save Answer'
       this.disableSubmitButton = false
       this.hasAnswered = false
       this.selectedAnswerIndex = null
+    },
+    validateAnswer(validationType, index) {
+      switch (validationType) {
+        case 'selected-alternative':
+          return this.selectedAnswerIndex === index
+        case 'hover-alternative':
+          return !(this.selectedAnswerIndex === index)
+        case 'wrong-alternative':
+          return !(index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)) && this.hasAnswered && this.selectedAnswerIndex === index
+        case 'correct-alternative':
+          return index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer) && this.hasAnswered
+      }
     }
   }
 }
@@ -149,8 +163,17 @@ export default {
 .alternative {
   cursor: pointer;
 }
-.list-group-item-hover:hover{
+
+.list-group-item-hover:hover {
   background-color: gray;
+}
+
+.correct-alternative {
+  background-color: green;
+}
+
+.wrong-alternative {
+  background-color: red;
 }
 
 @media only screen and (max-width: 600px) {
