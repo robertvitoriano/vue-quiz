@@ -82,6 +82,15 @@ export default {
       this.hasAnswered = false
       this.selectedAnswerIndex = null
     },
+    alternativeClass(index) {
+      return {
+        alternative: true,
+        selected: this.getAlternativeBackground('selected-alternative', index),
+        'list-group-item-hover': this.getAlternativeBackground('hover-alternative', index),
+        'correct-alternative': this.getAlternativeBackground('correct-alternative', index),
+        'wrong-alternative': this.getAlternativeBackground('wrong-alternative', index)
+      }
+    },
     getAlternativeBackground(validationType, index) {
       const hasSelected = this.selectedAnswerIndex === index
       const isRight = index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)
@@ -99,15 +108,6 @@ export default {
     },
     shuffleAlternatives() {
       this.currentQuestion.alternatives = this.currentQuestion.alternatives.sort(() => Math.random() - 0.5)
-    },
-    alternativeClass(index) {
-      return {
-        alternative: true,
-        selected: this.getAlternativeBackground('selected-alternative', index),
-        'list-group-item-hover': this.getAlternativeBackground('hover-alternative', index),
-        'correct-alternative': this.getAlternativeBackground('correct-alternative', index),
-        'wrong-alternative': this.getAlternativeBackground('wrong-alternative', index)
-      }
     }
   }
 }
