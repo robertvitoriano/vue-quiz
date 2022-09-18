@@ -7,14 +7,9 @@
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
-            <b-list-group-item :class="{
-              alternative:true,
-              selected:getAlternativeBackground('selected-alternative', index),
-             'list-group-item-hover':getAlternativeBackground('hover-alternative', index),
-             'correct-alternative':getAlternativeBackground('correct-alternative', index),
-             'wrong-alternative': getAlternativeBackground('wrong-alternative', index)
-            }" :key="index" v-for="alternative, index in currentQuestion.alternatives"
-              @click="selectAnswerIndex(index)">{{alternative}}</b-list-group-item>
+            <b-list-group-item :class="alternativeClass(index)" :key="index"
+              v-for="alternative, index in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
+              {{alternative}}</b-list-group-item>
           </b-list-group>
 
         </div>
@@ -45,9 +40,9 @@ export default {
     }
   },
   watch: {
-    currentQuestion:{
-      immediate:true,
-      handler(){
+    currentQuestion: {
+      immediate: true,
+      handler() {
         this.shuffleAlternatives()
       }
     }
@@ -97,13 +92,22 @@ export default {
         case 'hover-alternative':
           return !hasSelected
         case 'wrong-alternative':
-          return  hasSelectedAndIsWrong
+          return hasSelectedAndIsWrong
         case 'correct-alternative':
           return isRight && this.hasAnswered
       }
     },
     shuffleAlternatives() {
       this.currentQuestion.alternatives = this.currentQuestion.alternatives.sort(() => Math.random() - 0.5)
+    },
+    alternativeClass(index) {
+      return {
+        alternative: true,
+        selected: this.getAlternativeBackground('selected-alternative', index),
+        'list-group-item-hover': this.getAlternativeBackground('hover-alternative', index),
+        'correct-alternative': this.getAlternativeBackground('correct-alternative', index),
+        'wrong-alternative': this.getAlternativeBackground('wrong-alternative', index)
+      }
     }
   }
 }
