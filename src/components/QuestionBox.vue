@@ -10,6 +10,7 @@
             <b-list-group-item :class="{
              selected:selectedAnswerIndex === index,
              alternative:true,
+             'list-group-item-hover':!(selectedAnswerIndex === index)
             }" :key="index" v-for="alternative, index in currentQuestion.alternatives"
               @click="selectAnswerIndex(index)">{{alternative}}</b-list-group-item>
           </b-list-group>
@@ -147,6 +148,9 @@ export default {
 
 .alternative {
   cursor: pointer;
+}
+.list-group-item-hover:hover{
+  background-color: gray;
 }
 
 @media only screen and (max-width: 600px) {
