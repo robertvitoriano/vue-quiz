@@ -2,12 +2,19 @@
   <div class="wrapper">
     <div class="content">
       <h1 class="login-form-title">Vue Quiz App</h1>
-      <div class="form-container">
-        <input v-model="loginForm.username" class="login-input" placeholder="username">
-        <input v-model="loginForm.password" class="login-input" placeholder="password" type="password">
-        <button @click.prevent="submit" class="login-button">Login</button>
-        <span>Don't have account yet ? <a @click.prevent="submit" class="sign-up">Sign up</a></span>
-      </div>
+      <form class="form-container" v-if="!isSigningUp" @submit.prevent="submit"  >
+        <input v-model="loginForm.username" class="login-input" placeholder="username" required>
+        <input v-model="loginForm.password" class="login-input" placeholder="password" type="password" required>
+        <button  class="login-button">Login</button>
+        <span>Don't have account yet ? <a class="sign-up"  @click="handleFormSwitch">Sign up</a></span>
+      </form>
+      <form v-if="isSigningUp" class="form-container" @submit.prevent="submit">
+        <input v-model="signUpForm.name" class="login-input" placehol placeholder="name" required>
+        <input v-model="signUpForm.username" class="login-input" placeholder="username" required>
+        <input v-model="signUpForm.email" class="login-input" placeholder="email" type="email" required>
+        <input v-model="signUpForm.password" class="login-input" placeholder="password" type="password" required>
+        <a class="sign-up" @click="handleFormSwitch" >GoBack</a>
+      </form>
     </div>
   </div>
 </template>
@@ -20,8 +27,15 @@ export default {
     return {
       loginForm: {
         username: '',
+        password: '',
+      },
+      signUpForm: {
+        username: '',
+        name:'',
+        email:'',
         password: ''
-      }
+      },
+      isSigningUp:false
     }
   },
   methods: {
@@ -32,9 +46,13 @@ export default {
             authorization: 'Bearer ' + localStorage.getItem('token')
           }
         })
+        this.$router.push('/quiz')
       } catch (error) {
         console.error(error)
       }
+    },
+    handleFormSwitch(){
+      this.isSigningUp = !this.isSigningUp
     }
   }
 }
