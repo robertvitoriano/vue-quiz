@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <h1>Vue Quiz App</h1>
     <div class="form-container">
+      <h1>Vue Quiz App</h1>
       <input v-model="loginForm.username" class="login-input">
       <input v-model="loginForm.password" class="login-input">
       <div @click="submit" class="login-button">Login</div>
@@ -53,7 +53,7 @@ export default {
 .form-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   background-color: white;
   color: black;
