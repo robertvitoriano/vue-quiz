@@ -41,12 +41,10 @@ export default {
   methods: {
     async submit() {
       try {
-        await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm, {
-          headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token')
-          }
-        })
-        this.$router.push('/quiz')
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm)
+        const token = response.data.token
+        localStorage.setItem('token', token)
+        this.$router.push('/home')
       } catch (error) {
         console.error(error)
       }
