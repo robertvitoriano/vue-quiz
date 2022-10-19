@@ -1,15 +1,19 @@
 <template>
-  <form>
-    <input v-model="loginForm.username">
-    <input v-model="loginForm.password">
-    <div @click="submit">Login</div>
-  </form>
+  <div class="wrapper">
+    <h1>Vue Quiz App</h1>
+    <div class="form-container">
+      <input v-model="loginForm.username" class="login-input">
+      <input v-model="loginForm.password" class="login-input">
+      <div @click="submit" class="login-button">Login</div>
+      <div @click="submit" class="login-button">Sign up</div>
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios'
 export default {
-  name:'Login',
+  name: 'Login',
   data() {
     return {
       loginForm: {
@@ -33,3 +37,28 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: black;
+  width:50%;
+  height:70%;
+  border-radius: 4%;
+}
+</style>
