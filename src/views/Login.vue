@@ -1,11 +1,13 @@
 <template>
   <div class="wrapper">
-    <div class="form-container">
-      <h1>Vue Quiz App</h1>
-      <input v-model="loginForm.username" class="login-input">
-      <input v-model="loginForm.password" class="login-input">
-      <div @click="submit" class="login-button">Login</div>
-      <div @click="submit" class="login-button">Sign up</div>
+    <div class="content">
+      <h1 class="login-form-title">Vue Quiz App</h1>
+      <div class="form-container">
+        <input v-model="loginForm.username" class="login-input" placeholder="username">
+        <input v-model="loginForm.password" class="login-input" placeholder="password" type="password">
+        <button @click.prevent="submit" class="login-button">Login</button>
+        <span>Don't have account yet ? <a @click.prevent="submit" class="sign-up">Sign up</a></span>
+      </div>
     </div>
   </div>
 </template>
@@ -55,10 +57,57 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  color: black;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: 80%;
+}
+
+.content {
+  height: 450px;
   background-color: white;
   color: black;
-  width:50%;
-  height:70%;
   border-radius: 4%;
+
+}
+
+.login-input {
+  width: 25rem;
+  height: 2.5rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  outline: none;
+}
+
+.login-button {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 100%;
+  border-radius: 1.5rem;
+}
+
+.sign-up-button {
+  background-color: transparent;
+  border: none;
+}
+
+.sign-up-button:hover {
+  text-decoration: underline;
+}
+
+.login-form-title {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  padding-bottom: 5%;
+  padding-top: 5%;
+  width: 100%;
+  text-align: center;
+}
+.sign-up:hover{
+  cursor: pointer;
+
 }
 </style>
