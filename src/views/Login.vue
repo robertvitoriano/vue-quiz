@@ -1,8 +1,8 @@
 <template>
   <form>
-    <input v-model="loginForm.email">
+    <input v-model="loginForm.username">
     <input v-model="loginForm.password">
-    <button @click="submit">Login</button>
+    <div @click="submit">Login</div>
   </form>
 </template>
 
@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       loginForm: {
-        email: '',
+        username: '',
         password: ''
       }
     }
@@ -21,7 +21,7 @@ export default {
   methods: {
     async submit() {
       try {
-        await axios.post(`${process.env.API_URL}/login`, this.loginForm, {
+        await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm, {
           headers: {
             authorization: 'Bearer ' + localStorage.getItem('token')
           }
