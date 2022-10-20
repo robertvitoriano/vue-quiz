@@ -1,7 +1,7 @@
 <template>
-  <div class="course-grid">
-    <CourseCard v-for="course in courses" :key="course.title" :course ="course"/>
-  </div>
+    <div class="course-list-grid">
+      <CourseCard v-for="course in courses" :key="course.title" :course="course" />
+    </div>
 </template>
 
 <script>
@@ -15,8 +15,12 @@ export default {
 }
 </script>
 <style scoped>
-  .course-grid {
-    display:grid;
-    grid-template-columns:30% 30% 30%;
-  }
+.course-list-grid {
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  grid-template-rows: auto;
+  column-gap: 7rem;
+  row-gap: 13rem;
+  height: 500px;
+}
 </style>

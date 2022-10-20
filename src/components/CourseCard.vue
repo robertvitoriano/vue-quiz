@@ -1,8 +1,8 @@
 <template>
   <div class="course-wrapper">
-    <h1 class="course-title">{{course.title}}</h1>
-    <div class="course-container" ref="courseContainer" :style="cardStyle">
-
+    <div class="course-content">
+      <h1 class="course-title">{{course.title}}</h1>
+      <div class="course-container" ref="courseContainer" :style="cardStyle"></div>
     </div>
   </div>
 </template>
@@ -15,9 +15,9 @@ export default {
     return {
       cardStyle: {
         'background-image': 'url(' + this.course.cover + ')',
-        'background-position':'center',
-        'background-repeat':'no-repeat',
-        'background-size':'cover'
+        'background-position': 'center',
+        'background-repeat': 'no-repeat',
+        'background-size': 'cover'
       }
     }
   },
@@ -27,14 +27,27 @@ export default {
 }
 </script>
 <style scoped>
-.course-container {
-  width: 300px;
-  height: 300px;
+
+.course-wrapper {
+  height: 100px;
 }
-.course-title{
+.course-container {
+  width: 250px;
+  height: 250px;
+}
+
+.course-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.course-title {
   cursor: pointer;
 }
-.course-title:hover{
+
+.course-title:hover {
   text-decoration: underline;
 }
 </style>
