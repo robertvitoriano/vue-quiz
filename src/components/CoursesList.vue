@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="course-grid">
     <CourseCard v-for="course in courses" :key="course.title" :course ="course"/>
   </div>
 </template>
@@ -14,3 +14,9 @@ export default {
   props: ['courses']
 }
 </script>
+<style scoped>
+  .course-grid {
+    display:grid;
+    grid-template-columns:30% 30% 30%;
+  }
+</style>
