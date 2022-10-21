@@ -19,13 +19,18 @@ const routes = [
     component: CourseCreation
   },
   {
-    path: '/quiz',
+    path: '/quiz/:id',
     name: 'Quiz',
     component: Quiz
   },
   {
     path: '/login',
     name: 'Login',
+    component: Login
+  },
+  {
+    path: '/',
+    name: '',
     component: Login
   }
 ]

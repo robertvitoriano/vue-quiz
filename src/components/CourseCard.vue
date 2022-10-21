@@ -1,8 +1,12 @@
 <template>
   <div class="course-wrapper">
     <div class="course-content">
-      <h1 class="course-title">{{course.title}}</h1>
-      <div class="course-container" ref="courseContainer" :style="cardStyle"></div>
+      <router-link :to="'quiz/'+course.id" class="course-title">
+        {{course.title}}
+      </router-link>
+      <router-link :to="'quiz/'+course.id">
+        <div class="course-container" ref="courseContainer" :style="cardStyle"></div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -20,17 +24,14 @@ export default {
         'background-size': 'cover'
       }
     }
-  },
-  mounted() {
-
   }
 }
 </script>
 <style scoped>
-
 .course-wrapper {
   height: 100px;
 }
+
 .course-container {
   width: 250px;
   height: 250px;
@@ -44,10 +45,11 @@ export default {
 }
 
 .course-title {
-  cursor: pointer;
+  color:white;
+  font-size:2rem;
+  text-decoration: none;
 }
-
-.course-title:hover {
+.course-title:hover{
   text-decoration: underline;
 }
 </style>

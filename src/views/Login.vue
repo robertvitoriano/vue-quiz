@@ -42,6 +42,7 @@ export default {
     async submit() {
       try {
         const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm)
+        console.log(response)
         const token = response.data.token
         localStorage.setItem('token', token)
         this.$router.push('/home')
