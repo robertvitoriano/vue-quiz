@@ -1,4 +1,6 @@
 <template>
+<AuthLayout>
+  <template #content>
   <div id="Quiz">
     <Header :questionsCount="questions.length" :currentQuestionIndex="currentQuestionIndex"></Header>
     <QuestionBox
@@ -12,19 +14,24 @@
     <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
   </div>
 </template>
+</AuthLayout>
+
+</template>
 
 <script>
 import Header from './../components/Header.vue';
 import QuestionBox from './../components/QuestionBox.vue';
 import RestartSection from './../components/RestartSection.vue';
+import AuthLayout from './../Layout/AuthLayout.vue'
 import axios from 'axios'
 export default {
   name: 'Quiz',
   components: {
     Header,
     QuestionBox,
-    RestartSection
-  },
+    RestartSection,
+    AuthLayout
+},
   mounted: function () {
     this.loadQuestions()
   },
