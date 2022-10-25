@@ -7,14 +7,16 @@
             <h1 class="course-creation-form-title">Create the course</h1>
             <form class="course-creation-form">
               <input class="course-creation-input" placeholder="Enter course Title" v-model="course.title">
-              <input class="course-creation-input" placeholder="select course Type" v-model="course.courseTypeId">
               <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal">
               <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
                 <input class="course-creation-file-input" id="course-creation-file-input"
-                  placeholder="Chose course cover" type="file" @change="handleCoverInput">
+                placeholder="Chose course cover" type="file" @change="handleCoverInput">
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">Choose course cover image</label>
               </label>
+              <select class="course-creation-select" placeholder="select course Type" v-model="course.courseTypeId">
+                <option v-for="courseType in courseTypes" v-bind:value="courseType.id" v-bind:key="courseType.id">{{courseType.title}}</option>
+              </select>
               <div class="question-section-container" v-for="question, questionIndex in course.questions"
                 v-bind:key="questionIndex">
                 <h1>Question {{ questionIndex + 1 }}</h1>
@@ -22,23 +24,23 @@
                   <input class="course-creation-input"
                     :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.title">
                   <div class="course-creation-answers-container">
-                    <div class="course-answer-container" v-for="answer, answerIndex in question.answers"
-                      v-bind:key="answerIndex">
-                      <input class="course-creation-input" :placeholder="'enter answer ' + (answerIndex + 1)"
-                        v-model="answer.text">
+                    <div class="course-answer-container" v-for="alternative, alternativeIndex in question.alternatives"
+                      v-bind:key="alternativeIndex">
+                      <input class="course-creation-input" :placeholder="'enter answer ' + (alternativeIndex + 1)"
+                        v-model="alternative.text">
                       <div class="wrong-right-switch">
                         <div
-                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': answer.isRight }"
-                          @click="changeWrongRightSwitch({ questionIndex, answerIndex })">
+                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': alternative.isRight }"
+                          @click="changeWrongRightSwitch({ questionIndex, alternativeIndex })">
                           <label for="">right</label>
-                          <input type="radio" name="wrong-right" value="right" :checked="answer.isRight"
+                          <input type="radio" name="wrong-right" value="right" :checked="alternative.isRight"
                             class="wrong-right-switch-input">
                         </div>
                         <div
-                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': !answer.isRight }"
-                          @click="changeWrongRightSwitch({ questionIndex, answerIndex })">
+                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': !alternative.isRight }"
+                          @click="changeWrongRightSwitch({ questionIndex, alternativeIndex })">
                           <label for="">wrong</label>
-                          <input type="radio" name="wrong-right" value="wrong" :checked="!answer.isRight"
+                          <input type="radio" name="wrong-right" value="wrong" :checked="!alternative.isRight"
                             class="wrong-right-switch-input">
                         </div>
                       </div>
@@ -59,7 +61,7 @@
               </div>
             </form>
           </div>
-          <Button class="create-course-button">Create Course</Button>
+          <Button class="create-course-button" @click="createCourse">Create Course</Button>
         </div>
       </div>
     </template>
@@ -76,11 +78,11 @@ export default {
       course: {
         title: '',
         goal: '',
-        cover: '',
+        cover: null,
         courseTypeId: '',
         questions: [{
           title: '',
-          answers: [
+          alternatives: [
             {
               isRight: false,
               text: ''
@@ -99,9 +101,9 @@ export default {
   },
   methods: {
     addQuestionToForm() {
-      this.questions.push({
+      this.course.questions.push({
         title: '',
-        answers: [
+        alternatives: [
           {
             text: '',
             isRight: false
@@ -110,13 +112,14 @@ export default {
       })
     },
     addAnswerToForm(questionIndex) {
-      this.questions[questionIndex].answers.push({
+      console.log({questionIndex})
+      this.course.questions[questionIndex].alternatives.push({
         text: '',
         isRight: false
       })
     },
-    changeWrongRightSwitch({ questionIndex, answerIndex }) {
-      this.questions[questionIndex].answers[answerIndex].isRight = !this.questions[questionIndex].answers[answerIndex].isRight
+    changeWrongRightSwitch({ questionIndex, alternativeIndex }) {
+      this.course.questions[questionIndex].alternatives[alternativeIndex].isRight = !this.course.questions[questionIndex].alternatives[alternativeIndex].isRight
     },
     handleCoverInput(file) {
       console.log({ file })
@@ -127,7 +130,14 @@ export default {
           authorization: 'Bearer ' + localStorage.getItem('token')
         }
       })
-      this.courseTypes = response.data
+      this.courseTypes = response.data.data
+    },
+    async createCourse(){
+      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`,this.course,{
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
     }
   }
 }
@@ -329,5 +339,18 @@ export default {
 .create-course-button:hover {
   background-color: white;
   color: black;
+}
+.course-creation-select{
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  background-color: white;
+  border-color: white;
+  outline: none;
+  color: black;
+  width: 100%;
+  text-align: center;
+  height: 3rem;
+  margin-top: 1rem;
 }
 </style>
