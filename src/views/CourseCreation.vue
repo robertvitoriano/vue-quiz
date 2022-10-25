@@ -17,23 +17,24 @@
               </label>
               <div class="question-section-container" v-for="question, questionIndex in questions"
                 v-bind:key="questionIndex">
-                <h1>Question {{questionIndex + 1}}</h1>
+                <h1>Question {{ questionIndex + 1 }}</h1>
                 <div class="question-section-content">
-                  <input class="course-creation-input" :placeholder="'enter the question '+(Number(questionIndex) + 1)">
+                  <input class="course-creation-input"
+                    :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.title">
                   <div class="course-creation-input-container">
                     <input class="course-creation-input" v-for="answer, answerIndex in question.answers"
-                      v-bind:key="answerIndex" :placeholder="'enter answer ' + (answerIndex + 1)" >
+                      v-bind:key="answerIndex" :placeholder="'enter answer ' + (answerIndex + 1)" v-model="answer.text">
                     <div class=""></div>
                   </div>
                   <div class="add-new-answer-container">
-                    <div class="add-new-answer" role="button">
+                    <div class="add-new-answer" role="button" @click="addAnswerToForm(questionIndex)">
                       <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
                       <span>Add new answer</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="add-new-question" role="button">
+              <div class="add-new-question" role="button" @click="addQuestionToForm">
                 <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
                 <span>Add new question</span>
               </div>
@@ -67,11 +68,51 @@ export default {
             text: ''
           }
         ]
-      }],
+      },
+      {
+        title: '',
+        answers: [
+          {
+            isRight: false,
+            text: ''
+          },
+          {
+            isRight: false,
+            text: ''
+          },
+          {
+            isRight: false,
+            text: ''
+          }
+        ]
+      }
+    ],
     }
   },
   methods: {
     addQuestionToForm() {
+      this.questions.push({
+          title: '',
+          answers: [
+            {
+              text: '',
+              isRight: false
+            }
+          ]
+        })
+
+
+    },
+    addAnswerToForm(questionIndex) {
+      this.questions.forEach((question, index)=>{
+        if(index === questionIndex){
+          this.questions[index].answers.push({
+              text: '',
+              isRight: false
+            })
+        }
+
+      })
 
     }
   }
