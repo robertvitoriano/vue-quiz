@@ -67,6 +67,7 @@
 </template>
 <script>
 import AuthLayout from '../Layout/AuthLayout.vue';
+import axios from 'axios'
 export default {
   name: "CourseCreation",
   components: { AuthLayout },
@@ -74,8 +75,8 @@ export default {
     return {
       course: {
         title: '',
-        goal: 0,
-        cover:'',
+        goal: '',
+        cover: '',
         courseTypeId: '',
         questions: [{
           title: '',
@@ -86,8 +87,15 @@ export default {
             }
           ]
         }]
-      }
+      },
+      courseTypes: [{
+        id: '',
+        title: ''
+      }]
     }
+  },
+  mounted() {
+    this.getCourseTypes()
   },
   methods: {
     addQuestionToForm() {
@@ -110,8 +118,16 @@ export default {
     changeWrongRightSwitch({ questionIndex, answerIndex }) {
       this.questions[questionIndex].answers[answerIndex].isRight = !this.questions[questionIndex].answers[answerIndex].isRight
     },
-    handleCoverInput(file){
-      console.log({file})
+    handleCoverInput(file) {
+      console.log({ file })
+    },
+    async getCourseTypes() {
+      const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/course_types`, {
+        headers: {
+          authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+      this.courseTypes = response.data
     }
   }
 }
