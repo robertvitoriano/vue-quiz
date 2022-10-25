@@ -31,7 +31,7 @@ export default {
 
 <style scoped>
 .auth-layout-header {
-  height: 10vh;
+  height: 6vh;
   background-color: gray;
   display: flex;
   flex-direction: row;
@@ -100,7 +100,7 @@ export default {
 }
 
 .auth-layout-footer {
-  height: 10vh;
+  height: 8vh;
   background-color: gray;
   color: white;
   display: flex;
@@ -123,7 +123,7 @@ export default {
   width: 100%;
   background-color: black;
   color: white;
-  height: 80vh;
+  height: 86vh;
   overflow-y: scroll;
 }
 

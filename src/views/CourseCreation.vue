@@ -22,15 +22,19 @@
                   <input class="course-creation-input"
                     :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.title">
                   <div class="course-creation-answers-container">
-                    <div class="course-answer-container"  v-for="answer, answerIndex in question.answers" v-bind:key="answerIndex" >
-                      <input class="course-creation-input"
-                        :placeholder="'enter answer ' + (answerIndex + 1)"
+                    <div class="course-answer-container" v-for="answer, answerIndex in question.answers"
+                      v-bind:key="answerIndex">
+                      <input class="course-creation-input" :placeholder="'enter answer ' + (answerIndex + 1)"
                         v-model="answer.text">
                       <div class="wrong-right-switch">
-                        <label for="">male</label>
-                        <input type="radio" name="gender" value="male" checked>
-                        <label for="">female</label>
-                        <input type="radio" name="gender" value="female" id="">
+                        <div :class="{'wrong-right-switch-input-container':true, 'wrong-right-input-selected':answer.isRight}" @click="changeWrongRightSwitch({questionIndex, answerIndex})" >
+                          <label for="">right</label>
+                          <input type="radio" name="wrong-right" value="right" :checked="answer.isRight" class="wrong-right-switch-input">
+                        </div>
+                        <div :class="{'wrong-right-switch-input-container':true, 'wrong-right-input-selected':!answer.isRight}" @click="changeWrongRightSwitch({questionIndex, answerIndex})">
+                          <label for="">wrong</label>
+                          <input type="radio" name="wrong-right" value="wrong" :checked="!answer.isRight" class="wrong-right-switch-input">
+                        </div>
                       </div>
                     </div>
                     <div class=""></div>
@@ -87,16 +91,13 @@ export default {
 
     },
     addAnswerToForm(questionIndex) {
-      this.questions.forEach((question, index) => {
-        if (index === questionIndex) {
-          this.questions[index].answers.push({
+      this.questions[questionIndex].answers.push({
             text: '',
             isRight: false
           })
-        }
-
-      })
-
+    },
+    changeWrongRightSwitch({questionIndex, answerIndex}){
+      this.questions[questionIndex].answers[answerIndex].isRight =  !this.questions[questionIndex].answers[answerIndex].isRight
     }
   }
 }
@@ -162,6 +163,7 @@ export default {
 .course-answer-container {
   position: relative;
 }
+
 .course-creation-file-input {
   opacity: 0;
   width: 100%;
@@ -263,6 +265,25 @@ export default {
 .wrong-right-switch {
   position: absolute;
   right: 0;
-  top:1rem;
+  top: 1rem;
+  border: solid 2px white;
+  display: flex;
+}
+
+.wrong-right-switch-container{
+  display: flex;
+  justify-content: center;
+}
+
+.wrong-right-switch:hover{
+  cursor: pointer;
+}
+.wrong-right-input-selected {
+  background-color: white;
+  color:black
+}
+
+.wrong-right-switch-input {
+  opacity: 0;
 }
 </style>
