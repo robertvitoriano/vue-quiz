@@ -6,16 +6,16 @@
           <div class="course-creation-content">
             <h1 class="course-creation-form-title">Create the course</h1>
             <form class="course-creation-form">
-              <input class="course-creation-input" placeholder="Enter course Title">
-              <input class="course-creation-input" placeholder="select course Type">
-              <input class="course-creation-input" placeholder="Enter course Goal">
+              <input class="course-creation-input" placeholder="Enter course Title" v-model="course.title">
+              <input class="course-creation-input" placeholder="select course Type" v-model="course.courseTypeId">
+              <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal">
               <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
                 <input class="course-creation-file-input" id="course-creation-file-input"
-                  placeholder="Chose course cover" type="file">
+                  placeholder="Chose course cover" type="file" @change="handleCoverInput">
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">Choose course cover image</label>
               </label>
-              <div class="question-section-container" v-for="question, questionIndex in questions"
+              <div class="question-section-container" v-for="question, questionIndex in course.questions"
                 v-bind:key="questionIndex">
                 <h1>Question {{ questionIndex + 1 }}</h1>
                 <div class="question-section-content">
@@ -27,13 +27,19 @@
                       <input class="course-creation-input" :placeholder="'enter answer ' + (answerIndex + 1)"
                         v-model="answer.text">
                       <div class="wrong-right-switch">
-                        <div :class="{'wrong-right-switch-input-container':true, 'wrong-right-input-selected':answer.isRight}" @click="changeWrongRightSwitch({questionIndex, answerIndex})" >
+                        <div
+                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': answer.isRight }"
+                          @click="changeWrongRightSwitch({ questionIndex, answerIndex })">
                           <label for="">right</label>
-                          <input type="radio" name="wrong-right" value="right" :checked="answer.isRight" class="wrong-right-switch-input">
+                          <input type="radio" name="wrong-right" value="right" :checked="answer.isRight"
+                            class="wrong-right-switch-input">
                         </div>
-                        <div :class="{'wrong-right-switch-input-container':true, 'wrong-right-input-selected':!answer.isRight}" @click="changeWrongRightSwitch({questionIndex, answerIndex})">
+                        <div
+                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': !answer.isRight }"
+                          @click="changeWrongRightSwitch({ questionIndex, answerIndex })">
                           <label for="">wrong</label>
-                          <input type="radio" name="wrong-right" value="wrong" :checked="!answer.isRight" class="wrong-right-switch-input">
+                          <input type="radio" name="wrong-right" value="wrong" :checked="!answer.isRight"
+                            class="wrong-right-switch-input">
                         </div>
                       </div>
                     </div>
@@ -53,6 +59,7 @@
               </div>
             </form>
           </div>
+          <Button class="create-course-button">Create Course</Button>
         </div>
       </div>
     </template>
@@ -65,15 +72,21 @@ export default {
   components: { AuthLayout },
   data() {
     return {
-      questions: [{
+      course: {
         title: '',
-        answers: [
-          {
-            isRight: false,
-            text: ''
-          }
-        ]
-      }],
+        goal: 0,
+        cover:'',
+        courseTypeId: '',
+        questions: [{
+          title: '',
+          answers: [
+            {
+              isRight: false,
+              text: ''
+            }
+          ]
+        }]
+      }
     }
   },
   methods: {
@@ -87,17 +100,18 @@ export default {
           }
         ]
       })
-
-
     },
     addAnswerToForm(questionIndex) {
       this.questions[questionIndex].answers.push({
-            text: '',
-            isRight: false
-          })
+        text: '',
+        isRight: false
+      })
     },
-    changeWrongRightSwitch({questionIndex, answerIndex}){
-      this.questions[questionIndex].answers[answerIndex].isRight =  !this.questions[questionIndex].answers[answerIndex].isRight
+    changeWrongRightSwitch({ questionIndex, answerIndex }) {
+      this.questions[questionIndex].answers[answerIndex].isRight = !this.questions[questionIndex].answers[answerIndex].isRight
+    },
+    handleCoverInput(file){
+      console.log({file})
     }
   }
 }
@@ -270,20 +284,34 @@ export default {
   display: flex;
 }
 
-.wrong-right-switch-container{
+.wrong-right-switch-container {
   display: flex;
   justify-content: center;
 }
 
-.wrong-right-switch:hover{
+.wrong-right-switch:hover {
   cursor: pointer;
 }
+
 .wrong-right-input-selected {
   background-color: white;
-  color:black
+  color: black
 }
 
 .wrong-right-switch-input {
   opacity: 0;
+}
+
+.create-course-button {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.create-course-button:hover {
+  background-color: white;
+  color: black;
 }
 </style>
