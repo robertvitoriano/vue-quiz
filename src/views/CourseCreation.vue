@@ -21,9 +21,18 @@
                 <div class="question-section-content">
                   <input class="course-creation-input"
                     :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.title">
-                  <div class="course-creation-input-container">
-                    <input class="course-creation-input" v-for="answer, answerIndex in question.answers"
-                      v-bind:key="answerIndex" :placeholder="'enter answer ' + (answerIndex + 1)" v-model="answer.text">
+                  <div class="course-creation-answers-container">
+                    <div class="course-answer-container"  v-for="answer, answerIndex in question.answers" v-bind:key="answerIndex" >
+                      <input class="course-creation-input"
+                        :placeholder="'enter answer ' + (answerIndex + 1)"
+                        v-model="answer.text">
+                      <div class="wrong-right-switch">
+                        <label for="">male</label>
+                        <input type="radio" name="gender" value="male" checked>
+                        <label for="">female</label>
+                        <input type="radio" name="gender" value="female" id="">
+                      </div>
+                    </div>
                     <div class=""></div>
                   </div>
                   <div class="add-new-answer-container">
@@ -58,58 +67,32 @@ export default {
           {
             isRight: false,
             text: ''
-          },
-          {
-            isRight: false,
-            text: ''
-          },
-          {
-            isRight: false,
-            text: ''
           }
         ]
-      },
-      {
-        title: '',
-        answers: [
-          {
-            isRight: false,
-            text: ''
-          },
-          {
-            isRight: false,
-            text: ''
-          },
-          {
-            isRight: false,
-            text: ''
-          }
-        ]
-      }
-    ],
+      }],
     }
   },
   methods: {
     addQuestionToForm() {
       this.questions.push({
-          title: '',
-          answers: [
-            {
-              text: '',
-              isRight: false
-            }
-          ]
-        })
+        title: '',
+        answers: [
+          {
+            text: '',
+            isRight: false
+          }
+        ]
+      })
 
 
     },
     addAnswerToForm(questionIndex) {
-      this.questions.forEach((question, index)=>{
-        if(index === questionIndex){
+      this.questions.forEach((question, index) => {
+        if (index === questionIndex) {
           this.questions[index].answers.push({
-              text: '',
-              isRight: false
-            })
+            text: '',
+            isRight: false
+          })
         }
 
       })
@@ -170,6 +153,15 @@ export default {
   height: 3rem;
 }
 
+.course-creation-answers-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-answer-container {
+  position: relative;
+}
 .course-creation-file-input {
   opacity: 0;
   width: 100%;
@@ -225,7 +217,7 @@ export default {
 }
 
 .question-section-container {
-  width:100%;
+  width: 100%;
   margin-top: 2rem;
 }
 
@@ -267,4 +259,10 @@ export default {
 }
 
 .add-question-icon {}
+
+.wrong-right-switch {
+  position: absolute;
+  right: 0;
+  top:1rem;
+}
 </style>
