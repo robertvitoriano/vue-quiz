@@ -7,7 +7,7 @@
             <h1 class="course-creation-form-title">Create the course</h1>
             <form class="course-creation-form">
               <input class="course-creation-input" placeholder="Enter course Title">
-              <input class="course-creation-input" placeholder="Enter course Type">
+              <input class="course-creation-input" placeholder="select course Type">
               <input class="course-creation-input" placeholder="Enter course Goal">
               <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
                 <input class="course-creation-file-input" id="course-creation-file-input"
