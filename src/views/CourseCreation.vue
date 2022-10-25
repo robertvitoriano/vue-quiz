@@ -15,23 +15,27 @@
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">Choose course cover image</label>
               </label>
-              <div class="question-section-container">
+              <div class="question-section-container" v-for="question, questionIndex in questions"
+                v-bind:key="questionIndex">
+                <h1>Question {{questionIndex + 1}}</h1>
                 <div class="question-section-content">
-                  <input class="course-creation-input" placeholder="enter the question 1">
-                  <input class="course-creation-input" placeholder="enter answer 1">
-                  <div class="alternative-switch-container course-creation-input">
+                  <input class="course-creation-input" :placeholder="'enter the question '+(Number(questionIndex) + 1)">
+                  <div class="course-creation-input-container">
+                    <input class="course-creation-input" v-for="answer, answerIndex in question.answers"
+                      v-bind:key="answerIndex" :placeholder="'enter answer ' + (answerIndex + 1)" >
+                    <div class=""></div>
                   </div>
-                  <span>Add answer</span>
+                  <div class="add-new-answer-container">
+                    <div class="add-new-answer" role="button">
+                      <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
+                      <span>Add new answer</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="question-section-container">
-                <div class="question-section-content">
-                  <input class="course-creation-input" placeholder="enter the question 1">
-                  <input class="course-creation-input" placeholder="enter answer 1">
-                  <div class="alternative-switch-container course-creation-input">
-                  </div>
-                  <span>Add answer</span>
-                </div>
+              <div class="add-new-question" role="button">
+                <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
+                <span>Add new question</span>
               </div>
             </form>
           </div>
@@ -44,7 +48,33 @@
 import AuthLayout from '../Layout/AuthLayout.vue';
 export default {
   name: "CourseCreation",
-  components: { AuthLayout }
+  components: { AuthLayout },
+  data() {
+    return {
+      questions: [{
+        title: '',
+        answers: [
+          {
+            isRight: false,
+            text: ''
+          },
+          {
+            isRight: false,
+            text: ''
+          },
+          {
+            isRight: false,
+            text: ''
+          }
+        ]
+      }],
+    }
+  },
+  methods: {
+    addQuestionToForm() {
+
+    }
+  }
 }
 </script>
 
@@ -111,7 +141,7 @@ export default {
 
 .course-creation-file-input-container {
   background-color: transparent;
-  border: white 1.5px solid;
+  border: white 2px solid;
   margin-top: 1.5rem;
   display: flex;
   justify-content: center;
@@ -122,7 +152,7 @@ export default {
 
 .course-creation-file-input-container:hover {
   background-color: white;
-  border-color: black;
+  border: black 2px solid;
   color: black;
   cursor: pointer;
 }
@@ -152,4 +182,47 @@ export default {
   margin-top: 1.5rem;
   border: solid white 2px;
 }
+
+.question-section-container {
+  margin-top: 2rem;
+}
+
+.add-new-question {
+  border: 2px solid white;
+  padding: 4px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 12rem;
+  margin-top: 2rem;
+}
+
+.add-new-question:hover {
+  cursor: pointer;
+  color: black;
+  background-color: white;
+}
+
+.add-new-answer {
+  border: 2px solid white;
+  padding: 4px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 10rem;
+  margin: 0 auto;
+}
+
+.add-new-answer:hover {
+  cursor: pointer;
+  color: black;
+  background-color: white;
+}
+
+.add-new-answer-container {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.add-question-icon {}
 </style>

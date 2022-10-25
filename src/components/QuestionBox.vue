@@ -1,6 +1,6 @@
 <template>
   <div class="question-box-container">
-    <b-jumbotron class="question-box-content">
+    <div class="question-box-content">
       <div class="question-container">
         <div class="question-section">
           <p>{{currentQuestion.question}}</p>
@@ -19,7 +19,7 @@
         </b-button>
         <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{nextButtonText}}</b-button>
       </div>
-    </b-jumbotron>
+    </div>
   </div>
 </template>
 
@@ -117,7 +117,7 @@ export default {
   flex-direction: column;
   background-color: lightgray;
   align-items: center;
-  justify-content: center
+  justify-content: center;
 }
 
 .question-container {
@@ -163,6 +163,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  color:black;
 }
 
 .question-box-buttons-container {

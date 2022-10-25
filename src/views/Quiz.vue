@@ -1,8 +1,7 @@
 <template>
 <AuthLayout>
   <template #content>
-  <div id="Quiz">
-    <Header :questionsCount="questions.length" :currentQuestionIndex="currentQuestionIndex"></Header>
+  <div class="quiz-wrapper">
     <QuestionBox
      :currentQuestion="currentQuestion"
      :currentQuestionIndex="currentQuestionIndex"
@@ -19,7 +18,6 @@
 </template>
 
 <script>
-import Header from './../components/Header.vue';
 import QuestionBox from './../components/QuestionBox.vue';
 import RestartSection from './../components/RestartSection.vue';
 import AuthLayout from './../Layout/AuthLayout.vue'
@@ -27,7 +25,6 @@ import axios from 'axios'
 export default {
   name: 'Quiz',
   components: {
-    Header,
     QuestionBox,
     RestartSection,
     AuthLayout
@@ -76,6 +73,9 @@ export default {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+.quiz-wrapper {
+  width:100%;
 }
 
 </style>
