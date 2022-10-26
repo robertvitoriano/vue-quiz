@@ -44,6 +44,7 @@ export default {
       immediate: true,
       handler() {
         this.shuffleAlternatives()
+        this.rightAnswerIndex = this.currentQuestion.alternatives.findIndex((alternative) => alternative.isRight === 1)
       }
     }
   },
@@ -61,15 +62,7 @@ export default {
       this.resetAnswerState()
     },
     handleSubmit() {
-      let rightAnswerIndex = null
-
-      this.currentQuestion.alternatives.forEach((alternative, index) => {
-        if (alternative.isRight === 1) {
-          rightAnswerIndex = index
-        }
-      })
-
-      if (this.selectedAnswerIndex === rightAnswerIndex) {
+      if (this.selectedAnswerIndex === this.rightAnswerIndex) {
         alert("You got it right")
         this.$emit('increaseScoreEvent')
       } else {
@@ -100,14 +93,8 @@ export default {
       }
     },
     getAlternativeBackground(validationType, index) {
-      let rightAnswerIndex = null
-      this.currentQuestion.alternatives.forEach((alternative, index) => {
-        if (alternative.isRight === 1) {
-          rightAnswerIndex = index
-        }
-      })
       const hasSelected = this.selectedAnswerIndex === index
-      const isRight = index === rightAnswerIndex
+      const isRight = index === this.rightAnswerIndex
       const hasSelectedAndIsWrong = hasSelected && !isRight && this.hasAnswered
       const validationTypes = {
         'selected-alternative': hasSelected,
