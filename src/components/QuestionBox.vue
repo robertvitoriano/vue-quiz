@@ -3,21 +3,21 @@
     <div class="question-box-content">
       <div class="question-container">
         <div class="question-section">
-          <p>{{currentQuestion.question}}</p>
+          <p>{{                                                                                                                                                                                                                                                                                                                                                                                           currentQuestion.title                                                                                                                                                                                                                                                                                                                                                                                           }}</p>
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="alternativeClass(index)" :key="index"
               v-for="alternative, index in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
-              {{alternative}}</b-list-group-item>
+              {{                                                                                                                                                                                                                                                                                                                                                                                           alternative.text                                                                                                                                                                                                                                                                                                                                                                                           }}</b-list-group-item>
           </b-list-group>
 
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{submitButtonText}}
+        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{                                                                                                                                                                                                                                                                                                                                                                                           submitButtonText                                                                                                                                                                                                                                                                                                                                                                                           }}
         </b-button>
-        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{nextButtonText}}</b-button>
+        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{                                                                                                                                                                                                                                                                                                                                                                                           nextButtonText                                                                                                                                                                                                                                                                                                                                                                                           }}</b-button>
       </div>
     </div>
   </div>
@@ -61,7 +61,15 @@ export default {
       this.resetAnswerState()
     },
     handleSubmit() {
-      if (this.selectedAnswerIndex === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)) {
+      let rightAnswerIndex = null
+
+      this.currentQuestion.alternatives.forEach((alternative, index) => {
+        if (alternative.isRight === 1) {
+          rightAnswerIndex = index
+        }
+      })
+
+      if (this.selectedAnswerIndex === rightAnswerIndex) {
         alert("You got it right")
         this.$emit('increaseScoreEvent')
       } else {
@@ -92,13 +100,19 @@ export default {
       }
     },
     getAlternativeBackground(validationType, index) {
+      let rightAnswerIndex = null
+      this.currentQuestion.alternatives.forEach((alternative, index) => {
+        if (alternative.isRight === 1) {
+          rightAnswerIndex = index
+        }
+      })
       const hasSelected = this.selectedAnswerIndex === index
-      const isRight = index === this.currentQuestion.alternatives.indexOf(this.currentQuestion.correct_answer)
+      const isRight = index === rightAnswerIndex
       const hasSelectedAndIsWrong = hasSelected && !isRight && this.hasAnswered
       const validationTypes = {
-        'selected-alternative':hasSelected,
+        'selected-alternative': hasSelected,
         'hover-alternative': !hasSelected,
-        'wrong-alternative':hasSelectedAndIsWrong,
+        'wrong-alternative': hasSelectedAndIsWrong,
         'correct-alternative': isRight && this.hasAnswered
       }
       return validationTypes[validationType]
@@ -163,7 +177,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color:black;
+  color: black;
 }
 
 .question-box-buttons-container {
