@@ -1,34 +1,42 @@
 <template>
   <div class="question-box-container">
+    <Header :questions-count="questionsCount" :current-question-index="currentQuestionIndex" />
     <div class="question-box-content">
+      <h2>{{ courseTitle }}</h2>
       <div class="question-container">
         <div class="question-section">
-          <p>{{                                                                                                                                                                                                                                                                                                                                                                                           currentQuestion.title                                                                                                                                                                                                                                                                                                                                                                                           }}</p>
+          <p>{{ currentQuestion.title }}</p>
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="alternativeClass(index)" :key="index"
               v-for="alternative, index in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
-              {{                                                                                                                                                                                                                                                                                                                                                                                           alternative.text                                                                                                                                                                                                                                                                                                                                                                                           }}</b-list-group-item>
+              {{ alternative.text }}</b-list-group-item>
           </b-list-group>
 
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{                                                                                                                                                                                                                                                                                                                                                                                           submitButtonText                                                                                                                                                                                                                                                                                                                                                                                           }}
+        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{ submitButtonText
+        }}
         </b-button>
-        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{                                                                                                                                                                                                                                                                                                                                                                                           nextButtonText                                                                                                                                                                                                                                                                                                                                                                                           }}</b-button>
+        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{ nextButtonText }}</b-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Header from './Header.vue'
 export default {
   props: {
     currentQuestion: Object,
     currentQuestionIndex: Number,
-    questionsCount: Number
+    questionsCount: Number,
+    courseTitle: String
+  },
+  components: {
+    Header
   },
   data() {
     return {
@@ -119,6 +127,7 @@ export default {
   background-color: lightgray;
   align-items: center;
   justify-content: center;
+  color: black;
 }
 
 .question-container {

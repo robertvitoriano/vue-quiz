@@ -6,6 +6,7 @@
      :currentQuestion="currentQuestion"
      :currentQuestionIndex="currentQuestionIndex"
      :questionsCount="questions.length"
+     :courseTitle="courseTitle"
      @nextQuestionEvent="updatedCurrentQuestionIndex"
      @increaseScoreEvent= "score++"
      @hasFinishedEvent = "finishQuiz"
@@ -38,7 +39,8 @@ export default {
       currentQuestionIndex: 0,
       currentQuestion: {},
       score:0,
-      hasFinished:false
+      hasFinished:false,
+      courseTitle:''
     }
   },
   methods: {
@@ -49,6 +51,8 @@ export default {
       this.questions = response.data.data.questions
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]
+      this.courseTitle = response.data.data.course.title
+      console.log({title:response.data.data.course.title})
     },
     updatedCurrentQuestionIndex() {
       if (this.currentQuestionIndex < this.questions.length - 1) {

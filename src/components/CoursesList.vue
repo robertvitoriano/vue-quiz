@@ -1,6 +1,6 @@
 <template>
   <div class="course-list-grid">
-      <CourseCard v-for="course in courses" :key="course.title" :course="course" />
+      <CourseCard v-for="course in courses" :key="course.id" :course="course" />
   </div>
 </template>
 
