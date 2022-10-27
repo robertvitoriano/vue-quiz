@@ -10,19 +10,20 @@
               <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal">
               <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
                 <input class="course-creation-file-input" id="course-creation-file-input"
-                placeholder="Chose course cover" type="file" @change="handleCoverInput">
+                  placeholder="Chose course cover" type="file" @change="handleCoverInput">
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">Choose course cover image</label>
               </label>
-              <select class="course-creation-select" placeholder="select course Type" v-model="course.courseTypeId">
+              <!-- <select class="course-creation-select" placeholder="select course Type" v-model="course.courseTypeId">
                 <option v-for="courseType in courseTypes" v-bind:value="courseType.id" v-bind:key="courseType.id">{{courseType.title}}</option>
-              </select>
+              </select> -->
+              <v-select class="course-creation-select"  :options="courseTypes" v-model="course.courseType"></v-select>
               <div class="question-section-container" v-for="question, questionIndex in course.questions"
                 v-bind:key="questionIndex">
                 <h1>Question {{ questionIndex + 1 }}</h1>
                 <div class="question-section-content">
                   <input class="course-creation-input"
-                    :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.title">
+                    :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.text">
                   <div class="course-creation-answers-container">
                     <div class="course-answer-container" v-for="alternative, alternativeIndex in question.alternatives"
                       v-bind:key="alternativeIndex">
@@ -70,6 +71,8 @@
 <script>
 import AuthLayout from '../Layout/AuthLayout.vue';
 import axios from 'axios'
+
+
 export default {
   name: "CourseCreation",
   components: { AuthLayout },
@@ -79,9 +82,12 @@ export default {
         title: '',
         goal: '',
         cover: null,
-        courseTypeId: '',
+        courseType: {
+          id:'',
+          label:''
+        },
         questions: [{
-          title: '',
+          text: '',
           alternatives: [
             {
               isRight: false,
@@ -93,7 +99,7 @@ export default {
       courseTypes: [{
         id: '',
         title: ''
-      }]
+      }],
     }
   },
   mounted() {
@@ -112,7 +118,7 @@ export default {
       })
     },
     addAnswerToForm(questionIndex) {
-      console.log({questionIndex})
+      console.log({ questionIndex })
       this.course.questions[questionIndex].alternatives.push({
         text: '',
         isRight: false
@@ -130,10 +136,17 @@ export default {
           authorization: 'Bearer ' + localStorage.getItem('token')
         }
       })
-      this.courseTypes = response.data.data
+      this.courseTypes = response.data.data.map((courseType) => {
+        return {
+          id: courseType.id,
+          label: courseType.title
+        }
+      })
     },
-    async createCourse(){
-      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`,this.course,{
+    async createCourse() {
+      const {courseType, ...rest}  = this.course
+      const courseWithTypeId = {courseTypeId:courseType.id, ...rest}
+      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`, courseWithTypeId, {
         headers: {
           authorization: 'Bearer ' + localStorage.getItem('token')
         }
@@ -340,7 +353,8 @@ export default {
   background-color: white;
   color: black;
 }
-.course-creation-select{
+
+.course-creation-select {
   border-top: none;
   border-right: none;
   border-left: none;
