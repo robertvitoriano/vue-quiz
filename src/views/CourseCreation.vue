@@ -12,11 +12,8 @@
                 <input class="course-creation-file-input" id="course-creation-file-input"
                   placeholder="Chose course cover" type="file" @change="handleCoverInput($event)" ref="coverInput" >
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
-                <label class="cover-upload-label">Choose course cover image</label>
+                <label class="cover-upload-label">{{ course.cover ? "image selected": "Choose course cover image"}}</label>
               </label>
-              <!-- <select class="course-creation-select" placeholder="select course Type" v-model="course.courseTypeId">
-                <option v-for="courseType in courseTypes" v-bind:value="courseType.id" v-bind:key="courseType.id">{{courseType.title}}</option>
-              </select> -->
               <v-select class="course-creation-select"  :options="courseTypes" v-model="course.courseType"></v-select>
               <div class="question-section-container" v-for="question, questionIndex in course.questions"
                 v-bind:key="questionIndex">
