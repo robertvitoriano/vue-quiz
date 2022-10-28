@@ -2,18 +2,19 @@
   <div class="wrapper">
     <div class="content">
       <h1 class="login-form-title">Vue Quiz App</h1>
-      <form class="form-container" v-if="!isSigningUp" @submit.prevent="submit"  >
+      <form class="form-container" v-if="!isSigningUp" @submit.prevent="submit">
         <input v-model="loginForm.username" class="login-input" placeholder="username" required>
         <input v-model="loginForm.password" class="login-input" placeholder="password" type="password" required>
-        <button  class="login-button">Login</button>
-        <span>Don't have account yet ? <a class="sign-up"  @click="handleFormSwitch">Sign up</a></span>
+        <button class="login-button" @click="login">Login</button>
+        <span>Don't have account yet ? <a class="sign-up" @click="handleFormSwitch">Sign up</a></span>
       </form>
-      <form v-if="isSigningUp" class="form-container" @submit.prevent="submit">
+      <form v-if="isSigningUp" class="form-container" @submit.prevent="login">
         <input v-model="signUpForm.name" class="login-input" placehol placeholder="name" required>
         <input v-model="signUpForm.username" class="login-input" placeholder="username" required>
         <input v-model="signUpForm.email" class="login-input" placeholder="email" type="email" required>
         <input v-model="signUpForm.password" class="login-input" placeholder="password" type="password" required>
-        <a class="sign-up" @click="handleFormSwitch" >GoBack</a>
+        <button class="login-button" @click="signUp">Sign Up</button>
+        <a class="sign-up" @click="handleFormSwitch">GoBack</a>
       </form>
     </div>
   </div>
@@ -31,18 +32,17 @@ export default {
       },
       signUpForm: {
         username: '',
-        name:'',
-        email:'',
+        name: '',
+        email: '',
         password: ''
       },
-      isSigningUp:false
+      isSigningUp: false
     }
   },
   methods: {
-    async submit() {
+    async login() {
       try {
         const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm)
-        console.log(response)
         const token = response.data.token
         localStorage.setItem('token', token)
         this.$router.push('/home')
@@ -50,7 +50,17 @@ export default {
         console.error(error)
       }
     },
-    handleFormSwitch(){
+    async signUp() {
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/`, this.signUpForm)
+        if(response.status === 200){
+          this.handleFormSwitch();
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    handleFormSwitch() {
       this.isSigningUp = !this.isSigningUp
     }
   }
@@ -123,7 +133,8 @@ export default {
   width: 100%;
   text-align: center;
 }
-.sign-up:hover{
+
+.sign-up:hover {
   cursor: pointer;
 
 }

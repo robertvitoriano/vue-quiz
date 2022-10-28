@@ -1,6 +1,9 @@
 <template>
-  <div class="course-list-grid">
+  <div>
+    <div class="course-list-grid" v-if="courses.length">
       <CourseCard v-for="course in courses" :key="course.id" :course="course" />
+    </div>
+    <h2 v-if="!courses.length" class="no-course-created">You haven't created any course</h2>
   </div>
 </template>
 
@@ -22,5 +25,8 @@ export default {
   column-gap: 7rem;
   row-gap: 13rem;
   height: 500px;
+}
+.no-course-created{
+  margin-top: 2rem;
 }
 </style>

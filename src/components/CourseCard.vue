@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       cardStyle: {
-        'background-image': 'url(' + this.course.cover + ')',
+        'background-image': 'url(' + encodeURI(this.course.cover)  + ')',
         'background-position': 'center',
         'background-repeat': 'no-repeat',
         'background-size': 'cover'

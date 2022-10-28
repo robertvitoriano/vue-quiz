@@ -10,7 +10,7 @@
               <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal">
               <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
                 <input class="course-creation-file-input" id="course-creation-file-input"
-                  placeholder="Chose course cover" type="file" @change="handleCoverInput">
+                  placeholder="Chose course cover" type="file" @change="handleCoverInput($event)" ref="coverInput" >
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">Choose course cover image</label>
               </label>
@@ -127,8 +127,8 @@ export default {
     changeWrongRightSwitch({ questionIndex, alternativeIndex }) {
       this.course.questions[questionIndex].alternatives[alternativeIndex].isRight = !this.course.questions[questionIndex].alternatives[alternativeIndex].isRight
     },
-    handleCoverInput(file) {
-      console.log({ file })
+    handleCoverInput(event) {
+      this.course.cover = event.target.files[0];
     },
     async getCourseTypes() {
       const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/course_types`, {
@@ -144,11 +144,15 @@ export default {
       })
     },
     async createCourse() {
-      const {courseType, ...rest}  = this.course
-      const courseWithTypeId = {courseTypeId:courseType.id, ...rest}
-      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`, courseWithTypeId, {
+      const {courseType, cover, ...rest}  = this.course
+      const course = {courseTypeId:courseType.id, ...rest}
+      const formData = new FormData()
+      formData.append("cover", cover)
+      formData.append("course", JSON.stringify(course))
+      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`, formData, {
         headers: {
-          authorization: 'Bearer ' + localStorage.getItem('token')
+          authorization: 'Bearer ' + localStorage.getItem('token'),
+          "Content-Type": "multipart/form-data",
         }
       })
     }
