@@ -2,73 +2,159 @@
   <AuthLayout>
     <template #content>
       <div class="course-creation-wrapper">
+        <div v-if="isLoading" class="loading-container">
+          <b-spinner
+            variant="light"
+            style="width: 200px; height: 200px; position: absolute"
+          ></b-spinner>
+        </div>
         <div class="course-creation-container">
           <div class="course-creation-content">
             <h1 class="course-creation-form-title">Create the course</h1>
             <form class="course-creation-form">
-              <input class="course-creation-input" placeholder="Enter course Title" v-model="course.title">
-              <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal">
-              <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
-                <input class="course-creation-file-input" id="course-creation-file-input"
-                  placeholder="Chose course cover" type="file" @change="handleCoverInput($event)" ref="coverInput" >
+              <input
+                class="course-creation-input"
+                placeholder="Enter course Title"
+                v-model="course.title"
+              />
+              <input
+                class="course-creation-input"
+                placeholder="Enter course Goal"
+                v-model="course.goal"
+              />
+              <label
+                class="course-creation-file-input-container"
+                role="button"
+                for="course-creation-file-input"
+              >
+                <input
+                  class="course-creation-file-input"
+                  id="course-creation-file-input"
+                  placeholder="Chose course cover"
+                  type="file"
+                  @change="handleCoverInput($event)"
+                  ref="coverInput"
+                />
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
-                <label class="cover-upload-label">{{ course.cover ? "image selected": "Choose course cover image"}}</label>
+                <label class="cover-upload-label">{{
+                  course.cover ? "image selected" : "Choose course cover image"
+                }}</label>
               </label>
-              <v-select class="course-creation-select"  :options="courseTypes" v-model="course.courseType"></v-select>
-              <div class="question-section-container" v-for="question, questionIndex in course.questions"
-                v-bind:key="questionIndex">
+              <v-select
+                class="course-creation-select"
+                :options="courseTypes"
+                v-model="course.courseType"
+              ></v-select>
+              <div
+                class="question-section-container"
+                v-for="(question, questionIndex) in course.questions"
+                v-bind:key="questionIndex"
+              >
                 <h1>Question {{ questionIndex + 1 }}</h1>
                 <div class="question-section-content">
-                  <input class="course-creation-input"
-                    :placeholder="'enter the question ' + (Number(questionIndex) + 1)" v-model="question.text">
+                  <input
+                    class="course-creation-input"
+                    :placeholder="
+                      'enter the question ' + (Number(questionIndex) + 1)
+                    "
+                    v-model="question.text"
+                  />
                   <div class="course-creation-answers-container">
-                    <div class="course-answer-container" v-for="alternative, alternativeIndex in question.alternatives"
-                      v-bind:key="alternativeIndex">
-                      <input class="course-creation-input" :placeholder="'enter answer ' + (alternativeIndex + 1)"
-                        v-model="alternative.text">
+                    <div
+                      class="course-answer-container"
+                      v-for="(
+                        alternative, alternativeIndex
+                      ) in question.alternatives"
+                      v-bind:key="alternativeIndex"
+                    >
+                      <input
+                        class="course-creation-input"
+                        :placeholder="'enter answer ' + (alternativeIndex + 1)"
+                        v-model="alternative.text"
+                      />
                       <div class="wrong-right-switch">
                         <div
-                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': alternative.isRight }"
-                          @click="changeWrongRightSwitch({ questionIndex, alternativeIndex })">
+                          :class="{
+                            'wrong-right-switch-input-container': true,
+                            'wrong-right-input-selected': alternative.isRight,
+                          }"
+                          @click="
+                            changeWrongRightSwitch({
+                              questionIndex,
+                              alternativeIndex,
+                            })
+                          "
+                        >
                           <label for="">right</label>
-                          <input type="radio" name="wrong-right" value="right" :checked="alternative.isRight"
-                            class="wrong-right-switch-input">
+                          <input
+                            type="radio"
+                            name="wrong-right"
+                            value="right"
+                            :checked="alternative.isRight"
+                            class="wrong-right-switch-input"
+                          />
                         </div>
                         <div
-                          :class="{ 'wrong-right-switch-input-container': true, 'wrong-right-input-selected': !alternative.isRight }"
-                          @click="changeWrongRightSwitch({ questionIndex, alternativeIndex })">
+                          :class="{
+                            'wrong-right-switch-input-container': true,
+                            'wrong-right-input-selected': !alternative.isRight,
+                          }"
+                          @click="
+                            changeWrongRightSwitch({
+                              questionIndex,
+                              alternativeIndex,
+                            })
+                          "
+                        >
                           <label for="">wrong</label>
-                          <input type="radio" name="wrong-right" value="wrong" :checked="!alternative.isRight"
-                            class="wrong-right-switch-input">
+                          <input
+                            type="radio"
+                            name="wrong-right"
+                            value="wrong"
+                            :checked="!alternative.isRight"
+                            class="wrong-right-switch-input"
+                          />
                         </div>
                       </div>
                     </div>
                     <div class=""></div>
                   </div>
                   <div class="add-new-answer-container">
-                    <div class="add-new-answer" role="button" @click="addAnswerToForm(questionIndex)">
-                      <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
+                    <div
+                      class="add-new-answer"
+                      role="button"
+                      @click="addAnswerToForm(questionIndex)"
+                    >
+                      <b-icon
+                        icon="plus-circle"
+                        class="add-question-icon"
+                      ></b-icon>
                       <span>Add new answer</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="add-new-question" role="button" @click="addQuestionToForm">
+              <div
+                class="add-new-question"
+                role="button"
+                @click="addQuestionToForm"
+              >
                 <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
                 <span>Add new question</span>
               </div>
             </form>
           </div>
-          <Button class="create-course-button" @click="createCourse">Create Course</Button>
+          <Button class="create-course-button" @click="createCourse"
+            >Create Course</Button
+          >
         </div>
       </div>
     </template>
   </AuthLayout>
 </template>
 <script>
-import AuthLayout from '../Layout/AuthLayout.vue';
-import axios from 'axios'
-
+import AuthLayout from "../Layout/AuthLayout.vue";
+import axios from "axios";
 
 export default {
   name: "CourseCreation",
@@ -76,85 +162,129 @@ export default {
   data() {
     return {
       course: {
-        title: '',
-        goal: '',
+        title: "",
+        goal: "",
         cover: null,
         courseType: {
-          id:'',
-          label:''
+          id: "",
+          label: "",
         },
-        questions: [{
-          text: '',
-          alternatives: [
-            {
-              isRight: false,
-              text: ''
-            }
-          ]
-        }]
+        questions: [
+          {
+            text: "",
+            alternatives: [
+              {
+                isRight: false,
+                text: "",
+              },
+            ],
+          },
+        ],
       },
-      courseTypes: [{
-        id: '',
-        title: ''
-      }],
-    }
+      courseTypes: [
+        {
+          id: "",
+          title: "",
+        },
+      ],
+      isLoading: false,
+    };
   },
   mounted() {
-    this.getCourseTypes()
+    this.getCourseTypes();
   },
   methods: {
     addQuestionToForm() {
       this.course.questions.push({
-        title: '',
+        title: "",
         alternatives: [
           {
-            text: '',
-            isRight: false
-          }
-        ]
-      })
+            text: "",
+            isRight: false,
+          },
+        ],
+      });
     },
     addAnswerToForm(questionIndex) {
-      console.log({ questionIndex })
+      console.log({ questionIndex });
       this.course.questions[questionIndex].alternatives.push({
-        text: '',
-        isRight: false
-      })
+        text: "",
+        isRight: false,
+      });
     },
     changeWrongRightSwitch({ questionIndex, alternativeIndex }) {
-      this.course.questions[questionIndex].alternatives[alternativeIndex].isRight = !this.course.questions[questionIndex].alternatives[alternativeIndex].isRight
+      this.course.questions[questionIndex].alternatives[
+        alternativeIndex
+      ].isRight =
+        !this.course.questions[questionIndex].alternatives[alternativeIndex]
+          .isRight;
     },
     handleCoverInput(event) {
       this.course.cover = event.target.files[0];
     },
     async getCourseTypes() {
-      const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/course_types`, {
-        headers: {
-          authorization: 'Bearer ' + localStorage.getItem('token')
+      const response = await axios.get(
+        `${process.env.VUE_APP_API_URL}/api/v1/course_types`,
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("token"),
+          },
         }
-      })
+      );
       this.courseTypes = response.data.data.map((courseType) => {
         return {
           id: courseType.id,
-          label: courseType.title
-        }
-      })
+          label: courseType.title,
+        };
+      });
     },
     async createCourse() {
-      const {courseType, cover, ...rest}  = this.course
-      const course = {courseTypeId:courseType.id, ...rest}
-      const formData = new FormData()
-      formData.append("cover", cover)
-      formData.append("course", JSON.stringify(course))
-      await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/courses`, formData, {
-        headers: {
-          authorization: 'Bearer ' + localStorage.getItem('token'),
-          "Content-Type": "multipart/form-data",
+      const { courseType, cover, ...rest } = this.course;
+      const course = { courseTypeId: courseType.id, ...rest };
+      const formData = new FormData();
+      formData.append("cover", cover);
+      formData.append("course", JSON.stringify(course));
+      this.isLoading = true;
+      const response = await axios.post(
+        `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+        formData,
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("token"),
+            "Content-Type": "multipart/form-data",
+          },
         }
-      })
-    }
-  }
-}
+      );
+      if (response.status === 200) {
+        this.isLoading = false;
+        this.$swal.fire("Course sucessfully created!", "", "success");
+        this.course = {
+        title: "",
+        goal: "",
+        cover: null,
+        courseType: {
+          id: "",
+          label: "",
+        },
+        questions: [
+          {
+            text: "",
+            alternatives: [
+              {
+                isRight: false,
+                text: "",
+              },
+            ],
+          },
+        ],
+      }
+      }
+    },
+    clearForm() {
+
+    },
+  },
+};
 </script>
 
 <style>
@@ -173,7 +303,6 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
 }
 
 .course-creation-content {
@@ -249,7 +378,6 @@ export default {
 .cover-upload-label:hover {
   text-decoration: underline;
   cursor: pointer;
-
 }
 
 .upload-icon {
@@ -314,7 +442,8 @@ export default {
   margin-bottom: 1rem;
 }
 
-.add-question-icon {}
+.add-question-icon {
+}
 
 .wrong-right-switch {
   position: absolute;
@@ -335,7 +464,7 @@ export default {
 
 .wrong-right-input-selected {
   background-color: white;
-  color: black
+  color: black;
 }
 
 .wrong-right-switch-input {
@@ -367,5 +496,13 @@ export default {
   text-align: center;
   height: 3rem;
   margin-top: 1rem;
+}
+.loading-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
