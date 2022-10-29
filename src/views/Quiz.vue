@@ -47,7 +47,11 @@ export default {
     async loadQuestions() {
       // this.questions = this.getAlternativesWithCorrectAnswer(questionsResponse.data.results)
       // const questionsResponse = await axios.get('https://opentdb.com/api.php?amount=10&category=15&type=multiple')
-      const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`)
+      const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,{
+        headers:{
+          authorization:'Bearer '+localStorage.getItem('token')
+        }
+      })
       this.questions = response.data.data.questions
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]

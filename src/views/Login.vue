@@ -52,7 +52,7 @@ export default {
     },
     async signUp() {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/`, this.signUpForm)
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/create-user`, this.signUpForm)
         if(response.status === 200){
           this.handleFormSwitch();
         }

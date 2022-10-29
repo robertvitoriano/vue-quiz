@@ -25,7 +25,8 @@
 
 <script>
 export default {
-  name: 'AuthLayout'
+  name: 'AuthLayout',
+  props:["user"]
 }
 </script>
 
