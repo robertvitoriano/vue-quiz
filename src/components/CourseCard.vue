@@ -2,7 +2,7 @@
   <div class="course-wrapper">
     <div class="course-content">
       <router-link :to="'quiz/'+course.id" class="course-title">
-        {{course.title}}
+        {{courseTitleFormatted}}
       </router-link>
       <router-link :to="'quiz/'+course.id">
         <div class="course-container" ref="courseContainer" :style="cardStyle"></div>
@@ -22,7 +22,8 @@ export default {
         'background-position': 'center',
         'background-repeat': 'no-repeat',
         'background-size': 'cover'
-      }
+      },
+      courseTitleFormatted:this.course.title.length >= 17 ?this.course.title.substring(0,14)+'...': this.course.title
     }
   }
 }
