@@ -1,10 +1,10 @@
 <template>
   <AuthLayout #content>
-      <div class="home-container">
-        <div class="home-content">
-          <CourseList :courses="courses" />
-        </div>
+    <div class="home-container">
+      <div class="home-content">
+        <CourseList :courses="courses" />
       </div>
+    </div>
   </AuthLayout>
 </template>
 
@@ -23,7 +23,14 @@ export default {
   },
   data() {
     return {
-      courses: []
+      courses: [{
+        course_type_id:null,
+        cover:null,
+        created_at:"",
+        goal:0,
+        id:null,
+        title:""
+      }]
     }
   },
   methods: {
@@ -39,7 +46,4 @@ export default {
 }
 </script>
 
-<style>
-
-
-</style>
+<style></style>

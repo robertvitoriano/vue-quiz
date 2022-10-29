@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       cardStyle: {
-        'background-image': 'url(' + '"' + this.course.cover + '"' + ')',
+        'background-image': this.course.cover ? 'url(' + '"' +  this.course.cover + '"' + ')': 'url(' + "https://rails-quiz.s3.amazonaws.com/courseCoverDefaultImage.jpeg" + ')',
         'background-position': 'center',
         'background-repeat': 'no-repeat',
         'background-size': 'cover'
