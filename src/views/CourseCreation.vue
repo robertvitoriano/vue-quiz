@@ -259,30 +259,28 @@ export default {
         this.isLoading = false;
         this.$swal.fire("Course sucessfully created!", "", "success");
         this.course = {
-        title: "",
-        goal: "",
-        cover: null,
-        courseType: {
-          id: "",
-          label: "",
-        },
-        questions: [
-          {
-            text: "",
-            alternatives: [
-              {
-                isRight: false,
-                text: "",
-              },
-            ],
+          title: "",
+          goal: "",
+          cover: null,
+          courseType: {
+            id: "",
+            label: "",
           },
-        ],
-      }
+          questions: [
+            {
+              text: "",
+              alternatives: [
+                {
+                  isRight: false,
+                  text: "",
+                },
+              ],
+            },
+          ],
+        };
       }
     },
-    clearForm() {
-
-    },
+    clearForm() {},
   },
 };
 </script>
@@ -494,9 +492,23 @@ export default {
   color: black;
   width: 100%;
   text-align: center;
-  height: 3rem;
   margin-top: 1rem;
 }
+
+* {
+  --vs-controls-color: white;
+  --vs-border-color: white;
+  --vs-dropdown-bg: black;
+  --vs-dropdown-color: white;
+  --vs-dropdown-option-color: white;
+  --vs-selected-bg: white;
+  --vs-selected-color: white;
+  --vs-search-input-bg: black;
+  --vs-search-input-color: white;
+  --vs-dropdown-option--active-bg: white;
+  --vs-dropdown-option--active-color: black;
+}
+
 .loading-container {
   position: absolute;
   width: 100vw;
