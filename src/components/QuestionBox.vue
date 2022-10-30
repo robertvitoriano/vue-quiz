@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click="handleSubmit">{{ submitButtonText
+        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click.prevent="handleSubmit">{{ submitButtonText
         }}
         </b-button>
         <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{ nextButtonText }}</b-button>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Header from './Header.vue'
 export default {
   props: {
@@ -69,8 +70,15 @@ export default {
       this.$emit('nextQuestionEvent')
       this.resetAnswerState()
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
+        await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/alternatives/save-user-answer`,{
+          questionAlternativeId:this.selectedAnswerIndex
+        },{
+          headers:{
+            authorization:`Bearer ${localStorage.getItem('token')}`
+          }
+        })
         alert("You got it right")
         this.$emit('increaseScoreEvent')
       } else {

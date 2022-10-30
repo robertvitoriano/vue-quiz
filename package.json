@@ -2,11 +2,12 @@
   "name": "vue-quiz",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://quiz-battle.s3-website-us-east-1.amazonaws.com/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
+    "lint": "vue-cli-service lint",
+    "deploy":"aws s3 sync dist/ s3://quiz-battle --acl public-read"  },
   "dependencies": {
     "axios": "^0.27.2",
     "bootstrap": "^5.2.1",
