@@ -2,23 +2,26 @@
   <div id="app">
     <!-- <Header v-if="token"/> -->
     <router-view />
+    <div  class="loading-container" v-if="isLoading" >
+      <b-spinner
+        variant="dark"
+        style="width: 200px; height: 200px; position: absolute"
+      ></b-spinner>
+    </div>
   </div>
 </template>
 
 <script>
-// import Header from "./components/Header.vue";
+import { mapGetters } from 'vuex';
 export default {
-    // components: { Header },
-    data(){
-      return {
-        token: localStorage.getItem('token')
-      }
-    }
-}
+  computed:{
+    ...mapGetters(['isLoading'])
+  }
+};
 </script>
 
 <style>
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -36,6 +39,16 @@ export default {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px white;
 }
-
-
+#app{
+  position: relative;
+}
+.loading-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+}
 </style>

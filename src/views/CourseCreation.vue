@@ -2,12 +2,6 @@
   <AuthLayout>
     <template #content>
       <div class="course-creation-wrapper">
-        <div v-if="isLoading" class="loading-container">
-          <b-spinner
-            variant="light"
-            style="width: 200px; height: 200px; position: absolute"
-          ></b-spinner>
-        </div>
         <div class="course-creation-container">
           <div class="course-creation-content">
             <h1 class="course-creation-form-title">Create the course</h1>
@@ -155,6 +149,7 @@
 <script>
 import AuthLayout from "../Layout/AuthLayout.vue";
 import axios from "axios";
+import { mapActions } from "vuex";
 
 export default {
   name: "CourseCreation",
@@ -194,6 +189,7 @@ export default {
     this.getCourseTypes();
   },
   methods: {
+    ...mapActions(["changeLoadingState"]),
     addQuestionToForm() {
       this.course.questions.push({
         title: "",
@@ -223,20 +219,28 @@ export default {
       this.course.cover = event.target.files[0];
     },
     async getCourseTypes() {
-      const response = await axios.get(
-        `${process.env.VUE_APP_API_URL}/api/v1/course_types`,
-        {
-          headers: {
-            authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      this.courseTypes = response.data.data.map((courseType) => {
-        return {
-          id: courseType.id,
-          label: courseType.title,
-        };
-      });
+      try {
+        this.changeLoadingState();
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_URL}/api/v1/course_types`,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        this.courseTypes = response.data.data.map((courseType) => {
+          return {
+            id: courseType.id,
+            label: courseType.title,
+          };
+        });
+        this.changeLoadingState();
+      } catch (error) {
+        console.error(error);
+        this.changeLoadingState();
+        this.$swal.fire("unable to load course types!", "", "error");
+      }
     },
     async createCourse() {
       const { courseType, cover, ...rest } = this.course;
@@ -244,43 +248,48 @@ export default {
       const formData = new FormData();
       formData.append("cover", cover);
       formData.append("course", JSON.stringify(course));
-      this.isLoading = true;
-      const response = await axios.post(
-        `${process.env.VUE_APP_API_URL}/api/v1/courses`,
-        formData,
-        {
-          headers: {
-            authorization: "Bearer " + localStorage.getItem("token"),
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (response.status === 200) {
-        this.isLoading = false;
-        this.$swal.fire("Course sucessfully created!", "", "success");
-        this.course = {
-          title: "",
-          goal: "",
-          cover: null,
-          courseType: {
-            id: "",
-            label: "",
-          },
-          questions: [
-            {
-              text: "",
-              alternatives: [
-                {
-                  isRight: false,
-                  text: "",
-                },
-              ],
+      this.changeLoadingState();
+      try {
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+          formData,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("token"),
+              "Content-Type": "multipart/form-data",
             },
-          ],
-        };
+          }
+        );
+        if (response.status === 200) {
+          this.changeLoadingState();
+          this.$swal.fire("Course sucessfully created!", "", "success");
+          this.course = {
+            title: "",
+            goal: "",
+            cover: null,
+            courseType: {
+              id: "",
+              label: "",
+            },
+            questions: [
+              {
+                text: "",
+                alternatives: [
+                  {
+                    isRight: false,
+                    text: "",
+                  },
+                ],
+              },
+            ],
+          };
+        }
+      } catch (error) {
+        console.error(error);
+        this.$swal.fire("Error creating the course", "", "error");
+        this.changeLoadingState();
       }
     },
-    clearForm() {},
   },
 };
 </script>
@@ -507,14 +516,5 @@ export default {
   --vs-search-input-color: white;
   --vs-dropdown-option--active-bg: white;
   --vs-dropdown-option--active-color: black;
-}
-
-.loading-container {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

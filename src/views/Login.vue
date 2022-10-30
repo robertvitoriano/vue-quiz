@@ -2,18 +2,55 @@
   <div class="wrapper">
     <div class="content">
       <h1 class="login-form-title">Vue Quiz App</h1>
-      <form class="form-container" v-if="!isSigningUp" @submit.prevent="submit">
-        <input v-model="loginForm.username" class="login-input" placeholder="username" required>
-        <input v-model="loginForm.password" class="login-input" placeholder="password" type="password" required>
-        <button class="login-button" @click="login">Login</button>
-        <span>Don't have account yet ? <a class="sign-up" @click="handleFormSwitch">Sign up</a></span>
+      <form class="form-container" v-if="!isSigningUp" @submit.prevent="login">
+        <input
+          v-model="loginForm.username"
+          class="login-input"
+          placeholder="username"
+          required
+        />
+        <input
+          v-model="loginForm.password"
+          class="login-input"
+          placeholder="password"
+          type="password"
+          required
+        />
+        <button class="login-button" >Login</button>
+        <span
+          >Don't have account yet ?
+          <a class="sign-up" @click="handleFormSwitch">Sign up</a></span
+        >
       </form>
-      <form v-if="isSigningUp" class="form-container" @submit.prevent="login">
-        <input v-model="signUpForm.name" class="login-input" placehol placeholder="name" required>
-        <input v-model="signUpForm.username" class="login-input" placeholder="username" required>
-        <input v-model="signUpForm.email" class="login-input" placeholder="email" type="email" required>
-        <input v-model="signUpForm.password" class="login-input" placeholder="password" type="password" required>
-        <button class="login-button" @click="signUp">Sign Up</button>
+      <form v-if="isSigningUp" class="form-container" @submit.prevent="signUp">
+        <input
+          v-model="signUpForm.name"
+          class="login-input"
+          placehol
+          placeholder="name"
+          required
+        />
+        <input
+          v-model="signUpForm.username"
+          class="login-input"
+          placeholder="username"
+          required
+        />
+        <input
+          v-model="signUpForm.email"
+          class="login-input"
+          placeholder="email"
+          type="email"
+          required
+        />
+        <input
+          v-model="signUpForm.password"
+          class="login-input"
+          placeholder="password"
+          type="password"
+          required
+        />
+        <button class="login-button">Sign Up</button>
         <a class="sign-up" @click="handleFormSwitch">GoBack</a>
       </form>
     </div>
@@ -21,50 +58,68 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
+import { mapActions } from "vuex";
+
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       loginForm: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
       },
       signUpForm: {
-        username: '',
-        name: '',
-        email: '',
-        password: ''
+        username: "",
+        name: "",
+        email: "",
+        password: "",
       },
-      isSigningUp: false
-    }
+      isSigningUp: false,
+    };
   },
   methods: {
+    ...mapActions(["changeLoadingState"]),
     async login() {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/login`, this.loginForm)
-        const token = response.data.token
-        localStorage.setItem('token', token)
-        this.$router.push('/home')
+        this.changeLoadingState();
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_URL}/api/v1/users/login`,
+          this.loginForm
+        );
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        this.changeLoadingState();
+        this.$router.push("/home");
       } catch (error) {
-        console.error(error)
+        this.changeLoadingState();
+        this.$swal.fire("invalid credentials!", "", "error");
+        console.error(error);
       }
     },
     async signUp() {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/users/create-user`, this.signUpForm)
-        if(response.status === 200){
+        this.changeLoadingState()
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_URL}/api/v1/users/create-user`,
+          this.signUpForm
+        );
+        if (response.status === 200) {
+          this.changeLoadingState()
+          this.$swal.fire("User successfully created!", "", "success");
           this.handleFormSwitch();
         }
       } catch (error) {
-        console.error(error)
+        this.changeLoadingState()
+        this.$swal.fire("Error on user creation", "", "error");
+        console.error(error);
       }
     },
     handleFormSwitch() {
-      this.isSigningUp = !this.isSigningUp
-    }
-  }
-}
+      this.isSigningUp = !this.isSigningUp;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -95,7 +150,6 @@ export default {
   background-color: white;
   color: black;
   border-radius: 4%;
-
 }
 
 .login-input {
@@ -136,6 +190,5 @@ export default {
 
 .sign-up:hover {
   cursor: pointer;
-
 }
 </style>
