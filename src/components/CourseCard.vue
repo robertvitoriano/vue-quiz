@@ -29,28 +29,58 @@ export default {
 }
 </script>
 <style scoped>
-.course-wrapper {
-  height: 100px;
-}
 
-.course-container {
-  width: 250px;
-  height: 250px;
-}
 
-.course-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
+@media (min-width: 576px) {
+  .course-wrapper {
+    margin-bottom: 1rem;
+  }
 
-.course-title {
-  color:white;
-  font-size:2rem;
-  text-decoration: none;
+  .course-container {
+    height: 40rem;
+    width: 40rem;
+  }
+
+  .course-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .course-title {
+    color:white;
+    font-size:3rem;
+    text-decoration: none;
+  }
+  .course-title:hover{
+    text-decoration: underline;
+  }
 }
-.course-title:hover{
-  text-decoration: underline;
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .course-wrapper {
+    height: 100px;
+  }
+
+  .course-container {
+    width: 250px;
+    height: 250px;
+  }
+
+  .course-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .course-title {
+    color:white;
+    font-size:2rem;
+    text-decoration: none;
+  }
+  .course-title:hover{
+    text-decoration: underline;
+  }
 }
 </style>
