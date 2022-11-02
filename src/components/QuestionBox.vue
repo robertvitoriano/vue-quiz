@@ -1,6 +1,9 @@
 <template>
   <div class="question-box-container">
-    <Header :questions-count="questionsCount" :current-question-index="currentQuestionIndex" />
+    <Header
+      :questions-count="questionsCount"
+      :current-question-index="currentQuestionIndex"
+    />
     <div class="question-box-content">
       <h2>{{ courseTitle }}</h2>
       <div class="question-container">
@@ -9,122 +12,152 @@
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
-            <b-list-group-item :class="alternativeClass(index)" :key="index"
-              v-for="alternative, index in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
-              {{ alternative.text }}</b-list-group-item>
+            <b-list-group-item
+              :class="alternativeClass(index)"
+              :key="index"
+              v-for="(alternative, index) in currentQuestion.alternatives"
+              @click="selectAnswerIndex(index)"
+            >
+              {{ alternative.text }}</b-list-group-item
+            >
           </b-list-group>
-
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button variant="primary" href="#" :disabled='disableSubmitButton' @click.prevent="handleSubmit">{{ submitButtonText
-        }}
+        <b-button
+          variant="primary"
+          href="#"
+          :disabled="disableSubmitButton"
+          @click.prevent="handleSubmit"
+          >{{ submitButtonText }}
         </b-button>
-        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{ nextButtonText }}</b-button>
+        <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{
+          nextButtonText
+        }}</b-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import Header from './Header.vue'
+import axios from "axios";
+import Header from "./Header.vue";
+import { mapActions } from "vuex";
 export default {
   props: {
     currentQuestion: Object,
     currentQuestionIndex: Number,
     questionsCount: Number,
-    courseTitle: String
+    courseTitle: String,
   },
   components: {
-    Header
+    Header,
   },
   data() {
     return {
       selectedAnswerIndex: null,
       hasAnswered: false,
-      submitButtonText: 'Save Answer',
-      nextButtonText: 'Next Question',
+      submitButtonText: "Save Answer",
+      nextButtonText: "Next Question",
       disableSubmitButton: false,
-    }
+    };
   },
   watch: {
     currentQuestion: {
       immediate: true,
       handler() {
-        this.shuffleAlternatives()
-        this.rightAnswerIndex = this.currentQuestion.alternatives.findIndex((alternative) => alternative.isRight === 1)
-      }
-    }
+        this.shuffleAlternatives();
+        this.rightAnswerIndex = this.currentQuestion.alternatives.findIndex(
+          (alternative) => alternative.isRight === 1
+        );
+      },
+    },
   },
   methods: {
+    ...mapActions(["changeLoadingState"]),
     emitNextQuestionEvent() {
-      if (!this.hasAnswered) return alert('You have to answer !')
+      if (!this.hasAnswered) return alert("You have to answer !");
 
       if (this.currentQuestionIndex + 2 === this.questionsCount) {
-        this.nextButtonText = "Finish Quiz"
+        this.nextButtonText = "Finish Quiz";
       }
       if (this.currentQuestionIndex + 1 === this.questionsCount) {
-        this.$emit('hasFinishedEvent')
+        this.$emit("hasFinishedEvent");
       }
-      this.$emit('nextQuestionEvent')
-      this.resetAnswerState()
+      this.$emit("nextQuestionEvent");
+      this.resetAnswerState();
     },
     async handleSubmit() {
+      this.changeLoadingState();
+      await axios.post(
+        `${process.env.VUE_APP_API_URL}/api/v1/alternatives/save-user-answer`,
+        {
+          questionAlternativeId: this.selectedAnswerIndex,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
-        await axios.post(`${process.env.VUE_APP_API_URL}/api/v1/alternatives/save-user-answer`,{
-          questionAlternativeId:this.selectedAnswerIndex
-        },{
-          headers:{
-            authorization:`Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        alert("You got it right")
-        this.$emit('increaseScoreEvent')
+        alert("You got it right");
+        this.$emit("increaseScoreEvent");
       } else {
-        alert("You got it wrong")
+        alert("You got it wrong");
       }
-      this.submitButtonText = 'Answered'
-      this.disableSubmitButton = true
-      this.hasAnswered = true
+      this.submitButtonText = "Answered";
+      this.disableSubmitButton = true;
+      this.hasAnswered = true;
     },
     selectAnswerIndex(index) {
       if (!this.hasAnswered) {
-        this.selectedAnswerIndex = index
+        this.selectedAnswerIndex = index;
       }
     },
     resetAnswerState() {
-      this.submitButtonText = 'Save Answer'
-      this.disableSubmitButton = false
-      this.hasAnswered = false
-      this.selectedAnswerIndex = null
+      this.submitButtonText = "Save Answer";
+      this.disableSubmitButton = false;
+      this.hasAnswered = false;
+      this.selectedAnswerIndex = null;
     },
     alternativeClass(index) {
       return {
         alternative: true,
-        selected: this.getAlternativeBackground('selected-alternative', index),
-        'list-group-item-hover': this.getAlternativeBackground('hover-alternative', index),
-        'correct-alternative': this.getAlternativeBackground('correct-alternative', index),
-        'wrong-alternative': this.getAlternativeBackground('wrong-alternative', index)
-      }
+        selected: this.getAlternativeBackground("selected-alternative", index),
+        "list-group-item-hover": this.getAlternativeBackground(
+          "hover-alternative",
+          index
+        ),
+        "correct-alternative": this.getAlternativeBackground(
+          "correct-alternative",
+          index
+        ),
+        "wrong-alternative": this.getAlternativeBackground(
+          "wrong-alternative",
+          index
+        ),
+      };
     },
     getAlternativeBackground(validationType, index) {
-      const hasSelected = this.selectedAnswerIndex === index
-      const isRight = index === this.rightAnswerIndex
-      const hasSelectedAndIsWrong = hasSelected && !isRight && this.hasAnswered
+      const hasSelected = this.selectedAnswerIndex === index;
+      const isRight = index === this.rightAnswerIndex;
+      const hasSelectedAndIsWrong = hasSelected && !isRight && this.hasAnswered;
       const validationTypes = {
-        'selected-alternative': hasSelected,
-        'hover-alternative': !hasSelected,
-        'wrong-alternative': hasSelectedAndIsWrong,
-        'correct-alternative': isRight && this.hasAnswered
-      }
-      return validationTypes[validationType]
+        "selected-alternative": hasSelected,
+        "hover-alternative": !hasSelected,
+        "wrong-alternative": hasSelectedAndIsWrong,
+        "correct-alternative": isRight && this.hasAnswered,
+      };
+      return validationTypes[validationType];
     },
     shuffleAlternatives() {
-      this.currentQuestion.alternatives = this.currentQuestion.alternatives.sort(() => Math.random() - 0.5)
-    }
-  }
-}
+      this.currentQuestion.alternatives =
+        this.currentQuestion.alternatives.sort(() => Math.random() - 0.5);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -154,8 +187,6 @@ export default {
   border-top: 1px solid black;
   overflow: auto;
 }
-
-
 
 .alternatives-section::-webkit-scrollbar {
   width: 10px;
@@ -211,7 +242,6 @@ export default {
 }
 
 @media only screen and (max-width: 600px) {
-
   /*Big smartphones [426px -> 600px]*/
   .question-box-buttons-container {
     width: 60%;
