@@ -20,7 +20,7 @@ export default {
 <style scoped>
 
 
-@media (min-width: 576px) {
+@media (min-width: 280px) {
   .course-list {
     display: flex;
     flex-direction: column;

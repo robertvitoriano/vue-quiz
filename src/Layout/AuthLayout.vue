@@ -141,4 +141,10 @@ export default {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px white;
 }
+@media only screen and (max-width: 280px) {
+  .auth-layout-container{
+    overflow: hidden;
+  }
+
+}
 </style>

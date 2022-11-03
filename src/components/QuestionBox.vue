@@ -241,10 +241,12 @@ export default {
   background-color: red;
 }
 
-@media only screen and (max-width: 600px) {
-  /*Big smartphones [426px -> 600px]*/
+@media only screen and (max-width: 280px) {
   .question-box-buttons-container {
     width: 60%;
+  }
+  .question-box-content {
+    height: 80vh;
   }
 }
 </style>

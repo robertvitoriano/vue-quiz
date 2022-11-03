@@ -31,14 +31,14 @@ export default {
 <style scoped>
 
 
-@media (min-width: 576px) {
+@media (min-width: 280px) {
   .course-wrapper {
     margin-bottom: 1rem;
   }
 
   .course-container {
-    height: 40rem;
-    width: 40rem;
+    height: 40vh;
+    width: 90vw;
   }
 
   .course-content {
