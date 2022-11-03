@@ -241,12 +241,27 @@ export default {
   background-color: red;
 }
 
-@media only screen and (max-width: 280px) {
+@media only screen and (min-width: 280px) {
   .question-box-buttons-container {
     width: 60%;
   }
   .question-box-content {
     height: 80vh;
+  }
+  .question-container {
+    width: 90%;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .question-box-buttons-container {
+    width: 60%;
+  }
+  .question-box-content {
+    height: 80vh;
+  }
+  .question-container {
+    width: 90%;
+    height: 50vh;
   }
 }
 </style>

@@ -517,4 +517,10 @@ export default {
   --vs-dropdown-option--active-bg: white;
   --vs-dropdown-option--active-color: black;
 }
+
+@media only screen and (max-width: 900px) {
+  .course-creation-content{
+    width:95%;
+  }
+}
 </style>
