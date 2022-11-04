@@ -51,4 +51,8 @@ export default {
   align-items: center;
   top: 0;
 }
+a{
+  text-decoration: none;
+  color: inherit;
+}
 </style>

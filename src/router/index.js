@@ -4,7 +4,7 @@ import Home from './../views/Home.vue'
 import Quiz from './../views/Quiz.vue'
 import Login from './../views/Login.vue'
 import CourseCreation from './../views/CourseCreation.vue'
-
+import Courses from './../views/Courses.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -32,6 +32,11 @@ const routes = [
     path: '/',
     name: '',
     component: Login
+  },
+  {
+    path: '/courses',
+    name: 'courses',
+    component: Courses
   }
 ]
 

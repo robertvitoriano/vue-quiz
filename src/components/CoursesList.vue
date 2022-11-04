@@ -33,7 +33,7 @@ export default {
     display: grid;
     grid-template-columns: 30% 30% 30%;
     grid-template-rows: auto;
-    column-gap: 7rem;
+    column-gap: 2rem;
     row-gap: 13rem;
     height: 500px;
   }
