@@ -7,6 +7,13 @@
             <Button title="Create Course"></Button>
           </router-link>
         </div>
+        <div class="courses-table-container">
+          <template>
+            <div>
+              <b-table hover striped  dark :items="courses"></b-table>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
   </AuthLayout>
@@ -71,5 +78,8 @@ export default {
 .courses-control-panel{
   width: 100%;
   padding:1rem;
+}
+.courses-table-container{
+  padding: 2rem;
 }
 </style>
