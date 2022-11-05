@@ -4,7 +4,7 @@
       <div class="course-creation-wrapper">
         <div class="course-creation-container">
           <div class="course-creation-content">
-            <h1 class="course-creation-form-title">Create the course</h1>
+            <h1 class="course-creation-form-title">{{ isUpdating ? "Update Course" :"Create the course"}}</h1>
             <form class="course-creation-form">
               <input
                 class="course-creation-input"
@@ -138,7 +138,7 @@
               </div>
             </form>
           </div>
-          <Button class="create-course-button" @click="createCourse"
+          <Button class="create-course-button" @click="handleSubmit"
             >Create Course</Button
           >
         </div>
@@ -183,12 +183,14 @@ export default {
         },
       ],
       isLoading: false,
-      isUpdating: false
+      isUpdating: false,
+      updatedCover: false
     };
   },
   mounted() {
     this.getCourseTypes();
     if (this.$route.path.includes("/course-update")) {
+      this.isUpdating = true
       this.loadCourse();
     }
   },
@@ -220,6 +222,7 @@ export default {
     },
     handleCoverInput(event) {
       this.course.cover = event.target.files[0];
+      this.updatedCover  = true
     },
     async getCourseTypes() {
       try {
@@ -245,27 +248,42 @@ export default {
         this.$swal.fire("unable to load course types!", "", "error");
       }
     },
-    async createCourse() {
+    async handleSubmit() {
       const { courseType, cover, ...rest } = this.course;
       const course = { courseTypeId: courseType.id, ...rest };
       const formData = new FormData();
-      formData.append("cover", cover);
+      if(this.updatedCover) formData.append("cover", cover);
       formData.append("course", JSON.stringify(course));
       this.changeLoadingState();
       try {
-        const response = await axios.post(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses`,
-          formData,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        let response;
+        if(this.isUpdating){
+          response = await axios.post(
+            `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+            formData,
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        }else{
+          response = await axios.patch(
+            `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+            formData,
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+        }
         if (response.status === 200) {
           this.changeLoadingState();
-          this.$swal.fire("Course sucessfully created!", "", "success");
+          this.$swal.fire(`Course sucessfully ${this.isUpdating ? "updated" :"created" }`, "", "success");
           this.course = {
             title: "",
             goal: "",

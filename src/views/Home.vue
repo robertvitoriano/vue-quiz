@@ -49,7 +49,7 @@ export default {
             },
           }
         );
-        this.courses = response.data.data;
+        this.courses = response.data.data.courses;
         this.changeLoadingState()
       } catch (error) {
         this.changeLoadingState();
