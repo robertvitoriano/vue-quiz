@@ -10,7 +10,11 @@
         <div class="courses-table-container">
           <template>
             <div>
-              <b-table hover striped  dark :items="courses"></b-table>
+              <b-table hover striped dark :items="courses">
+                <template #cell(createdAt)="course">
+                  {{ getFormattedDate(course.item.createdAt)}}
+                </template>
+              </b-table>
             </div>
           </template>
         </div>
@@ -25,6 +29,8 @@ import AuthLayout from "./../Layout/AuthLayout.vue";
 import axios from "axios";
 import { mapActions } from "vuex";
 import Button from "../components/Button.vue";
+import { format } from "date-fns-tz";
+
 export default {
   name: "Courses",
   components: {
@@ -70,16 +76,25 @@ export default {
         console.error(error);
       }
     },
+    getFormattedDate(timeStamp) {
+      console.log({courses:this.courses})
+      console.log({timeStamp})
+      const date = new Date(String(timeStamp));
+      const timeZone = "Brazil/Sao_Paulo";
+      const pattern = "d/M/yyyy - HH:mm:ss";
+      const output = format(date, pattern, { timeZone });
+      return output;
+    },
   },
 };
 </script>
 
 <style>
-.courses-control-panel{
+.courses-control-panel {
   width: 100%;
-  padding:1rem;
+  padding: 1rem;
 }
-.courses-table-container{
+.courses-table-container {
   padding: 2rem;
 }
 </style>

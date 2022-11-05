@@ -34,6 +34,9 @@
           <router-link to="/home">
             <div class="desktop-sidebar-item-container">Courses</div>
           </router-link>
+          <router-link to="/login">
+            <div class="desktop-sidebar-item-container">Logout</div>
+          </router-link>
         </div>
       </div>
     </div>
