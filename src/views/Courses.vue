@@ -10,11 +10,19 @@
         <div class="courses-table-container">
           <template>
             <div>
-              <b-table hover striped dark :items="courses">
+              <b-table hover striped dark :items="courses" id="courses-table">
                 <template #cell(createdAt)="course">
-                  {{ getFormattedDate(course.item.createdAt)}}
+                  {{ getFormattedDate(course.item.createdAt) }}
                 </template>
               </b-table>
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="coursesTotal"
+                :per-page="coursesPerPage"
+                aria-controls="courses-table"
+                dark
+                @change="getCourses($event)"
+              ></b-pagination>
             </div>
           </template>
         </div>
@@ -53,22 +61,28 @@ export default {
           title: "",
         },
       ],
+      coursesPerPage: 10,
+      currentPage: 1,
+      coursesTotal: 0,
+      coursesOrder: "desc",
     };
   },
   methods: {
     ...mapActions(["changeLoadingState"]),
-    async getCourses() {
+    async getCourses(paginationPage) {
+      if (paginationPage) this.currentPage = paginationPage;
       try {
         this.changeLoadingState();
         const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+          `${process.env.VUE_APP_API_URL}/api/v1/courses?page=${this.currentPage}&limit=${this.coursesPerPage}&order=${this.coursesOrder}`,
           {
             headers: {
               authorization: "Bearer " + localStorage.getItem("token"),
             },
           }
         );
-        this.courses = response.data.data;
+        this.courses = response.data.data.courses;
+        this.coursesTotal = response.data.data.total;
         this.changeLoadingState();
       } catch (error) {
         this.changeLoadingState();
@@ -77,8 +91,8 @@ export default {
       }
     },
     getFormattedDate(timeStamp) {
-      console.log({courses:this.courses})
-      console.log({timeStamp})
+      console.log({ courses: this.courses });
+      console.log({ timeStamp });
       const date = new Date(String(timeStamp));
       const timeZone = "Brazil/Sao_Paulo";
       const pattern = "d/M/yyyy - HH:mm:ss";
