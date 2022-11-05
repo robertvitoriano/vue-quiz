@@ -19,6 +19,11 @@ const routes = [
     component: CourseCreation
   },
   {
+    path:'/course-update/:id',
+    name:'CourseCreation',
+    component:CourseCreation
+  },
+  {
     path: '/quiz/:id',
     name: 'Quiz',
     component: Quiz

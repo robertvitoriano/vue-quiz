@@ -16,7 +16,15 @@
                 v-model="coursesPerPage"
                 @option:selected="handleSelectCoursesPerPage"
               ></v-select>
-              <b-table hover striped dark :items="courses" id="courses-table">
+              <b-table
+              hover
+              striped
+              dark
+              responsive
+              :items="courses"
+              id="courses-table"
+              @row-clicked="navigateToCourseUpdate"
+              >
                 <template #cell(createdAt)="course">
                   {{ getFormattedDate(course.item.createdAt) }}
                 </template>
@@ -38,7 +46,6 @@
 </template>
 
 <script>
-import CourseList from "./../components/CoursesList.vue";
 import AuthLayout from "./../Layout/AuthLayout.vue";
 import axios from "axios";
 import { mapActions } from "vuex";
@@ -48,7 +55,6 @@ import { format } from "date-fns-tz";
 export default {
   name: "Courses",
   components: {
-    CourseList,
     AuthLayout,
     Button,
   },
@@ -97,8 +103,6 @@ export default {
       }
     },
     getFormattedDate(timeStamp) {
-      console.log({ courses: this.courses });
-      console.log({ timeStamp });
       const date = new Date(String(timeStamp));
       const timeZone = "Brazil/Sao_Paulo";
       const pattern = "d/M/yyyy - HH:mm:ss";
@@ -109,6 +113,10 @@ export default {
       this.currentPage = 1;
       await this.getCourses();
     },
+    navigateToCourseUpdate(course){
+      console.log({dataCliked:course})
+      this.$router.push(`/course-update/${course.id}`)
+    }
   },
 };
 </script>

@@ -187,6 +187,9 @@ export default {
   },
   mounted() {
     this.getCourseTypes();
+    if (this.$route.path.includes("/course-update")) {
+      this.loadCourse();
+    }
   },
   methods: {
     ...mapActions(["changeLoadingState"]),
@@ -289,6 +292,16 @@ export default {
         this.$swal.fire("Error creating the course", "", "error");
         this.changeLoadingState();
       }
+    },
+    async loadCourse() {
+        axios.get(
+          `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
     },
   },
 };
@@ -519,8 +532,8 @@ export default {
 }
 
 @media only screen and (max-width: 900px) {
-  .course-creation-content{
-    width:95%;
+  .course-creation-content {
+    width: 95%;
   }
 }
 </style>
