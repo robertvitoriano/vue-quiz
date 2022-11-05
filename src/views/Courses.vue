@@ -10,6 +10,12 @@
         <div class="courses-table-container">
           <template>
             <div>
+              <label>Show:</label>
+              <v-select
+                :options="[2, 10, 20, 30, 40, 50, 60, 70, 80, 100, 200, 300]"
+                v-model="coursesPerPage"
+                @option:selected="handleSelectCoursesPerPage"
+              ></v-select>
               <b-table hover striped dark :items="courses" id="courses-table">
                 <template #cell(createdAt)="course">
                   {{ getFormattedDate(course.item.createdAt) }}
@@ -98,6 +104,10 @@ export default {
       const pattern = "d/M/yyyy - HH:mm:ss";
       const output = format(date, pattern, { timeZone });
       return output;
+    },
+    async handleSelectCoursesPerPage() {
+      this.currentPage = 1;
+      await this.getCourses();
     },
   },
 };
