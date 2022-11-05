@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path:'/course-update/:id',
-    name:'CourseCreation',
+    name:'CourseUpdate',
     component:CourseCreation
   },
   {

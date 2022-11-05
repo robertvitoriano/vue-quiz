@@ -183,6 +183,7 @@ export default {
         },
       ],
       isLoading: false,
+      isUpdating: false
     };
   },
   mounted() {
@@ -195,7 +196,7 @@ export default {
     ...mapActions(["changeLoadingState"]),
     addQuestionToForm() {
       this.course.questions.push({
-        title: "",
+        text: "",
         alternatives: [
           {
             text: "",
@@ -205,7 +206,6 @@ export default {
       });
     },
     addAnswerToForm(questionIndex) {
-      console.log({ questionIndex });
       this.course.questions[questionIndex].alternatives.push({
         text: "",
         isRight: false,
@@ -294,7 +294,7 @@ export default {
       }
     },
     async loadCourse() {
-        axios.get(
+        const response = await axios.get(
           `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
           {
             headers: {
@@ -302,6 +302,13 @@ export default {
             },
           }
         );
+        const course = response.data.data.course
+        const questions = response.data.data.questions
+        const courseType = response.data.data.courseType[0]
+        this.course = {...this.course,...course, questions, courseType:{
+          label: courseType.title,
+          id: courseType.id
+        }}
     },
   },
 };

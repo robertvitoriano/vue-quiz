@@ -8,7 +8,7 @@
       <h2>{{ courseTitle }}</h2>
       <div class="question-container">
         <div class="question-section">
-          <p>{{ currentQuestion.title }}</p>
+          <p>{{ currentQuestion.text}}</p>
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">

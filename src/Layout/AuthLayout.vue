@@ -75,6 +75,11 @@
 export default {
   name: "AuthLayout",
   props: ["user"],
+  data(){
+    return{
+      isMobile: false,
+    }
+  }
 };
 </script>
 
