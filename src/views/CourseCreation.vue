@@ -180,10 +180,12 @@ export default {
         questions: [
           {
             text: "",
+            new:false,
             alternatives: [
               {
                 isRight: false,
                 text: "",
+                new:false
               },
             ],
           },
@@ -212,10 +214,12 @@ export default {
     addQuestionToForm() {
       this.course.questions.push({
         text: "",
+        new:true,
         alternatives: [
           {
             text: "",
             isRight: false,
+            new:true
           },
         ],
       });
@@ -224,6 +228,7 @@ export default {
       this.course.questions[questionIndex].alternatives.push({
         text: "",
         isRight: false,
+        new:true
       });
     },
     changeWrongRightSwitch({ questionIndex, alternativeIndex }) {
@@ -313,10 +318,12 @@ export default {
             questions: [
               {
                 text: "",
+                new:false,
                 alternatives: [
                   {
                     isRight: false,
                     text: "",
+                    new:false
                   },
                 ],
               },
