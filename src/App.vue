@@ -70,4 +70,31 @@ a{
   --vs-dropdown-option--active-color: black;
 }
 
+
+.pagination {
+  --bs-pagination-padding-x: 0.75rem;
+  --bs-pagination-padding-y: 0.375rem;
+  --bs-pagination-font-size: 1rem;
+  --bs-pagination-color: white;
+  --bs-pagination-bg:#323539;
+  --bs-pagination-border-width: 1px;
+  --bs-pagination-border-color: black;
+  --bs-pagination-border-radius: 0.375rem;
+  --bs-pagination-hover-color: white;
+  --bs-pagination-hover-bg: black;
+  --bs-pagination-hover-border-color: #323539;
+  --bs-pagination-focus-color: #212529;
+  --bs-pagination-focus-bg: #e9ecef;
+  --bs-pagination-focus-box-shadow: 0 0 0 0.25rem #323539;
+  --bs-pagination-active-color: #fff;
+  --bs-pagination-active-bg: #212529;
+  --bs-pagination-active-border-color: white;
+  --bs-pagination-disabled-color: black;
+  --bs-pagination-disabled-bg: gray;
+  --bs-pagination-disabled-border-color: black;
+}
+
 </style>
+
+<!-- black = #212529 -->
+<!-- gray = #323539 -->

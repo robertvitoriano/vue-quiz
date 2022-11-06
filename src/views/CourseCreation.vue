@@ -346,7 +346,6 @@ export default {
         }
       );
       const course = response.data.data.course;
-      console.log({course})
       const questions = response.data.data.questions;
       const courseType = response.data.data.courseType[0];
       this.course = {
