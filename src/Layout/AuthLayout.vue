@@ -1,52 +1,53 @@
 <template>
   <div class="auth-layout-wrapper">
-    <div class="sidebar-container">
+    <div class="mobile-sidebar-container">
       <b-sidebar
         id="sidebar-1"
-        title="Sidebar"
+        title="Menu"
         shadow
-        no-header-close
-        v-if="isMobile"
-      ></b-sidebar>
-      <div v-if="!isMobile" class="desktop-sidebar-container">
-        <img
-          src="./../assets/logo.png"
-          role="button"
-          alt="vue logo"
-          class="desktop-logo-image"
-        />
-        <div class="desktop-sidebar-items-container">
-          <div
-            v-b-toggle.management-collapse
-            class="desktop-sidebar-item-container"
-          >
-            Management
-          </div>
-          <b-collapse
-            id="management-collapse"
-            class="sidebar-collapse-items-container"
-          >
-            <router-link to="/courses">
-              <div class="sidebar-collapse-item">Courses</div>
-            </router-link>
-            <div class="sidebar-collapse-item">Users</div>
-          </b-collapse>
-          <router-link to="/home">
-            <div class="desktop-sidebar-item-container">Courses</div>
-          </router-link>
-          <router-link to="/login">
-            <div class="desktop-sidebar-item-container">Logout</div>
-          </router-link>
+        bg-variant="dark"
+        text-variant="light"
+        backdrop
+        no-header-close>
+      </b-sidebar>
+    </div>
+    <div class="desktop-sidebar-container">
+      <img
+        src="./../assets/logo.png"
+        role="button"
+        alt="vue logo"
+        class="desktop-logo-image"
+      />
+      <div class="desktop-sidebar-items-container">
+        <div
+          v-b-toggle.management-collapse
+          class="desktop-sidebar-item-container"
+        >
+          Management
         </div>
+        <b-collapse
+          id="management-collapse"
+          class="sidebar-collapse-items-container"
+        >
+          <router-link to="/courses">
+            <div class="sidebar-collapse-item">Courses</div>
+          </router-link>
+          <div class="sidebar-collapse-item">Users</div>
+        </b-collapse>
+        <router-link to="/home">
+          <div class="desktop-sidebar-item-container">Courses</div>
+        </router-link>
+        <router-link to="/login">
+          <div class="desktop-sidebar-item-container">Logout</div>
+        </router-link>
       </div>
     </div>
+
     <div class="auth-layout-container">
-      <div class="auth-layout-header" v-if="isMobile">
-        <b-button
-          v-b-toggle.sidebar-1
-          class="toggle-sidbebar-button"
-          v-if="isMobile"
-          >Toggle Sidebar</b-button
+      <div class="auth-layout-header-mobile">
+        <b-button v-b-toggle.sidebar-1 class="toggle-sidbebar-button">
+          <img src="./../assets/Hamburger_icon.svg.png">
+        </b-button
         >
         <router-link to="/home">
           <img
@@ -75,11 +76,9 @@
 export default {
   name: "AuthLayout",
   props: ["user"],
-  data(){
-    return{
-      isMobile: false,
-    }
-  }
+  data() {
+    return {};
+  },
 };
 </script>
 
@@ -88,7 +87,7 @@ export default {
   display: flex;
   flex-direction: row;
 }
-.auth-layout-header {
+.auth-layout-header-mobile {
   height: 6vh;
   background-color: gray;
   display: flex;
@@ -259,9 +258,29 @@ export default {
   text-decoration: underline;
   cursor: pointer;
 }
-@media only screen and (max-width: 280px) {
+.mobile-sidebar-container{
+  display: none;
+}
+.desktop-sidebar-container {
+  display: block;
+}
+
+.auth-layout-header-mobile{
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
   .auth-layout-container {
     overflow: hidden;
+  }
+  .desktop-sidebar-container {
+    display: none;
+  }
+  .mobile-sidebar-container {
+    display: block;
+  }
+  .auth-layout-header-mobile{
+    display: flex;
   }
 }
 </style>
