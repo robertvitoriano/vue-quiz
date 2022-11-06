@@ -4,7 +4,9 @@
       <div class="course-creation-wrapper">
         <div class="course-creation-container">
           <div class="course-creation-content">
-            <h1 class="course-creation-form-title">{{ isUpdating ? "Update Course" :"Create the course"}}</h1>
+            <h1 class="course-creation-form-title">
+              {{ isUpdating ? "Update Course" : "Create the course" }}
+            </h1>
             <form class="course-creation-form">
               <input
                 class="course-creation-input"
@@ -31,9 +33,19 @@
                 />
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">{{
-                  course.cover ? "image selected" : "Choose course cover image"
+                  course.cover && isUpdating
+                    ? "Change Cover"
+                    : course.cover
+                    ? "Image Selected"
+                    : "Select Cover"
                 }}</label>
               </label>
+              <img
+                class="course-cover-image"
+                v-if="isUpdating && !updatedCover && course.cover"
+                :src="course.cover"
+                alt="course cover"
+              />
               <v-select
                 class="course-creation-select"
                 :options="courseTypes"
@@ -138,9 +150,9 @@
               </div>
             </form>
           </div>
-          <Button class="create-course-button" @click="handleSubmit"
-            >Create Course</Button
-          >
+          <Button class="create-course-button" @click="handleSubmit">{{
+            isUpdating ? "Update Course" : "Create Course"
+          }}</Button>
         </div>
       </div>
     </template>
@@ -160,6 +172,7 @@ export default {
         title: "",
         goal: "",
         cover: null,
+        oldCover: null,
         courseType: {
           id: "",
           label: "",
@@ -184,13 +197,13 @@ export default {
       ],
       isLoading: false,
       isUpdating: false,
-      updatedCover: false
+      updatedCover: false,
     };
   },
   mounted() {
     this.getCourseTypes();
     if (this.$route.path.includes("/course-update")) {
-      this.isUpdating = true
+      this.isUpdating = true;
       this.loadCourse();
     }
   },
@@ -222,7 +235,7 @@ export default {
     },
     handleCoverInput(event) {
       this.course.cover = event.target.files[0];
-      this.updatedCover  = true
+      this.updatedCover = true;
     },
     async getCourseTypes() {
       try {
@@ -250,14 +263,27 @@ export default {
     },
     async handleSubmit() {
       const { courseType, cover, ...rest } = this.course;
-      const course = { courseTypeId: courseType.id, ...rest };
+      const course = { courseTypeId: courseType.id,  ...rest };
       const formData = new FormData();
-      if(this.updatedCover) formData.append("cover", cover);
+
+      if (this.updatedCover) formData.append("cover", cover);
+
       formData.append("course", JSON.stringify(course));
       this.changeLoadingState();
       try {
         let response;
-        if(this.isUpdating){
+        if (this.isUpdating) {
+          response = await axios.patch(
+            `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
+            formData,
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        } else {
           response = await axios.post(
             `${process.env.VUE_APP_API_URL}/api/v1/courses`,
             formData,
@@ -268,22 +294,14 @@ export default {
               },
             }
           );
-        }else{
-          response = await axios.patch(
-            `${process.env.VUE_APP_API_URL}/api/v1/courses`,
-            formData,
-            {
-              headers: {
-                authorization: "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-
         }
         if (response.status === 200) {
           this.changeLoadingState();
-          this.$swal.fire(`Course sucessfully ${this.isUpdating ? "updated" :"created" }`, "", "success");
+          this.$swal.fire(
+            `Course sucessfully ${this.isUpdating ? "updated" : "created"}`,
+            "",
+            "success"
+          );
           this.course = {
             title: "",
             goal: "",
@@ -312,27 +330,34 @@ export default {
       }
     },
     async loadCourse() {
-        const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-        const course = response.data.data.course
-        const questions = response.data.data.questions
-        const courseType = response.data.data.courseType[0]
-        this.course = {...this.course,...course, questions, courseType:{
+      const response = await axios.get(
+        `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      const course = response.data.data.course;
+      console.log({course})
+      const questions = response.data.data.questions;
+      const courseType = response.data.data.courseType[0];
+      this.course = {
+        ...this.course,
+        ...course,
+        oldCover:course.cover,
+        questions,
+        courseType: {
           label: courseType.title,
-          id: courseType.id
-        }}
+          id: courseType.id,
+        },
+      };
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .course-creation-wrapper {
   width: 100%;
   height: 100%;
@@ -540,6 +565,10 @@ export default {
   width: 100%;
   text-align: center;
   margin-top: 1rem;
+}
+
+.course-cover-image {
+  width: 20%;
 }
 
 * {
