@@ -55,4 +55,19 @@ a{
   text-decoration: none;
   color: inherit;
 }
+
+* {
+  --vs-controls-color: white;
+  --vs-border-color: white;
+  --vs-dropdown-bg: black;
+  --vs-dropdown-color: white;
+  --vs-dropdown-option-color: white;
+  --vs-selected-bg: white;
+  --vs-selected-color: white;
+  --vs-search-input-bg: black;
+  --vs-search-input-color: white;
+  --vs-dropdown-option--active-bg: white;
+  --vs-dropdown-option--active-color: black;
+}
+
 </style>

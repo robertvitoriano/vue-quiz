@@ -28,6 +28,9 @@
                 <template #cell(createdAt)="course">
                   {{ getFormattedDate(course.item.createdAt) }}
                 </template>
+                <template #cell(updatedAt)="course">
+                  {{ getFormattedDate(course.item.updatedAt) }}
+                </template>
               </b-table>
               <b-pagination
                 v-model="currentPage"
