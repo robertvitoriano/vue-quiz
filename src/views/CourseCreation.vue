@@ -276,6 +276,16 @@ export default {
       formData.append("course", JSON.stringify(course));
       this.changeLoadingState();
       try {
+
+        const swalResult = await this.$swal.fire({
+          title: `Do you really want to ${this.isUpdating? "update":"create"} this course ?`,
+          showDenyButton:true,
+          confirmButtonText: this.isUpdating? "Update!":"Create!",
+          denyButtonText:"Cancel"
+        });
+
+        if (!swalResult.isConfirmed) return
+
         let response;
         if (this.isUpdating) {
           response = await axios.patch(
@@ -307,6 +317,10 @@ export default {
             "",
             "success"
           );
+          if(this.isUpdating){
+            await this.loadCourse()
+            return
+          }
           this.course = {
             title: "",
             goal: "",
@@ -332,11 +346,13 @@ export default {
         }
       } catch (error) {
         console.error(error);
-        this.$swal.fire("Error creating the course", "", "error");
+        this.$swal.fire(`Error ${this.isUpdating? "updating":"creating!"} the course`, "", "error");
         this.changeLoadingState();
       }
     },
     async loadCourse() {
+      this.changeLoadingState();
+
       const response = await axios.get(
         `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
         {
@@ -358,6 +374,7 @@ export default {
           id: courseType.id,
         },
       };
+      this.changeLoadingState();
     },
   },
 };
