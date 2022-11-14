@@ -42,7 +42,7 @@ export default {
       try {
         this.changeLoadingState();
         const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses`,
+          `${process.env.VUE_APP_API_URL}/api/v1/courses/get-battle-courses`,
           {
             headers: {
               authorization: "Bearer " + localStorage.getItem("token"),

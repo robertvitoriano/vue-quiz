@@ -8,55 +8,89 @@
         bg-variant="dark"
         text-variant="light"
         backdrop
-        no-header-close>
+        no-header-close
+      >
+        <div class="mobile-sidebar-content">
+          <img
+            src="./../assets/logo.png"
+            role="button"
+            alt="vue logo"
+            class="desktop-logo-image"
+          />
+          <div class="desktop-sidebar-items-container">
+            <div
+              v-b-toggle.management-collapse
+              class="desktop-sidebar-item-container"
+            >
+              Management
+            </div>
+            <b-collapse
+              id="management-collapse"
+              class="sidebar-collapse-items-container"
+            >
+              <router-link to="/courses">
+                <div class="sidebar-collapse-item">Courses</div>
+              </router-link>
+              <div class="sidebar-collapse-item">Users</div>
+            </b-collapse>
+            <router-link to="/home">
+              <div class="desktop-sidebar-item-container">Courses</div>
+            </router-link>
+            <router-link to="/login">
+              <div class="desktop-sidebar-item-container">Logout</div>
+            </router-link>
+          </div>
+        </div>
       </b-sidebar>
     </div>
     <div class="desktop-sidebar-container">
-      <img
-        src="./../assets/logo.png"
-        role="button"
-        alt="vue logo"
-        class="desktop-logo-image"
-      />
-      <div class="desktop-sidebar-items-container">
-        <div
-          v-b-toggle.management-collapse
-          class="desktop-sidebar-item-container"
-        >
-          Management
-        </div>
-        <b-collapse
-          id="management-collapse"
-          class="sidebar-collapse-items-container"
-        >
-          <router-link to="/courses">
-            <div class="sidebar-collapse-item">Courses</div>
+      <div class="desktop-sidebar-content">
+        <img
+          src="./../assets/logo.png"
+          role="button"
+          alt="vue logo"
+          class="desktop-logo-image"
+        />
+        <div class="desktop-sidebar-items-container">
+          <div
+            v-b-toggle.management-collapse
+            class="desktop-sidebar-item-container"
+          >
+            Management
+          </div>
+          <b-collapse
+            id="management-collapse"
+            class="sidebar-collapse-items-container"
+          >
+            <router-link to="/courses">
+              <div class="sidebar-collapse-item">Courses</div>
+            </router-link>
+            <div class="sidebar-collapse-item">Users</div>
+          </b-collapse>
+          <router-link to="/home">
+            <div class="desktop-sidebar-item-container">Courses</div>
           </router-link>
-          <div class="sidebar-collapse-item">Users</div>
-        </b-collapse>
-        <router-link to="/home">
-          <div class="desktop-sidebar-item-container">Courses</div>
-        </router-link>
-        <router-link to="/login">
-          <div class="desktop-sidebar-item-container">Logout</div>
-        </router-link>
+          <router-link to="/login">
+            <div class="desktop-sidebar-item-container">Logout</div>
+          </router-link>
+        </div>
       </div>
     </div>
 
     <div class="auth-layout-container">
       <div class="auth-layout-header-mobile">
         <b-button v-b-toggle.sidebar-1 class="toggle-sidbebar-button">
-          <img src="./../assets/Hamburger_icon.svg.png">
-        </b-button
-        >
-        <router-link to="/home">
+          <img src="./../assets/Hamburger_icon.svg.png" />
+        </b-button>
+        <!-- <router-link to="/home">
           <img
             class="logo-image"
             src="./../assets/logo.png"
             role="button"
             alt="vue logo"
           />
-        </router-link>
+        </router-link> -->
+        <b-icon icon="arrow-left" class="mobile-go-back-button" @click="$router.go(-1)"  v-if="$route.path !='/home'"></b-icon>
 
         <div class="logout-button">
           <router-link class="logout-link" to="/login">Log Out</router-link>
@@ -88,11 +122,12 @@ export default {
   flex-direction: row;
 }
 .auth-layout-header-mobile {
-  height: 6vh;
+  height: 10vh;
   background-color: gray;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   position: relative;
   width: 100%;
 }
@@ -247,6 +282,13 @@ export default {
   cursor: pointer;
 }
 
+.desktop-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width:100%;
+}
+
 .sidebar-collapse-items-container {
   color: black;
 }
@@ -258,18 +300,18 @@ export default {
   text-decoration: underline;
   cursor: pointer;
 }
-.mobile-sidebar-container{
+.mobile-sidebar-container {
   display: none;
 }
 .desktop-sidebar-container {
   display: block;
 }
 
-.auth-layout-header-mobile{
+.auth-layout-header-mobile {
   display: none;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 992px) {
   .auth-layout-container {
     overflow: hidden;
   }
@@ -279,8 +321,17 @@ export default {
   .mobile-sidebar-container {
     display: block;
   }
-  .auth-layout-header-mobile{
+  .auth-layout-header-mobile {
     display: flex;
+  }
+  .mobile-sidebar-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .mobile-go-back-button{
+    font-size: 1.8rem;
   }
 }
 </style>

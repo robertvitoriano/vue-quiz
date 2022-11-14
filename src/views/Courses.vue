@@ -17,19 +17,34 @@
                 @option:selected="handleSelectCoursesPerPage"
               ></v-select>
               <b-table
-              hover
-              striped
-              dark
-              responsive
-              :items="courses"
-              id="courses-table"
-              @row-clicked="navigateToCourseUpdate"
+                hover
+                striped
+                dark
+                responsive
+                :items="courses"
+                :fields="tableFields"
+                id="courses-table"
+                show-empty
               >
                 <template #cell(createdAt)="course">
                   {{ getFormattedDate(course.item.createdAt) }}
                 </template>
                 <template #cell(updatedAt)="course">
                   {{ getFormattedDate(course.item.updatedAt) }}
+                </template>
+                <template #cell(config)="course">
+                  <div class="table-config-items-container">
+                    <b-icon
+                      icon="pencil-square"
+                      class="edit-course-icon table-icon"
+                      @click="navigateToCourseUpdate(course.item.id)"
+                    ></b-icon>
+                    <b-icon
+                      icon="trash-fill"
+                      class="delete-course-icon table-icon"
+                      @click="handleCourseDeletion(course.item.id)"
+                    ></b-icon>
+                  </div>
                 </template>
               </b-table>
               <b-pagination
@@ -80,6 +95,20 @@ export default {
       currentPage: 1,
       coursesTotal: 0,
       coursesOrder: "desc",
+      tableFields: [
+        { key: "id" },
+        { key: "title", sortable: true, tdClass: "course-row" },
+        { key: "questions", sortable: true, tdClass: "course-row" },
+        { key: "courseType", sortable: true, tdClass: "course-row" },
+        { key: "createdAt", sortable: true, tdClass: "course-row" },
+        { key: "createdBy", sortable: true, tdClass: "course-row" },
+        { key: "updatedAt", sortable: true, tdClass: "course-row" },
+        {
+          key: "config",
+          thClass: "d-none config-course-column",
+          tdClass: "config-course-row course-row",
+        },
+      ],
     };
   },
   methods: {
@@ -116,9 +145,27 @@ export default {
       this.currentPage = 1;
       await this.getCourses();
     },
-    navigateToCourseUpdate(course){
-      console.log({dataCliked:course})
-      this.$router.push(`/course-update/${course.id}`)
+    navigateToCourseUpdate(id) {
+      this.$router.push(`/course-update/${id}`);
+    },
+    async handleCourseDeletion(courseId){
+      try{
+
+        await axios.delete(
+          `${process.env.VUE_APP_API_URL}/api/v1/courses/${courseId}`,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        this.$swal.fire("Course successfully deleted!", "", "success");
+
+      }catch(error){
+        console.error(error)
+        this.$swal.fire("There was an error!", "", "error");
+      }
     }
   },
 };
@@ -128,8 +175,29 @@ export default {
 .courses-control-panel {
   width: 100%;
   padding: 1rem;
+  display: flex;
+  justify-content: center;
 }
 .courses-table-container {
   padding: 2rem;
+}
+.delete-course-icon {
+  color: red;
+}
+
+.edit-course-icon {
+  color: white;
+}
+
+.table-icon {
+  font-size: 2rem;
+  cursor: pointer;
+}
+.table-config-items-container{
+  display: flex;
+  width: 5rem;
+  align-items: center;
+  justify-content: center;
+  height:2.5rem;
 }
 </style>
