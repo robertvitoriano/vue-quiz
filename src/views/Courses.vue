@@ -148,25 +148,37 @@ export default {
     navigateToCourseUpdate(id) {
       this.$router.push(`/course-update/${id}`);
     },
-    async handleCourseDeletion(courseId){
-      try{
+    async handleCourseDeletion(courseId) {
+      try {
+        this.changeLoadingState();
 
-        await axios.delete(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses/${courseId}`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
+        const swalResult = await this.$swal.fire({
+          title: "Do you really want to delete this course ?",
+          showDenyButton:true,
+          confirmButtonText: "Delete!",
+          denyButtonText:"Cancel"
+        });
 
-        this.$swal.fire("Course successfully deleted!", "", "success");
+        if (swalResult.isConfirmed) {
+          await axios.delete(
+            `${process.env.VUE_APP_API_URL}/api/v1/courses/${courseId}`,
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
+          await this.getCourses();
 
-      }catch(error){
-        console.error(error)
+          this.$swal.fire("Course successfully deleted!", "", "success");
+        }
+
+        this.changeLoadingState();
+      } catch (error) {
+        console.error(error);
         this.$swal.fire("There was an error!", "", "error");
       }
-    }
+    },
   },
 };
 </script>
@@ -193,11 +205,11 @@ export default {
   font-size: 2rem;
   cursor: pointer;
 }
-.table-config-items-container{
+.table-config-items-container {
   display: flex;
   width: 5rem;
   align-items: center;
   justify-content: center;
-  height:2.5rem;
+  height: 2.5rem;
 }
 </style>
