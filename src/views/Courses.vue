@@ -35,6 +35,9 @@
                 <template #cell(updatedAt)="course">
                   {{ getFormattedDate(course.item.updatedAt) }}
                 </template>
+                <template #head(config)>
+                  {{""}}
+                </template>
                 <template #cell(config)="course">
                   <div class="table-config-items-container">
                     <b-icon
@@ -108,10 +111,9 @@ export default {
         { key: "updatedAt", sortable: true, tdClass: "course-row" },
         {
           key: "config",
-          thClass: "d-none config-course-column",
           tdClass: "config-course-row course-row",
         },
-      ],
+      ]
     };
   },
   methods: {

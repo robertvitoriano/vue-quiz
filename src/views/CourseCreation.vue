@@ -56,7 +56,9 @@
                 v-for="(question, questionIndex) in course.questions"
                 v-bind:key="questionIndex"
               >
-                <h1>Question {{ questionIndex + 1 }}</h1>
+                <h1>Question {{ questionIndex + 1 }}
+                  <b-icon icon="trash-fill" class="delete-icon" @click="removeQuestion(questionIndex)"></b-icon>
+                </h1>
                 <div class="question-section-content">
                   <input
                     class="course-creation-input"
@@ -73,11 +75,12 @@
                       ) in question.alternatives"
                       v-bind:key="alternativeIndex"
                     >
-                      <input
-                        class="course-creation-input"
-                        :placeholder="'enter answer ' + (alternativeIndex + 1)"
-                        v-model="alternative.text"
-                      />
+                    <input
+                    class="course-creation-input"
+                    :placeholder="'enter answer ' + (alternativeIndex + 1)"
+                    v-model="alternative.text"
+                    />
+                    <b-icon icon="trash-fill" class="delete-icon delete-alternative-icon" @click="removeAlternative(alternativeIndex, questionIndex)"></b-icon>
                       <div class="wrong-right-switch">
                         <div
                           :class="{
@@ -200,6 +203,8 @@ export default {
       isLoading: false,
       isUpdating: false,
       updatedCover: false,
+      deletedQuestions:[],
+      deletedAlternatives:[]
     };
   },
   mounted() {
@@ -288,6 +293,9 @@ export default {
 
         let response;
         if (this.isUpdating) {
+          formData.append("deletedQuestionIds", JSON.stringify(this.deletedQuestions))
+          formData.append("deletedAlternativeIds", JSON.stringify(this.deletedAlternatives))
+
           response = await axios.patch(
             `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
             formData,
@@ -376,6 +384,19 @@ export default {
       };
       this.changeLoadingState();
     },
+    removeQuestion(questionIndex){
+      if(this.isUpdating){
+        this.deletedQuestions.push(this.course.questions[questionIndex].id)
+      }
+      this.course.questions = this.course.questions.filter((_, index)=> index !== questionIndex)
+    },
+    removeAlternative(alternativeIndex, questionIndex){
+      if(this.isUpdating){
+        this.deletedAlternatives.push(this.course.questions[questionIndex].alternatives[alternativeIndex].id)
+      }
+      this.course.questions[questionIndex].alternatives = this.course.questions[questionIndex].alternatives.filter((_, index) => index !== alternativeIndex)
+
+    }
   },
 };
 </script>
@@ -427,7 +448,7 @@ export default {
   color: white;
   width: 100%;
   text-align: center;
-  height: 3rem;
+  height: 4rem;
 }
 
 .course-creation-answers-container {
@@ -541,7 +562,7 @@ export default {
 .wrong-right-switch {
   position: absolute;
   right: 0;
-  top: 1rem;
+  top: 1.5rem;
   border: solid 2px white;
   display: flex;
 }
@@ -592,6 +613,18 @@ export default {
 
 .course-cover-image {
   width: 20%;
+}
+.delete-icon{
+  color:red;
+  font-size: 2rem;
+  cursor:pointer;
+}
+
+.delete-alternative-icon{
+  font-size: 1rem;
+  position: absolute;
+  top:0.2rem;
+  right:0.3rem;
 }
 
 * {
