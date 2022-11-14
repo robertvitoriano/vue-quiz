@@ -25,6 +25,9 @@
                 :fields="tableFields"
                 id="courses-table"
                 show-empty
+                label-sort-asc=""
+                label-sort-desc=""
+                label-sort-clear=""
               >
                 <template #cell(createdAt)="course">
                   {{ getFormattedDate(course.item.createdAt) }}
