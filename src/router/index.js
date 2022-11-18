@@ -5,6 +5,9 @@ import Quiz from './../views/Quiz.vue'
 import Login from './../views/Login.vue'
 import CourseCreation from './../views/CourseCreation.vue'
 import Courses from './../views/Courses.vue'
+import UserCreation from '../views/UserCreation.vue'
+import Users from '../views/Users.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -42,6 +45,21 @@ const routes = [
     path: '/courses',
     name: 'courses',
     component: Courses
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: Users
+  },
+  {
+    path: '/user-creation',
+    name: 'UserCreation',
+    component: UserCreation
+  },
+  {
+    path: '/user-update',
+    name: 'UserUpdate',
+    component: UserCreation
   }
 ]
 

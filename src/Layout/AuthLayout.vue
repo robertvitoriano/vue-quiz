@@ -31,7 +31,9 @@
               <router-link to="/courses">
                 <div class="sidebar-collapse-item">Courses</div>
               </router-link>
-              <div class="sidebar-collapse-item">Users</div>
+              <router-link to="/users">
+                <div class="sidebar-collapse-item">Users</div>
+              </router-link>
             </b-collapse>
             <router-link to="/home">
               <div class="desktop-sidebar-item-container">Courses</div>
@@ -65,7 +67,9 @@
             <router-link to="/courses">
               <div class="sidebar-collapse-item">Courses</div>
             </router-link>
-            <div class="sidebar-collapse-item">Users</div>
+            <router-link to="/users">
+              <div class="sidebar-collapse-item">Users</div>
+            </router-link>
           </b-collapse>
           <router-link to="/home">
             <div class="desktop-sidebar-item-container">Courses</div>
@@ -90,7 +94,12 @@
             alt="vue logo"
           />
         </router-link> -->
-        <b-icon icon="arrow-left" class="mobile-go-back-button" @click="$router.go(-1)"  v-if="$route.path !='/home'"></b-icon>
+        <b-icon
+          icon="arrow-left"
+          class="mobile-go-back-button"
+          @click="$router.go(-1)"
+          v-if="$route.path != '/home'"
+        ></b-icon>
 
         <div class="logout-button">
           <router-link class="logout-link" to="/login">Log Out</router-link>
@@ -286,7 +295,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width:100%;
+  width: 100%;
 }
 
 .sidebar-collapse-items-container {
@@ -330,7 +339,7 @@ export default {
     align-items: center;
     width: 100%;
   }
-  .mobile-go-back-button{
+  .mobile-go-back-button {
     font-size: 1.8rem;
   }
 }
