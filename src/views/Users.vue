@@ -43,12 +43,12 @@
                     <b-icon
                       icon="pencil-square"
                       class="edit-user-icon table-icon"
-                      @click="navigateTouserUpdate(user.item.id)"
+                      @click="navigateToUserUpdate(user.item.id)"
                     ></b-icon>
                     <b-icon
                       icon="trash-fill"
                       class="delete-user-icon table-icon"
-                      @click="handleuserDeletion(user.item.id)"
+                      @click="handleUserDeletion(user.item.id)"
                     ></b-icon>
                   </div>
                 </template>
@@ -103,11 +103,11 @@ export default {
       usersOrder: "desc",
       tableFields: [
         { key: "id" },
-        { key: "title", sortable: true, tdClass: "user-row" },
-        { key: "questions", sortable: true, tdClass: "user-row" },
-        { key: "userType", sortable: true, tdClass: "user-row" },
+        { key: "name", sortable: true, tdClass: "user-row" },
+        { key: "username", sortable: true, tdClass: "user-row" },
+        { key: "email", sortable: true, tdClass: "user-row" },
+        { key: "level", sortable: true, tdClass: "user-row" },
         { key: "createdAt", sortable: true, tdClass: "user-row" },
-        { key: "createdBy", sortable: true, tdClass: "user-row" },
         { key: "updatedAt", sortable: true, tdClass: "user-row" },
         {
           key: "config",
@@ -130,6 +130,7 @@ export default {
             },
           }
         );
+        console.log(response.data.data)
         this.users = response.data.data.users;
         this.usersTotal = response.data.data.total;
         this.changeLoadingState();
@@ -140,6 +141,7 @@ export default {
       }
     },
     getFormattedDate(timeStamp) {
+      if(!timeStamp) return
       const date = new Date(String(timeStamp));
       const timeZone = "Brazil/Sao_Paulo";
       const pattern = "d/M/yyyy - HH:mm:ss";
