@@ -59,7 +59,7 @@
                 :per-page="usersPerPage"
                 aria-controls="users-table"
                 dark
-                @change="getusers($event)"
+                @change="getUsers($event)"
               ></b-pagination>
             </div>
           </template>
@@ -130,7 +130,7 @@ export default {
             },
           }
         );
-        console.log(response.data.data)
+
         this.users = response.data.data.users;
         this.usersTotal = response.data.data.total;
         this.changeLoadingState();
@@ -175,7 +175,7 @@ export default {
               },
             }
           );
-          await this.getusers();
+          await this.getUsers();
 
           this.$swal.fire("user successfully deleted!", "", "success");
         }
