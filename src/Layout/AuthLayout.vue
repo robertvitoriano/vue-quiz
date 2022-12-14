@@ -38,9 +38,7 @@
             <router-link to="/home">
               <div class="desktop-sidebar-item-container">Courses</div>
             </router-link>
-            <router-link to="/login">
-              <div class="desktop-sidebar-item-container">Logout</div>
-            </router-link>
+              <div class="desktop-sidebar-item-container" @click="logout">Logout</div>
           </div>
         </div>
       </b-sidebar>
@@ -102,7 +100,7 @@
         ></b-icon>
 
         <div class="logout-button">
-          <router-link class="logout-link" to="/login">Log Out</router-link>
+          <div class="logout-link" @click="logout">Log Out</div>
         </div>
       </div>
       <div class="content-slot-container">
@@ -116,12 +114,18 @@
 </template>
 
 <script>
+import userService from '../services/userService';
 export default {
   name: "AuthLayout",
   props: ["user"],
   data() {
     return {};
   },
+  methods:{
+    logout(){
+      userService.logout()
+    }
+  }
 };
 </script>
 

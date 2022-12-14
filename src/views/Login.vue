@@ -60,7 +60,7 @@
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
-
+import userService from './../services/userService'
 export default {
   name: "Login",
   data() {
@@ -83,12 +83,7 @@ export default {
     async login() {
       try {
         this.changeLoadingState();
-        const response = await axios.post(
-          `${process.env.VUE_APP_API_URL}/api/v1/users/login`,
-          this.loginForm
-        );
-        const token = response.data.token;
-        localStorage.setItem("token", token);
+        await userService.login(this.loginForm)
         this.changeLoadingState();
         this.$router.push("/home");
       } catch (error) {
