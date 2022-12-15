@@ -75,6 +75,7 @@ import axios from "axios";
 import { mapActions } from "vuex";
 import Button from "../components/Button.vue";
 import { format } from "date-fns-tz";
+import userService from "../services/userService";
 
 export default {
   name: "Users",
@@ -122,17 +123,9 @@ export default {
       if (paginationPage) this.currentPage = paginationPage;
       try {
         this.changeLoadingState();
-        const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/users?page=${this.currentPage}&limit=${this.usersPerPage}&order=${this.usersOrder}`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-
-        this.users = response.data.data.users;
-        this.usersTotal = response.data.data.total;
+        const response = await userService.getUsers(this.currentPage, this.usersPerPage, this. usersOrder)
+        this.users = response.data.users;
+        this.usersTotal = response.data.total;
         this.changeLoadingState();
       } catch (error) {
         this.changeLoadingState();
