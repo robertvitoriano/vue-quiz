@@ -71,10 +71,10 @@
 
 <script>
 import AuthLayout from "./../Layout/AuthLayout.vue";
-import axios from "axios";
 import { mapActions } from "vuex";
 import Button from "../components/Button.vue";
 import { format } from "date-fns-tz";
+import courseService from "../services/courseService";
 
 export default {
   name: "Courses",
@@ -122,16 +122,9 @@ export default {
       if (paginationPage) this.currentPage = paginationPage;
       try {
         this.changeLoadingState();
-        const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses?page=${this.currentPage}&limit=${this.coursesPerPage}&order=${this.coursesOrder}`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-        this.courses = response.data.data.courses;
-        this.coursesTotal = response.data.data.total;
+        const response = await courseService.getAllCourses(this.currentPage, this.coursesPerPage, this.coursesOrder)
+        this.courses = response.data.courses;
+        this.coursesTotal = response.data.total;
         this.changeLoadingState();
       } catch (error) {
         this.changeLoadingState();
@@ -165,16 +158,8 @@ export default {
         });
 
         if (swalResult.isConfirmed) {
-          await axios.delete(
-            `${process.env.VUE_APP_API_URL}/api/v1/courses/${courseId}`,
-            {
-              headers: {
-                authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
+          await courseService.deleteCourse(courseId)
           await this.getCourses();
-
           this.$swal.fire("Course successfully deleted!", "", "success");
         }
 

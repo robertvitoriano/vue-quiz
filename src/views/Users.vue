@@ -71,7 +71,6 @@
 
 <script>
 import AuthLayout from "./../Layout/AuthLayout.vue";
-import axios from "axios";
 import { mapActions } from "vuex";
 import Button from "../components/Button.vue";
 import { format } from "date-fns-tz";
@@ -160,14 +159,7 @@ export default {
         });
 
         if (swalResult.isConfirmed) {
-          await axios.delete(
-            `${process.env.VUE_APP_API_URL}/api/v1/users/${userId}`,
-            {
-              headers: {
-                authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
+          await userService.deleteUser(userId);
           await this.getUsers();
 
           this.$swal.fire("user successfully deleted!", "", "success");

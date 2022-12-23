@@ -11,8 +11,8 @@
 <script>
 import CourseList from "./../components/CoursesList.vue";
 import AuthLayout from "./../Layout/AuthLayout.vue";
-import axios from "axios";
 import { mapActions } from "vuex";
+import courseService from "../services/courseService";
 export default {
   name: "Home",
   components: {
@@ -41,15 +41,8 @@ export default {
     async getCourses() {
       try {
         this.changeLoadingState();
-        const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/courses/get-battle-courses`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-        this.courses = response.data.data.courses;
+        const response = await courseService.getCourses()
+        this.courses = response.data.courses;
         this.changeLoadingState()
       } catch (error) {
         this.changeLoadingState();

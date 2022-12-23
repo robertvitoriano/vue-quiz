@@ -22,7 +22,7 @@
 import QuestionBox from './../components/QuestionBox.vue';
 import RestartSection from './../components/RestartSection.vue';
 import AuthLayout from './../Layout/AuthLayout.vue'
-import axios from 'axios'
+import courseService from './../services/courseService'
 import { mapActions } from 'vuex';
 export default {
   name: 'Quiz',
@@ -47,18 +47,12 @@ export default {
   methods: {
     ...mapActions(['changeLoadingState']),
     async loadQuestions() {
-      // this.questions = this.getAlternativesWithCorrectAnswer(questionsResponse.data.results)
-      // const questionsResponse = await axios.get('https://opentdb.com/api.php?amount=10&category=15&type=multiple')
       this.changeLoadingState();
-      const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,{
-        headers:{
-          authorization:'Bearer '+localStorage.getItem('token')
-        }
-      })
-      this.questions = response.data.data.questions
+      const response = await courseService.getCourseQuestions(this.$route.params.id)
+      this.questions = response.data.questions
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]
-      this.courseTitle = response.data.data.course.title
+      this.courseTitle = response.data.course.title
       this.changeLoadingState();
     },
     updatedCurrentQuestionIndex() {

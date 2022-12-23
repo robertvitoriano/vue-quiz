@@ -18,8 +18,20 @@ async function getUsers(currentPage, usersPerPage, usersOrder){
   const responseHandled = handleResponse(response);
   return responseHandled
 }
+
+async function createUser(data){
+  const response = await api.post(`/users/create-user`, data);
+  const responseHandled = handleResponse(response);
+  return responseHandled
+}
+
+async function deleteUser(userId){
+  await api.delete(`/users/${userId}`)
+}
 export default {
   login,
   logout,
-  getUsers
+  getUsers,
+  createUser,
+  deleteUser
 };

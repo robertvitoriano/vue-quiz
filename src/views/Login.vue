@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapActions } from "vuex";
 import userService from './../services/userService'
 export default {
@@ -95,10 +94,7 @@ export default {
     async signUp() {
       try {
         this.changeLoadingState()
-        const response = await axios.post(
-          `${process.env.VUE_APP_API_URL}/api/v1/users/create-user`,
-          this.signUpForm
-        );
+        const response = await userService.createUser(this.signUpForm)
         if (response.status === 200) {
           this.changeLoadingState()
           this.$swal.fire("User successfully created!", "", "success");

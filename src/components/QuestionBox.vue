@@ -89,17 +89,7 @@ export default {
     },
     async handleSubmit() {
       this.changeLoadingState();
-      await axios.post(
-        `${process.env.VUE_APP_API_URL}/api/v1/alternatives/save-user-answer`,
-        {
-          questionAlternativeId: this.selectedAnswerIndex,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await courseService.saveUserAnswer(this.selectedAnswerIndex);
       this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
         alert("You got it right");

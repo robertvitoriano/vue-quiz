@@ -163,8 +163,8 @@
 </template>
 <script>
 import AuthLayout from "../Layout/AuthLayout.vue";
-import axios from "axios";
 import { mapActions } from "vuex";
+import courseService from './../services/courseService'
 
 export default {
   name: "CourseCreation",
@@ -250,15 +250,8 @@ export default {
     async getCourseTypes() {
       try {
         this.changeLoadingState();
-        const response = await axios.get(
-          `${process.env.VUE_APP_API_URL}/api/v1/course_types`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        );
-        this.courseTypes = response.data.data.map((courseType) => {
+        const response = await courseService.getCourseTypes();
+        this.courseTypes = response.data.map((courseType) => {
           return {
             id: courseType.id,
             label: courseType.title,
@@ -296,27 +289,11 @@ export default {
           formData.append("deletedQuestionIds", JSON.stringify(this.deletedQuestions))
           formData.append("deletedAlternativeIds", JSON.stringify(this.deletedAlternatives))
 
-          response = await axios.patch(
-            `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
-            formData,
-            {
-              headers: {
-                authorization: "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          response = await courseService.updateCourse(this.$route.params.id, formData);
         } else {
-          response = await axios.post(
-            `${process.env.VUE_APP_API_URL}/api/v1/courses`,
-            formData,
-            {
-              headers: {
-                authorization: "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          response = await courseService.createCourse(formData);
+
+          console.log({response})
         }
         if (response.status === 200) {
           this.changeLoadingState();
@@ -361,17 +338,10 @@ export default {
     async loadCourse() {
       this.changeLoadingState();
 
-      const response = await axios.get(
-        `${process.env.VUE_APP_API_URL}/api/v1/courses/${this.$route.params.id}`,
-        {
-          headers: {
-            authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      const course = response.data.data.course;
-      const questions = response.data.data.questions;
-      const courseType = response.data.data.courseType[0];
+      const response = await courseService.getCourseById(this.$route.params.id);
+      const course = response.data.course;
+      const questions = response.data.questions;
+      const courseType = response.data.courseType[0];
       this.course = {
         ...this.course,
         ...course,
