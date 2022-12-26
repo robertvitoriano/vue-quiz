@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import courseService from "../services/courseService";
 import Header from "./Header.vue";
 import { mapActions } from "vuex";
 export default {

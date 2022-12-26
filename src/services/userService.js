@@ -1,16 +1,23 @@
 import { handleResponse } from "./utils";
 import router from './../router'
 import api from './api'
+
 function logout() {
   localStorage.removeItem('token')
+  localStorage.removeItem('user')
   router.push('/login')
 }
 
 async function login(credentials) {
   const response = await api.post(`/users/login`,credentials);
 
-  const { token } = handleResponse(response);
+  const { token, user } = handleResponse(response);
   localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user))
+}
+
+function getCurrentUser(){
+  return JSON.parse(localStorage.getItem('user'))
 }
 
 async function getUsers(currentPage, usersPerPage, usersOrder){
@@ -33,5 +40,6 @@ export default {
   logout,
   getUsers,
   createUser,
-  deleteUser
+  deleteUser,
+  getCurrentUser
 };
