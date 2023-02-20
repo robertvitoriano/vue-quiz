@@ -2,7 +2,7 @@ export default {
   isLoading:(state) =>{
     return state.loading
   },
-  setUserInfo:(state) =>{
+  userInfo:(state) =>{
     return state.userInfo
   }
 }

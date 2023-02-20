@@ -21,6 +21,7 @@
             <div
               v-b-toggle.management-collapse
               class="desktop-sidebar-item-container"
+              v-if="userInfo.level === 'admin'"
             >
               Management
             </div>
@@ -55,6 +56,7 @@
           <div
             v-b-toggle.management-collapse
             class="desktop-sidebar-item-container"
+            v-if="userInfo.level === 'admin'"
           >
             Management
           </div>
@@ -115,16 +117,16 @@
 
 <script>
 import userService from '../services/userService';
+import { mapGetters } from 'vuex';
 export default {
   name: "AuthLayout",
-  props: ["user"],
-  data() {
-    return {};
-  },
   methods:{
     logout(){
       userService.logout()
     }
+  },
+  computed:{
+    ...mapGetters(['userInfo'])
   }
 };
 </script>
