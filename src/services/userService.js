@@ -1,7 +1,7 @@
 import { handleResponse } from "./utils";
 import router from './../router'
 import api from './api'
-
+import {store} from './../store'
 function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
@@ -14,10 +14,7 @@ async function login(credentials) {
   const { token, user } = handleResponse(response);
   localStorage.setItem("token", token);
   localStorage.setItem("user", JSON.stringify(user))
-}
-
-function getCurrentUser(){
-  return JSON.parse(localStorage.getItem('user'))
+  store.commit("setUserInfo", user)
 }
 
 async function getUsers(currentPage, usersPerPage, usersOrder){
@@ -41,5 +38,4 @@ export default {
   getUsers,
   createUser,
   deleteUser,
-  getCurrentUser
 };

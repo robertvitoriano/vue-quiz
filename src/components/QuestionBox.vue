@@ -70,6 +70,7 @@ export default {
         this.rightAnswerIndex = this.currentQuestion.alternatives.findIndex(
           (alternative) => alternative.isRight === 1
         );
+        this.hasAnswered = this.currentQuestion.alternatives.some(alternative => !!alternative.hasAnswered)
       },
     },
   },
@@ -89,7 +90,9 @@ export default {
     },
     async handleSubmit() {
       this.changeLoadingState();
-      await courseService.saveUserAnswer(this.selectedAnswerIndex);
+      const selectedAnswer = this.currentQuestion.alternatives.find((question, index) => index === this.selectedAnswerIndex );
+      console.log({selectedAnswer})
+      await courseService.saveUserAnswer(selectedAnswer.id);
       this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
         alert("You got it right");

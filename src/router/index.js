@@ -9,6 +9,7 @@ import UserCreation from '../views/UserCreation.vue'
 import Users from '../views/Users.vue'
 import {LEVEL} from '../utils/level'
 import userService from '../services/userService'
+import {store} from './../store'
 Vue.use(VueRouter)
 
 const routes = [
@@ -78,7 +79,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const { authorize } = to.meta;
-  const currentUser = userService.getCurrentUser()
+  const currentUser = store.state.userInfo;
 
   if (authorize) {
       if (!currentUser) {
