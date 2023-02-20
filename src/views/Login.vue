@@ -16,7 +16,7 @@
           type="password"
           required
         />
-        <button class="login-button" >Login</button>
+        <button class="login-button">Login</button>
         <span
           >Don't have account yet ?
           <a class="sign-up" @click="handleFormSwitch">Sign up</a></span
@@ -50,6 +50,17 @@
           type="password"
           required
         />
+        <div class="avatar-upload-container">
+          <span v-if="!signUpForm.avatarImage" class="avatar-uplod-label"
+            >Select Avatar to upload !</span
+          >
+          <span v-else class="avatar-uplod-label">Avatar selected !</span>
+          <UploadInput
+            :handleInput="onAvatarSelect"
+            class="avatar-upload-input"
+            changeFileText="Change Avatar"
+          />
+        </div>
         <button class="login-button">Sign Up</button>
         <a class="sign-up" @click="handleFormSwitch">GoBack</a>
       </form>
@@ -59,9 +70,13 @@
 
 <script>
 import { mapActions } from "vuex";
-import userService from './../services/userService'
+import userService from "./../services/userService";
+import UploadInput from "../components/Form/UploadInput.vue";
 export default {
   name: "Login",
+  components: {
+    UploadInput,
+  },
   data() {
     return {
       loginForm: {
@@ -73,6 +88,7 @@ export default {
         name: "",
         email: "",
         password: "",
+        avatarImage: "",
       },
       isSigningUp: false,
     };
@@ -82,7 +98,7 @@ export default {
     async login() {
       try {
         this.changeLoadingState();
-        await userService.login(this.loginForm)
+        await userService.login(this.loginForm);
         this.changeLoadingState();
         this.$router.push("/home");
       } catch (error) {
@@ -93,21 +109,30 @@ export default {
     },
     async signUp() {
       try {
-        this.changeLoadingState()
-        const response = await userService.createUser(this.signUpForm)
+        this.changeLoadingState();
+        const { avatarImage, ...rest } = this.signUpForm;
+        const formData = new FormData();
+
+        if (avatarImage) formData.append("avatar", avatarImage);
+
+        formData.append("userInfo", JSON.stringify(rest));
+        const response = await userService.createUser(formData);
         if (response.status === 200) {
-          this.changeLoadingState()
+          this.changeLoadingState();
           this.$swal.fire("User successfully created!", "", "success");
           this.handleFormSwitch();
         }
       } catch (error) {
-        this.changeLoadingState()
+        this.changeLoadingState();
         this.$swal.fire("Error on user creation", "", "error");
         console.error(error);
       }
     },
     handleFormSwitch() {
       this.isSigningUp = !this.isSigningUp;
+    },
+    onAvatarSelect(event) {
+      this.signUpForm.avatarImage = event.target.files[0];
     },
   },
 };
@@ -181,5 +206,16 @@ export default {
 
 .sign-up:hover {
   cursor: pointer;
+}
+.avatar-upload-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.avatar-upload-input {
+  margin: 0;
+}
+.avatar-uplod-label {
+  text-align: center;
 }
 </style>

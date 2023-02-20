@@ -10,10 +10,12 @@
     :id="id"
     :name="id"
     type="file"
-    @change="handleInput($event)"
+    @change="handleFileInput($event)"
     :ref="ref"
   />
-  <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
+  <b-icon icon="cloud-upload" class="upload-icon" v-if="!fileSelected"></b-icon>
+  <div class="change-file-button" v-else >{{ changeFileText }}</div>
+
   <label class="cover-upload-label">{{label}}</label>
 </label>
 </template>
@@ -26,7 +28,19 @@ export default {
     value: String,
     label: String,
     ref: Object,
-    handleInput: Function
+    handleInput: Function,
+    changeFileText:String
+  },
+  data(){
+    return{
+      fileSelected:false
+    }
+  },
+  methods:{
+    handleFileInput(event){
+      this.fileSelected = true
+      this.handleInput(event)
+    }
   }
 };
 </script>
@@ -44,9 +58,6 @@ export default {
 }
 
 .file-input-container:hover {
-  background-color: white;
-  border: black 2px solid;
-  color: black;
   cursor: pointer;
 }
 
@@ -61,7 +72,7 @@ export default {
   margin-right: 0.5rem;
 }
 
-.upload-icon:hover {
+.upload-icon :hover {
   cursor: pointer;
 }
 
@@ -70,5 +81,13 @@ export default {
   width: 100%;
   position: absolute;
 }
+.change-file-button {
+  background-color: black;
+  color: white;
+  padding: 1rem 2rem;
+  }
+  .change-file-button :hover{
+    cursor: pointer;
+  }
 
 </style>
