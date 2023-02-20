@@ -12,11 +12,14 @@ import userService from '../services/userService'
 import {store} from './../store'
 Vue.use(VueRouter)
 
+
 const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
+
   },
   {
     path: '/course-creation',
@@ -33,7 +36,9 @@ const routes = [
   {
     path: '/quiz/:id',
     name: 'Quiz',
-    component: Quiz
+    component: Quiz,
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
+
   },
   {
     path: '/login',
@@ -82,7 +87,7 @@ router.beforeEach((to, from, next) => {
   const currentUser = store.state.userInfo;
 
   if (authorize) {
-      if (!currentUser) {
+      if (!currentUser.level) {
           userService.logout()
           return next({ path: '/login', query: { returnUrl: to.path } });
       }
