@@ -7,6 +7,8 @@ import CourseCreation from './../views/CourseCreation.vue'
 import Courses from './../views/Courses.vue'
 import UserCreation from '../views/UserCreation.vue'
 import Users from '../views/Users.vue'
+import CreateCourseBattle from './../views/CreateCourseBattle.vue'
+import CourseBattleRoom from './../views/CourseBattleRoom.vue'
 import {LEVEL} from '../utils/level'
 import userService from '../services/userService'
 import {store} from './../store'
@@ -74,6 +76,19 @@ const routes = [
     component: UserCreation,
     meta: { authorize: [LEVEL.ADMIN] }
   },
+  {
+    path: '/create-course-battle',
+    name: 'CreateCourseBattle',
+    component: CreateCourseBattle,
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
+  },
+  {
+    path: '/course-battle-room/:id',
+    name: 'CourseBattleRoom',
+    component: CourseBattleRoom,
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
+  },
+
   { path: '*', redirect: '/' }
 ]
 

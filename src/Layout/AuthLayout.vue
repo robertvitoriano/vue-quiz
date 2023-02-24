@@ -12,10 +12,10 @@
       >
         <div class="mobile-sidebar-content">
           <img
-            src="./../assets/logo.png"
+            :src="userInfo.avatar"
             role="button"
             alt="vue logo"
-            class="desktop-logo-image"
+            class="mobile-avatar-image"
           />
           <div class="desktop-sidebar-items-container">
             <div
@@ -47,10 +47,10 @@
     <div class="desktop-sidebar-container">
       <div class="desktop-sidebar-content">
         <img
-          src="./../assets/logo.png"
+          :src="userInfo.avatar"
           role="button"
           alt="vue logo"
-          class="desktop-logo-image"
+          class="desktop-avatar-image"
         />
         <div class="desktop-sidebar-items-container">
           <div
@@ -64,15 +64,15 @@
             id="management-collapse"
             class="sidebar-collapse-items-container"
           >
-            <router-link to="/courses">
-              <div class="sidebar-collapse-item">Courses</div>
+            <router-link to="/create-course-battle">
+              <div class="sidebar-collapse-item">Start Course Battle</div>
             </router-link>
             <router-link to="/users">
               <div class="sidebar-collapse-item">Users</div>
             </router-link>
           </b-collapse>
-          <router-link to="/home">
-            <div class="desktop-sidebar-item-container">Courses</div>
+          <router-link to="/create-course-battle">
+            <div class="desktop-sidebar-item-container">Start Course Battle</div>
           </router-link>
           <router-link to="/login">
             <div class="desktop-sidebar-item-container">Logout</div>
@@ -266,9 +266,9 @@ export default {
   align-items: center;
 }
 
-.desktop-logo-image {
-  height: 60px;
-  width: 60px;
+.desktop-avatar-image {
+  height: 100px;
+  width: 100px;
   margin-top: 1rem;
 }
 
