@@ -1,18 +1,29 @@
 <template>
-  <Button class="button" @click="handleSubmit">{{
+  <div class="button" @click="handleClick">{{
     title
-  }}</Button>
+  }}</div>
 </template>
 
 <script>
   export default {
     name:'Button',
-    props:['handleSubmit', 'title'],
+    props: {
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    handleClick() {
+      console.log('CLICKEDDDDD')
+      this.$emit('clicked');
+    },
+  },
   }
 </script>
 
 <style scoped>
-.create-course-button {
+.button {
   background-color: black;
   color: white;
   border: 1px solid white;
@@ -20,9 +31,10 @@
   margin-top: 1rem;
 }
 
-.create-course-button:hover {
+.button:hover {
   background-color: white;
   color: black;
+  cursor: pointer;
 }
 
 </style>

@@ -15,8 +15,8 @@
             :src="userInfo.avatar"
             role="button"
             alt="vue logo"
-            class="mobile-avatar-image"
-          />
+            class="avatar-image"
+            />
           <div class="desktop-sidebar-items-container">
             <div
               v-b-toggle.management-collapse
@@ -36,8 +36,8 @@
                 <div class="sidebar-collapse-item">Users</div>
               </router-link>
             </b-collapse>
-            <router-link to="/home">
-              <div class="desktop-sidebar-item-container">Courses</div>
+            <router-link to="/create-course-battle">
+              <div class="desktop-sidebar-item-container">Start Course Battle</div>
             </router-link>
               <div class="desktop-sidebar-item-container" @click="logout">Logout</div>
           </div>
@@ -50,7 +50,7 @@
           :src="userInfo.avatar"
           role="button"
           alt="vue logo"
-          class="desktop-avatar-image"
+          class="avatar-image"
         />
         <div class="desktop-sidebar-items-container">
           <div
@@ -64,8 +64,8 @@
             id="management-collapse"
             class="sidebar-collapse-items-container"
           >
-            <router-link to="/create-course-battle">
-              <div class="sidebar-collapse-item">Start Course Battle</div>
+            <router-link to="/courses">
+              <div class="sidebar-collapse-item">Courses</div>
             </router-link>
             <router-link to="/users">
               <div class="sidebar-collapse-item">Users</div>
@@ -86,14 +86,6 @@
         <b-button v-b-toggle.sidebar-1 class="toggle-sidbebar-button">
           <img src="./../assets/Hamburger_icon.svg.png" />
         </b-button>
-        <!-- <router-link to="/home">
-          <img
-            class="logo-image"
-            src="./../assets/logo.png"
-            role="button"
-            alt="vue logo"
-          />
-        </router-link> -->
         <b-icon
           icon="arrow-left"
           class="mobile-go-back-button"
@@ -266,10 +258,12 @@ export default {
   align-items: center;
 }
 
-.desktop-avatar-image {
-  height: 100px;
-  width: 100px;
+.avatar-image {
+  height: 125px;
+  width: 150px;
   margin-top: 1rem;
+  border-radius: 50%;
+  margin-bottom: 20px;
 }
 
 .desktop-sidebar-items-container {

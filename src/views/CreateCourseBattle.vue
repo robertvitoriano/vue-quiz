@@ -4,26 +4,26 @@
       <div class="course-battle-room-wrapper">
         <div class="course-battle-creation-container" >
           <TextInput v-model="courseBattleName" placeholder="Enter course battle name" class="course-battle-input"></TextInput>
-          <span>Select your course battle</span>
           <Select
           :options="courses"
           @optionSelected="handleSelectedCourse"
           class="courses-select"
+          label="Select the battle course"
           ></Select>
           <img :src="selectedCourse.cover" v-if="selectedCourse" class="course-cover-image">
-          <Button title="Create course battle" />
+          <Button title="Create course battle" @clicked="createCourseBattle"/>
         </div>
       </div>
     </template>
   </AuthLayout>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import Select from "../components/Form/Select.vue";
 import courseService from "../services/courseService";
 import TextInput from "../components/Form/TextInput.vue";
-import Button from "../components/Button.vue";
+import Button from "../components/Form/Button.vue";
 export default {
   name:"CourseBatleRooom",
   components:{AuthLayout, Select, TextInput, Button},
@@ -46,13 +46,23 @@ export default {
     this.loadCourses()
   },
   methods: {
+    ...mapActions(["changeLoadingState"]),
     handleSelectedCourse(course){
       this.selectedCourse = course
     },
     async loadCourses(){
+      this.changeLoadingState()
       const response = await courseService.getCourses();
+      this.changeLoadingState()
       const courses = response.data.courses.map(({cover, title, id})=>({id, cover, label:title}));
       this.courses = courses;
+    },
+    async createCourseBattle(){
+      this.changeLoadingState()
+      const response = await courseService.createCourseBattle({name:this.courseBattleName, courseId:this.selectedCourse.id})
+      const createCourseBattleId = response.data.data.courseBattle.id
+      this.changeLoadingState()
+      this.$router.push("/course-battle-room/"+createCourseBattleId);
     }
   },
   computed: {

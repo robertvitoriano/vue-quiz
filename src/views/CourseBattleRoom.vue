@@ -20,12 +20,12 @@
               />
               <div v-else class="enemy-search-container">
                 <div class="search-enemy-icons-container">
-                  <div class="enemy-search-option">
-                    <i class="fas fa-link text-white-500"></i>
-                    <span>Share course battle link</span>
+                  <div class="enemy-search-option" @click="handleCopyToast">
+                    <i class="fas fa-copy text-white-500 enemy-search-option-icon"></i>
+                    <span>Copy course battle link</span>
                   </div>
-                  <div class="enemy-search-option">
-                    <i class="fas fa-user-friends text-white-500"></i>
+                  <div class="enemy-search-option" >
+                    <i class="fas fa-user-friends text-white-500 enemy-search-option-icon"></i>
                     <span>Invite a friend</span>
                   </div>
                   <span></span>
@@ -59,7 +59,12 @@ export default {
       courseBattle: "",
     };
   },
-  methods: {},
+  methods: {
+   async handleCopyToast(){
+      await navigator.clipboard.writeText(location.href)
+      this.$toast('Copied!')
+    }
+  },
   computed: {
     ...mapGetters(["userInfo"]),
   },
@@ -157,5 +162,8 @@ export default {
 .enemy-search-option :hover {
   text-decoration: underline;
   cursor: pointer;
+}
+.enemy-search-option-icon {
+margin-right:10px;
 }
 </style>

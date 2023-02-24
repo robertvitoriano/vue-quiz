@@ -1,8 +1,8 @@
 <template>
   <div>
-    <label :for="id" v-if="label">{{ label }}</label>
+    <label  v-if="label" class="select-label">{{ label }}</label>
     <v-select
-    class="course-creation-select"
+    class="custom-select"
     :options="options"
     @option:selected="handleOptionSelection"
     v-model="value"
@@ -17,6 +17,7 @@ export default {
     options:[
       {label:String, id: String}
     ],
+    label:String,
     value:String,
   },
   methods: {
@@ -28,7 +29,7 @@ export default {
 </script>
 
 <style scoped>
-.course-creation-select {
+.custom-select {
   border-top: none;
   border-right: none;
   border-left: none;
@@ -40,4 +41,11 @@ export default {
   text-align: center;
   margin-top: 1rem;
 }
+.custom-select :hover{
+  cursor: pointer;
+}
+.select-label{
+  color: white;
+}
+
 </style>

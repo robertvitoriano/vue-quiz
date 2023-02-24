@@ -52,6 +52,11 @@ async function saveUserAnswer(questionAlternativeId){
   const responseHandled = handleResponse(response);
   return responseHandled
 }
+
+async function createCourseBattle(courseBattle){
+const response = await api.post('/course_battles', courseBattle)
+return response
+}
 export default {
   getCourses,
   getAllCourses,
@@ -61,5 +66,6 @@ export default {
   createCourse,
   getCourseById,
   getCourseQuestions,
-  saveUserAnswer
+  saveUserAnswer,
+  createCourseBattle
 };
