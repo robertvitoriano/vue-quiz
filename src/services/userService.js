@@ -12,9 +12,7 @@ async function login(credentials) {
   const response = await api.post(`/users/login`,credentials);
 
   const { token, user } = handleResponse(response);
-  console.log({user})
   localStorage.setItem("token", token);
-  localStorage.setItem("user", JSON.stringify(user))
   store.commit("setUserInfo", user)
 }
 

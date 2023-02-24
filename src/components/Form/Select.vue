@@ -4,6 +4,7 @@
     <v-select
     class="course-creation-select"
     :options="options"
+    @option:selected="handleOptionSelection"
     v-model="value"
   ></v-select>
   </div>
@@ -13,10 +14,16 @@
 export default {
   name: "Select",
   props: {
-    options:Array,
-    value:String
+    options:[
+      {label:String, id: String}
+    ],
+    value:String,
   },
-  methods: {},
+  methods: {
+    handleOptionSelection(selectedData){
+      this.$emit("optionSelected", selectedData)
+    }
+  },
 };
 </script>
 

@@ -101,6 +101,8 @@ router.beforeEach((to, from, next) => {
   const { authorize } = to.meta;
   const currentUser = store.state.userInfo;
 
+ if(to.path === '/login' && currentUser.level) return next({path:'/home'})
+
   if (authorize) {
       if (!currentUser.level) {
           userService.logout()
@@ -111,7 +113,7 @@ router.beforeEach((to, from, next) => {
           userService.logout()
           return next({ path: '/' });
       }
-  }
+    }
   next();
 })
 

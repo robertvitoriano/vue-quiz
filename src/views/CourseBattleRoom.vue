@@ -2,7 +2,7 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
-        <div class="course-battle-creation-container" v-if="courseBattle">
+        <div class="course-battle-creation-container" >
           <div class="course-battle-content">
             <div class="player-container">
               <img class="player-avatar" :src="userInfo.avatar" />
