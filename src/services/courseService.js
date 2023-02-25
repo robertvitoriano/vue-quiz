@@ -57,6 +57,10 @@ async function createCourseBattle(courseBattle){
 const response = await api.post('/course_battles', courseBattle)
 return response
 }
+async function getCourseBattleUsers(courseBattleId){
+const response = await api.get(`/course_battles/get-course-battle-users/${courseBattleId}`)
+return response
+}
 export default {
   getCourses,
   getAllCourses,
@@ -67,5 +71,6 @@ export default {
   getCourseById,
   getCourseQuestions,
   saveUserAnswer,
-  createCourseBattle
+  createCourseBattle,
+  getCourseBattleUsers
 };

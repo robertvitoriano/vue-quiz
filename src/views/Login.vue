@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
+    <h4 v-if="courseBattleCreatorName" class="call-to-challenge">Enter your account and accept {{courseBattleCreatorName}} challenge!</h4>
     <div class="content">
-      <h1 class="login-form-title">Vue Quiz App</h1>
+        <h1 class="login-form-title" >Vue Quiz App</h1>
       <form class="form-container" v-if="!isSigningUp" @submit.prevent="login">
         <input
           v-model="loginForm.username"
@@ -71,6 +72,7 @@
 <script>
 import { mapActions } from "vuex";
 import userService from "./../services/userService";
+import courseService from "../services/courseService";
 import UploadInput from "../components/Form/UploadInput.vue";
 export default {
   name: "Login",
@@ -91,7 +93,12 @@ export default {
         avatarImage: "",
       },
       isSigningUp: false,
+      pathToRedirectAfterLogin:"/home",
+      courseBattleCreatorName: ''
     };
+  },
+  mounted(){
+    this.veryReturlUrl()
   },
   methods: {
     ...mapActions(["changeLoadingState"]),
@@ -100,7 +107,7 @@ export default {
         this.changeLoadingState();
         await userService.login(this.loginForm);
         this.changeLoadingState();
-        this.$router.push("/home");
+        this.$router.push(this.pathToRedirectAfterLogin);
       } catch (error) {
         this.changeLoadingState();
         this.$swal.fire("invalid credentials!", "", "error");
@@ -134,6 +141,21 @@ export default {
     onAvatarSelect(event) {
       this.signUpForm.avatarImage = event.target.files[0];
     },
+    veryReturlUrl(){
+      switch(true){
+        case this.$route.query.returnUrl.includes('/course-battle-room'):
+          this.setCourseBattleCreator()
+        break;
+      }
+    },
+    async setCourseBattleCreator(){
+      this.pathToRedirectAfterLogin = this.$route.query.returnUrl
+      const courseBatlleId = this.$route.query.returnUrl.split('/course-battle-room/')[1]
+      const response = await courseService.getCourseBattleUsers(courseBatlleId)
+      console.log({response})
+      const courseBattleUsers = response.data.data.courseBattleUsers
+      this.courseBattleCreatorName = courseBattleUsers[0].name
+    }
   },
 };
 </script>
@@ -217,5 +239,9 @@ export default {
 }
 .avatar-uplod-label {
   text-align: center;
+}
+.call-to-challenge {
+  color: white;
+  margin-bottom: 20px;
 }
 </style>

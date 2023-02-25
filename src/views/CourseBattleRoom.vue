@@ -75,12 +75,10 @@ export default {
       {
         text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
         isFromUser:true
-
       },
       {
         text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
         isFromUser:false
-
       }
     ]
   },
@@ -105,12 +103,9 @@ export default {
     handleMessageContainerClass(isFromUser){
       const finalClass = {
         'message-container':true,
+        'message-from-user':isFromUser
       }
-      if(isFromUser){
-        finalClass['message-from-user'] = true
-      } else {
-        finalClass['message-from-user'] = false
-      }
+
       return finalClass
     }
   },
@@ -242,10 +237,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-.message-from-enemy {
-  display: flex;
-  justify-content: flex-start;
-}
+
 .message-content {
   width: fit-content;
   padding: 1rem;

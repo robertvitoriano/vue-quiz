@@ -59,10 +59,10 @@ export default {
     },
     async createCourseBattle(){
       this.changeLoadingState()
-      const response = await courseService.createCourseBattle({name:this.courseBattleName, courseId:this.selectedCourse.id})
+      const response = await courseService.createCourseBattle({name:this.courseBattleName, courseId:this.selectedCourse.id, userId:this.userInfo.id})
       const createCourseBattleId = response.data.data.courseBattle.id
       this.changeLoadingState()
-      this.$router.push("/course-battle-room/"+createCourseBattleId);
+      this.$router.push("/course-battle-room/"+ createCourseBattleId);
     }
   },
   computed: {
