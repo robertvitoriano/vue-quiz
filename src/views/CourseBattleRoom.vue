@@ -41,51 +41,9 @@
           <div class="course-creation-chat-wrapper">
             <div class="course-creation-chat-container">
               <div class="messages-container">
-                <div class="message-container message-from-user">
+                <div v-for="(message, index) in messages" :key="index" :class="handleMessageContainerClass(message.isFromUser)">
                   <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
-                    >
-                  </div>
-                </div>
-                <div class="message-container message-from-enemy">
-                  <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
-                    >
-                  </div>
-                </div>
-                <div class="message-container message-from-user">
-                  <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
-                    >
-                  </div>
-                </div>
-                <div class="message-container message-from-enemy">
-                  <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
-                    >
-                  </div>
-                </div>
-                <div class="message-container message-from-user">
-                  <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
-                    >
-                  </div>
-                </div>
-                <div class="message-container message-from-enemy">
-                  <div class="message-content">
-                    <span>
-                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
-                      asdsdas assadsd</span
+                    <span>{{message.text}}</span
                     >
                   </div>
                 </div>
@@ -113,10 +71,24 @@ export default {
   components: { AuthLayout },
   mounted() {
     this.checkIfUserExists()
+    this.messages = [
+      {
+        text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
+        isFromUser:true
+
+      },
+      {
+        text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
+        isFromUser:false
+
+      }
+    ]
   },
   data() {
     return {
       courseBattle: "",
+      messages:[],
+
     };
   },
   methods: {
@@ -130,6 +102,17 @@ export default {
       await navigator.clipboard.writeText(location.href);
       this.$toast("Copied!");
     },
+    handleMessageContainerClass(isFromUser){
+      const finalClass = {
+        'message-container':true,
+      }
+      if(isFromUser){
+        finalClass['message-from-user'] = true
+      } else {
+        finalClass['message-from-user'] = false
+      }
+      return finalClass
+    }
   },
   computed: {
     ...mapGetters(["userInfo"]),
