@@ -4,7 +4,7 @@ import api from './api'
 import {store} from './../store'
 function logout() {
   localStorage.removeItem('token')
-  localStorage.removeItem('user')
+  localStorage.removeItem('vuex')
   router.push('/login')
 }
 
@@ -22,12 +22,17 @@ async function getUsers(currentPage, usersPerPage, usersOrder){
   return responseHandled
 }
 
+
 async function createUser(data){
   const response = await api.post(`/users/create-user`, data);
   const responseHandled = handleResponse(response);
   return responseHandled
 }
 
+async function checkUser(){
+  const response = await api.get('/users/check-user')
+  return response
+}
 async function deleteUser(userId){
   await api.delete(`/users/${userId}`)
 }
@@ -37,4 +42,5 @@ export default {
   getUsers,
   createUser,
   deleteUser,
+  checkUser
 };

@@ -2,7 +2,7 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
-        <div class="course-battle-creation-container" >
+        <div class="course-battle-creation-container">
           <div class="course-battle-content">
             <div class="player-container">
               <img class="player-avatar" :src="userInfo.avatar" />
@@ -21,11 +21,15 @@
               <div v-else class="enemy-search-container">
                 <div class="search-enemy-icons-container">
                   <div class="enemy-search-option" @click="handleCopyToast">
-                    <i class="fas fa-copy text-white-500 enemy-search-option-icon"></i>
+                    <i
+                      class="fas fa-copy text-white-500 enemy-search-option-icon"
+                    ></i>
                     <span>Copy course battle link</span>
                   </div>
-                  <div class="enemy-search-option" >
-                    <i class="fas fa-user-friends text-white-500 enemy-search-option-icon"></i>
+                  <div class="enemy-search-option">
+                    <i
+                      class="fas fa-user-friends text-white-500 enemy-search-option-icon"
+                    ></i>
                     <span>Invite a friend</span>
                   </div>
                   <span></span>
@@ -34,7 +38,59 @@
               <span class="player-username-container">?</span>
             </div>
           </div>
-          <div class="course-creation-chat-container">
+          <div class="course-creation-chat-wrapper">
+            <div class="course-creation-chat-container">
+              <div class="messages-container">
+                <div class="message-container message-from-user">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+                <div class="message-container message-from-enemy">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+                <div class="message-container message-from-user">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+                <div class="message-container message-from-enemy">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+                <div class="message-container message-from-user">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+                <div class="message-container message-from-enemy">
+                  <div class="message-content">
+                    <span>
+                      Minha mensagem assasaad adsdasdas asdasdadas asdsadsad
+                      asdsdas assadsd</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="chat-input-container">
               <input
                 class="course-creation-chat-input"
@@ -51,19 +107,29 @@
 <script>
 import { mapGetters } from "vuex";
 import AuthLayout from "../Layout/AuthLayout.vue";
+import userService from "./../services/userService";
 export default {
-  name:"CourseBatleRooom",
-  components:{AuthLayout},
+  name: "CourseBatleRooom",
+  components: { AuthLayout },
+  mounted() {
+    this.checkIfUserExists()
+  },
   data() {
     return {
       courseBattle: "",
     };
   },
   methods: {
-   async handleCopyToast(){
-      await navigator.clipboard.writeText(location.href)
-      this.$toast('Copied!')
-    }
+    async checkIfUserExists() {
+      const token = localStorage.getItem("token");
+      if (!token) return this.$router.push("/login");
+      const response = await userService.checkUser();
+      if(response.status !== 200) return this.$router.push("/login");
+    },
+    async handleCopyToast() {
+      await navigator.clipboard.writeText(location.href);
+      this.$toast("Copied!");
+    },
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -116,6 +182,8 @@ export default {
   width: 100%;
   background-color: white;
   position: relative;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .course-battle-creation-container {
   display: flex;
@@ -143,8 +211,6 @@ export default {
   outline: none;
 }
 .chat-input-container {
-  position: absolute;
-  bottom: 0;
   display: flex;
   width: 100%;
 }
@@ -164,6 +230,47 @@ export default {
   cursor: pointer;
 }
 .enemy-search-option-icon {
-margin-right:10px;
+  margin-right: 10px;
+}
+.messages-container {
+  width: 100%;
+  height: 100%;
+  background-color: #d4d4d4;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow-y: auto;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgb(0, 0, 0);
+}
+.message-container {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.message-from-user {
+  display: flex;
+  justify-content: flex-end;
+}
+.message-from-enemy {
+  display: flex;
+  justify-content: flex-start;
+}
+.message-content {
+  width: fit-content;
+  padding: 1rem;
+  background-color: black;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 </style>
