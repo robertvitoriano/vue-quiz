@@ -64,6 +64,7 @@
               <input
                 class="course-creation-chat-input"
                 placeholder="type a message"
+                v-model="message"
               />
               <div class="send-message-button" @click="sendMessage">></div>
             </div>
@@ -81,14 +82,16 @@ import userService from "./../services/userService";
 import courseService from "../services/courseService";
 import ActionCable from 'actioncable'
 
-const cable = ActionCable.createConsumer('ws://localhost:4000/cable')
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
+  created(){
+    this.cable = ActionCable.createConsumer('ws://localhost:4000/cable', { courseBattleId: this.$route.params.id})
+  },
   mounted() {
     this.setPlayers();
-    this.subscription = cable.subscriptions.create({
+    this.subscription = this.cable.subscriptions.create({
           channel: "CourseBattleChatChannel",
           courseBattleId: this.$route.params.id
         }, {
@@ -98,8 +101,15 @@ export default {
           disconnected: function() {
             console.log("disconnected");
           },
-          sendMessage(message) {
-            this.perform('sendMessage', { message: message });
+          received: (data) => {
+            const userInfo = JSON.parse(localStorage.getItem('vuex')).userInfo
+            if(data.userId !== userInfo.id){
+              console.log('HELLO WORLDDD')
+              this.messages.push({text:data.message, isFromUser:false})
+            }
+          },
+          sendMessage({message, userId}) {
+            this.perform('sendMessage', { message, userId });
           }
         })
 
@@ -120,7 +130,7 @@ export default {
       messages: [
         {
           text: "",
-          userId: "",
+          isFromUser: "",
         },
       ],
       invited: false,
@@ -140,7 +150,9 @@ export default {
         },
       ],
       currentUserIsRegistered: true,
-      subscription:null
+      subscription:null,
+      message:'',
+      cable:null
     };
   },
   methods: {
@@ -158,7 +170,7 @@ export default {
     handleMessageContainerClass(isFromUser) {
       const finalClass = {
         "message-container": true,
-        "message-from-user": isFromUser,
+        "message-from-player2": isFromUser,
       };
 
       return finalClass;
@@ -216,7 +228,9 @@ export default {
       return username;
     },
     sendMessage() {
-      this.subscription.sendMessage("asdfd");
+      this.messages.push({isFromUser:true, text:this.message})
+      this.subscription.sendMessage({message:this.message, userId: this.userInfo.id});
+      this.message = ''
     }
   },
   computed: {
@@ -346,7 +360,7 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.message-from-user {
+.message-from-player2{
   display: flex;
   justify-content: flex-end;
 }
