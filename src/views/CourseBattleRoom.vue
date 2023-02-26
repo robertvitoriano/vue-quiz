@@ -6,7 +6,11 @@
           <div class="course-battle-content">
             <div class="player-container">
               <img class="player-avatar" :src="player1.avatar" />
-              <span class="player-username-container">{{player1.name}}</span>
+              <span
+                class="player-username-container"
+                ref="player1"
+                >{{ formatUsername(player1.name) }}</span
+              >
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
@@ -35,7 +39,11 @@
                   <span></span>
                 </div>
               </div>
-              <span class="player-username-container">{{player2.name}}</span>
+              <span
+                class="player-username-container"
+                ref="player2"
+                >{{ formatUsername(player2.name) }}</span
+              >
             </div>
           </div>
           <div class="course-creation-chat-wrapper">
@@ -70,11 +78,15 @@ import { mapGetters, mapActions } from "vuex";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
 import courseService from "../services/courseService";
+import tippy from "tippy.js";
+
+import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
   mounted() {
     this.setPlayers();
+
     this.messages = [
       {
         text: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
@@ -89,25 +101,29 @@ export default {
   data() {
     return {
       courseBattle: "",
-      messages: [{
-        text:"",
-        userId:""
-      }],
+      messages: [
+        {
+          text: "",
+          userId: "",
+        },
+      ],
       invited: false,
       player1: {
         avatar: "",
-        name:""
+        name: "",
       },
       player2: {
         avatar: "",
-        name:""
+        name: "",
       },
-      courseBattleUsers:[{
-        userId:"",
-        name:"",
-        avatar:""
-      }],
-      currentUserIsRegistered:true
+      courseBattleUsers: [
+        {
+          userId: "",
+          name: "",
+          avatar: "",
+        },
+      ],
+      currentUserIsRegistered: true,
     };
   },
   methods: {
@@ -131,40 +147,57 @@ export default {
       return finalClass;
     },
     async setPlayers() {
-      this.changeLoadingState()
+      this.changeLoadingState();
       await this.checkIfUserIsLogged();
       await this.getCourseBattleUsers();
       await this.setCourseBattleUsers();
       const isUserAlreadyRegistered = this.courseBattleUsers.some(
         (courseBattleUser) => courseBattleUser.userId === this.userInfo.id
       );
-      if (this.courseBattleUsers.length >= 2 && !isUserAlreadyRegistered) return this.$router.push("/home");
-      if (!isUserAlreadyRegistered){
+      if (this.courseBattleUsers.length >= 2 && !isUserAlreadyRegistered)
+        return this.$router.push("/home");
+      if (!isUserAlreadyRegistered) {
         await courseService.registerUser({
           courseBattleId: this.$route.params.id,
           userId: this.userInfo.id,
         });
       }
-      this.currentUserIsRegistered = true
-      this.changeLoadingState()
+      this.currentUserIsRegistered = true;
+      tippy(this.$refs.player1, {
+        content: this.player1.name,
+      });
+      tippy(this.$refs.player2, {
+        content: this.player2.name,
+      });
+      this.changeLoadingState();
     },
-    async getCourseBattleUsers(){
+    async getCourseBattleUsers() {
       const response = await courseService.getCourseBattleUsers(
         this.$route.params.id
       );
-     this.courseBattleUsers = response.data.data.courseBattleUsers;
+      this.courseBattleUsers = response.data.data.courseBattleUsers;
     },
-    async setCourseBattleUsers(){
-      if(this.courseBattleUsers.length === 1 &&  this.userInfo.id === this.courseBattleUsers[0].userId){
-        this.player1.avatar = this.userInfo.avatar
-        this.player1.name = this.userInfo.name
-      } else if(this.courseBattleUsers.length === 2){
-        this.player1.avatar = this.courseBattleUsers[0].avatar
-        this.player1.name = this.courseBattleUsers[0].name
-        this.player2.avatar = this.courseBattleUsers[1].avatar
-        this.player2.name = this.courseBattleUsers[1].name
+    async setCourseBattleUsers() {
+      if (
+        this.courseBattleUsers.length === 1 &&
+        this.userInfo.id === this.courseBattleUsers[0].userId
+      ) {
+        this.player1.avatar = this.userInfo.avatar;
+        this.player1.name = this.userInfo.name;
+      } else if (this.courseBattleUsers.length === 2) {
+        this.player1.avatar = this.courseBattleUsers[0].avatar;
+        this.player1.name = this.courseBattleUsers[0].name;
+        this.player2.avatar = this.courseBattleUsers[1].avatar;
+        this.player2.name = this.courseBattleUsers[1].name;
       }
-    }
+    },
+    formatUsername(username) {
+      if (username.length > 16) {
+        const formattedUsername = username.slice(0, 13) + "...";
+        return formattedUsername;
+      }
+      return username;
+    },
   },
   computed: {
     ...mapGetters(["userInfo"]),
