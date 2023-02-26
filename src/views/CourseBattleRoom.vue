@@ -65,7 +65,7 @@
                 class="course-creation-chat-input"
                 placeholder="type a message"
               />
-              <div class="send-message-button">></div>
+              <div class="send-message-button" @click="sendMessage">></div>
             </div>
           </div>
         </div>
@@ -75,17 +75,33 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+import tippy from "tippy.js";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
 import courseService from "../services/courseService";
-import tippy from "tippy.js";
+import ActionCable from 'actioncable'
 
+const cable = ActionCable.createConsumer('ws://localhost:4000/cable')
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
   mounted() {
     this.setPlayers();
+    this.subscription = cable.subscriptions.create({
+          channel: "CourseBattleChatChannel",
+          courseBattleId: this.$route.params.id
+        }, {
+          connected: function() {
+            console.log("connected");
+          },
+          disconnected: function() {
+            console.log("disconnected");
+          },
+          sendMessage(message) {
+            this.perform('sendMessage', { message: message });
+          }
+        })
 
     this.messages = [
       {
@@ -124,6 +140,7 @@ export default {
         },
       ],
       currentUserIsRegistered: true,
+      subscription:null
     };
   },
   methods: {
@@ -198,6 +215,9 @@ export default {
       }
       return username;
     },
+    sendMessage() {
+      this.subscription.sendMessage("asdfd");
+    }
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -292,6 +312,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.send-message-button:hover {
+  cursor: pointer;
 }
 .player2-search-option :hover {
   text-decoration: underline;

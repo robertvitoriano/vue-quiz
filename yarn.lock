@@ -1100,6 +1100,11 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.6.tgz#cee20bd55e68a1720bdab363ecf0c821ded4cd45"
   integrity sha512-50/17A98tWUfQ176raKiOGXuYpLyyVMkxxG6oylzL3BPOlA6ADGdK7EYunSa4I064xerltq9TGXs8HmOk5E+vw==
 
+"@rails/actioncable@^7.0.4-2":
+  version "7.0.4-2"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.4-2.tgz#d69d1314c5bb1c8b51f7eeef98e1db5bab80caba"
+  integrity sha512-mMmDa9pJczGN+bX4nPgrmu+PHqKDpokfwSLF3Sk5h6Z996miFmPAg44F2TvG7koJQQ0YFXEVeHshRXVg5jmshQ==
+
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@soda/friendly-errors-webpack-plugin/-/friendly-errors-webpack-plugin-1.8.1.tgz#4d4fbb1108993aaa362116247c3d18188a2c6c85"
@@ -1741,6 +1746,11 @@ acorn@^7.1.1, acorn@^7.4.0:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
+
+actioncable@^5.2.8-1:
+  version "5.2.8-1"
+  resolved "https://registry.yarnpkg.com/actioncable/-/actioncable-5.2.8-1.tgz#1b01df0c7f4928b1b9646323705e8a0196ccf3c1"
+  integrity sha512-p/a9jeFs3KB3SWZ9w/T5HLyztooYSufOG++Uhau9YzprdBNyjFfsqrtN1roVVEzNDBGZJVr/2SSWwofvavPL1w==
 
 address@^1.1.2:
   version "1.2.2"
