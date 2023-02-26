@@ -1,65 +1,76 @@
 import { handleResponse } from "./utils";
-import api from './api'
+import api from "./api";
 
-async function getCourses(){
+async function getCourses() {
   const response = await api.get(`/courses/get-battle-courses`);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function getAllCourses(currentPage, coursesPerPage, coursesOrder ){
-  const response = await api.get(`/courses?page=${currentPage}&limit=${coursesPerPage}&order=${coursesOrder}`);
+async function getAllCourses(currentPage, coursesPerPage, coursesOrder) {
+  const response = await api.get(
+    `/courses?page=${currentPage}&limit=${coursesPerPage}&order=${coursesOrder}`
+  );
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function deleteCourse(courseId){
+async function deleteCourse(courseId) {
   await api.delete(`/courses/${courseId}`);
 }
 
-async function getCourseTypes(){
+async function getCourseTypes() {
   const response = await api.get(`/course_types`);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function updateCourse(courseId,data){
-  const response = await api.patch(`/courses/${courseId}`, data)
+async function updateCourse(courseId, data) {
+  const response = await api.patch(`/courses/${courseId}`, data);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
-async function createCourse(data){
-  const response = await api.post(`/courses`, data)
+async function createCourse(data) {
+  const response = await api.post(`/courses`, data);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function getCourseById(courseId){
+async function getCourseById(courseId) {
   const response = await api.get(`/courses/${courseId}`);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function getCourseQuestions(courseId){
-  const response = await api.get(`/courses/${courseId}`)
+async function getCourseQuestions(courseId) {
+  const response = await api.get(`/courses/${courseId}`);
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function saveUserAnswer(questionAlternativeId){
+async function saveUserAnswer(questionAlternativeId) {
   // /alternatives/save-user-answer
-  const response = await api.post(`/alternatives/save-user-answer`,{ questionAlternativeId});
+  const response = await api.post(`/alternatives/save-user-answer`, {
+    questionAlternativeId,
+  });
   const responseHandled = handleResponse(response);
-  return responseHandled
+  return responseHandled;
 }
 
-async function createCourseBattle(courseBattle){
-const response = await api.post('/course_battles', courseBattle)
-return response
+async function createCourseBattle(courseBattle) {
+  const response = await api.post("/course_battles", courseBattle);
+  return response;
 }
-async function getCourseBattleUsers(courseBattleId){
-const response = await api.get(`/course_battles/get-course-battle-users/${courseBattleId}`)
-return response
+async function getCourseBattleUsers(courseBattleId) {
+  const response = await api.get(
+    `/course_battles/get-course-battle-users/${courseBattleId}`
+  );
+  return response;
+}
+
+async function registerUser({ courseBattleId, userId }) {
+  const response =  await api.post('/course_battles/register-user',{courseBattleId, userId})
+  return response
 }
 export default {
   getCourses,
@@ -72,5 +83,6 @@ export default {
   getCourseQuestions,
   saveUserAnswer,
   createCourseBattle,
-  getCourseBattleUsers
+  getCourseBattleUsers,
+  registerUser
 };

@@ -144,15 +144,14 @@ export default {
     veryReturlUrl(){
       switch(true){
         case this.$route.query.returnUrl.includes('/course-battle-room'):
-          this.setCourseBattleCreator()
+          this.setCourseBattleMessage()
         break;
       }
     },
-    async setCourseBattleCreator(){
+    async setCourseBattleMessage(){
       this.pathToRedirectAfterLogin = this.$route.query.returnUrl
       const courseBatlleId = this.$route.query.returnUrl.split('/course-battle-room/')[1]
       const response = await courseService.getCourseBattleUsers(courseBatlleId)
-      console.log({response})
       const courseBattleUsers = response.data.data.courseBattleUsers
       this.courseBattleCreatorName = courseBattleUsers[0].name
     }

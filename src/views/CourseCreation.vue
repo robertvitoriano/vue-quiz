@@ -292,8 +292,6 @@ export default {
           response = await courseService.updateCourse(this.$route.params.id, formData);
         } else {
           response = await courseService.createCourse(formData);
-
-          console.log({response})
         }
         if (response.status === 200) {
           this.changeLoadingState();

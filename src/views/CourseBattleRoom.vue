@@ -66,11 +66,13 @@
 import { mapGetters } from "vuex";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
+import courseService from "../services/courseService";
 export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
   mounted() {
-    this.checkIfUserExists()
+    this.checkIfUserIsLogged()
+    this.checkIfUserIsRegistered()
     this.messages = [
       {
         text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
@@ -86,11 +88,11 @@ export default {
     return {
       courseBattle: "",
       messages:[],
-
+      invited:false
     };
   },
   methods: {
-    async checkIfUserExists() {
+    async checkIfUserIsLogged() {
       const token = localStorage.getItem("token");
       if (!token) return this.$router.push("/login");
       const response = await userService.checkUser();
@@ -107,6 +109,14 @@ export default {
       }
 
       return finalClass
+    },
+    async checkIfUserIsRegistered(){
+      const response= await courseService.getCourseBattleUsers(this.$route.params.id)
+      const courseBattleUsers = response.data.data.courseBattleUsers
+      if(courseBattleUsers.length >= 2) return this.$route.push('/home')
+      const isUserAlreadyRegistered = courseBattleUsers.some((courseBattleUser) => courseBattleUser.userId === this.userInfo.id)
+      if(isUserAlreadyRegistered) return
+      await courseService.registerUser({courseBattleId:this.$route.params.id, userId:this.userInfo.id})
     }
   },
   computed: {
