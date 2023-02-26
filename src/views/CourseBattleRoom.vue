@@ -5,8 +5,8 @@
         <div class="course-battle-creation-container">
           <div class="course-battle-content">
             <div class="player-container">
-              <img class="player-avatar" :src="userInfo.avatar" />
-              <span class="player-username-container">Robert</span>
+              <img class="player-avatar" :src="player1.avatar" />
+              <span class="player-username-container">{{player1.name}}</span>
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
@@ -15,36 +15,39 @@
             <div class="player-container">
               <img
                 class="player-avatar"
-                :src="enemyAvatar"
-                v-if="enemyAvatar"
+                :src="player2.avatar"
+                v-if="player2.avatar"
               />
-              <div v-else class="enemy-search-container">
-                <div class="search-enemy-icons-container">
-                  <div class="enemy-search-option" @click="handleCopyToast">
+              <div v-else class="player2-search-container">
+                <div class="search-player2-icons-container">
+                  <div class="player2-search-option" @click="handleCopyToast">
                     <i
-                      class="fas fa-copy text-white-500 enemy-search-option-icon"
+                      class="fas fa-copy text-white-500 player2-search-option-icon"
                     ></i>
                     <span>Copy course battle link</span>
                   </div>
-                  <div class="enemy-search-option">
+                  <div class="player2-search-option">
                     <i
-                      class="fas fa-user-friends text-white-500 enemy-search-option-icon"
+                      class="fas fa-user-friends text-white-500 player2-search-option-icon"
                     ></i>
                     <span>Invite a friend</span>
                   </div>
                   <span></span>
                 </div>
               </div>
-              <span class="player-username-container">?</span>
+              <span class="player-username-container">{{player2.name}}</span>
             </div>
           </div>
           <div class="course-creation-chat-wrapper">
             <div class="course-creation-chat-container">
               <div class="messages-container">
-                <div v-for="(message, index) in messages" :key="index" :class="handleMessageContainerClass(message.isFromUser)">
+                <div
+                  v-for="(message, index) in messages"
+                  :key="index"
+                  :class="handleMessageContainerClass(message.isFromUser)"
+                >
                   <div class="message-content">
-                    <span>{{message.text}}</span
-                    >
+                    <span>{{ message.text }}</span>
                   </div>
                 </div>
               </div>
@@ -63,7 +66,7 @@
   </AuthLayout>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
 import courseService from "../services/courseService";
@@ -71,52 +74,96 @@ export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
   mounted() {
-    this.checkIfUserIsLogged()
-    this.checkIfUserIsRegistered()
+    this.setPlayers();
     this.messages = [
       {
-        text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
-        isFromUser:true
+        text: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
+        isFromUser: true,
       },
       {
-        text:'Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd',
-        isFromUser:false
-      }
-    ]
+        text: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
+        isFromUser: false,
+      },
+    ];
   },
   data() {
     return {
       courseBattle: "",
-      messages:[],
-      invited:false
+      messages: [{
+        text:"",
+        userId:""
+      }],
+      invited: false,
+      player1: {
+        avatar: "",
+        name:""
+      },
+      player2: {
+        avatar: "",
+        name:""
+      },
+      courseBattleUsers:[{
+        userId:"",
+        name:"",
+        avatar:""
+      }],
+      currentUserIsRegistered:true
     };
   },
   methods: {
+    ...mapActions(["changeLoadingState"]),
     async checkIfUserIsLogged() {
       const token = localStorage.getItem("token");
       if (!token) return this.$router.push("/login");
       const response = await userService.checkUser();
-      if(response.status !== 200) return this.$router.push("/login");
+      if (response.status !== 200) return this.$router.push("/login");
     },
     async handleCopyToast() {
       await navigator.clipboard.writeText(location.href);
       this.$toast("Copied!");
     },
-    handleMessageContainerClass(isFromUser){
+    handleMessageContainerClass(isFromUser) {
       const finalClass = {
-        'message-container':true,
-        'message-from-user':isFromUser
-      }
+        "message-container": true,
+        "message-from-user": isFromUser,
+      };
 
-      return finalClass
+      return finalClass;
     },
-    async checkIfUserIsRegistered(){
-      const response= await courseService.getCourseBattleUsers(this.$route.params.id)
-      const courseBattleUsers = response.data.data.courseBattleUsers
-      if(courseBattleUsers.length >= 2) return this.$route.push('/home')
-      const isUserAlreadyRegistered = courseBattleUsers.some((courseBattleUser) => courseBattleUser.userId === this.userInfo.id)
-      if(isUserAlreadyRegistered) return
-      await courseService.registerUser({courseBattleId:this.$route.params.id, userId:this.userInfo.id})
+    async setPlayers() {
+      this.changeLoadingState()
+      await this.checkIfUserIsLogged();
+      await this.getCourseBattleUsers();
+      await this.setCourseBattleUsers();
+      const isUserAlreadyRegistered = this.courseBattleUsers.some(
+        (courseBattleUser) => courseBattleUser.userId === this.userInfo.id
+      );
+      if (this.courseBattleUsers.length >= 2 && !isUserAlreadyRegistered) return this.$router.push("/home");
+      if (!isUserAlreadyRegistered){
+        await courseService.registerUser({
+          courseBattleId: this.$route.params.id,
+          userId: this.userInfo.id,
+        });
+      }
+      this.currentUserIsRegistered = true
+      this.changeLoadingState()
+    },
+    async getCourseBattleUsers(){
+      const response = await courseService.getCourseBattleUsers(
+        this.$route.params.id
+      );
+     this.courseBattleUsers = response.data.data.courseBattleUsers;
+    },
+    async setCourseBattleUsers(){
+      if(this.courseBattleUsers.length === 1 &&  this.userInfo.id === this.courseBattleUsers[0].userId){
+        this.player1.avatar = this.userInfo.avatar
+        this.player1.name = this.userInfo.name
+      } else if(this.courseBattleUsers.length === 2){
+        this.player1.avatar = this.courseBattleUsers[0].avatar
+        this.player1.name = this.courseBattleUsers[0].name
+        this.player2.avatar = this.courseBattleUsers[1].avatar
+        this.player2.name = this.courseBattleUsers[1].name
+      }
     }
   },
   computed: {
@@ -158,7 +205,7 @@ export default {
   font-size: 3rem;
   font-weight: bold;
 }
-.enemy-search-container {
+.player2-search-container {
   width: 320px;
   height: 14rem;
   border-radius: 50px;
@@ -180,12 +227,12 @@ export default {
   height: 92vh;
 }
 
-.enemy-search-option {
+.player2-search-option {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
 }
-.search-enemy-icons-container {
+.search-player2-icons-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -213,11 +260,11 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.enemy-search-option :hover {
+.player2-search-option :hover {
   text-decoration: underline;
   cursor: pointer;
 }
-.enemy-search-option-icon {
+.player2-search-option-icon {
   margin-right: 10px;
 }
 .messages-container {

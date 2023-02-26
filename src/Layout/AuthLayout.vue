@@ -17,6 +17,7 @@
             alt="vue logo"
             class="avatar-image"
             />
+          <span class="sidebar-name">{{ userInfo.name }}</span>
           <div class="desktop-sidebar-items-container">
             <div
               v-b-toggle.management-collapse
@@ -52,6 +53,7 @@
           alt="vue logo"
           class="avatar-image"
         />
+        <span class="sidebar-name">{{ userInfo.name }}</span>
         <div class="desktop-sidebar-items-container">
           <div
             v-b-toggle.management-collapse
@@ -320,7 +322,14 @@ export default {
   display: none;
 }
 
+.sidebar-name{
+  color: white;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
 @media only screen and (max-width: 992px) {
+
   .auth-layout-container {
     overflow: hidden;
   }
