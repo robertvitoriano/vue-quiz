@@ -52,7 +52,7 @@
                 >
                   <img
                     :src="handleUserAvatarMessage(message.userId)"
-                    class="user-avatar-message"
+                    :class="handleUserAvatarMessageClass(message.isFromUser)"
                   />
                   <div class="message-content">
                     <span>{{ message.message }}</span>
@@ -176,7 +176,7 @@ export default {
     handleMessageContainerClass(isFromUser) {
       const finalClass = {
         "message-container": true,
-        "message-from-players": isFromUser,
+        "message-from-player1": isFromUser,
       };
 
       return finalClass;
@@ -265,13 +265,19 @@ export default {
       });
     },
     handleUserAvatarMessage(userId) {
-      console.log({ userId });
       if (!userId) return "";
       const userAvatar = this.courseBattleUsers.find(
         (user) => user.userId === userId
       ).avatar;
       return userAvatar;
     },
+    handleUserAvatarMessageClass(isFromUser){
+      return {
+        'user-avatar':true,
+        'avatar-message-from-user':isFromUser
+      }
+
+    }
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -399,10 +405,12 @@ export default {
   width: 100%;
   margin-top: 15px;
   margin-bottom: 15px;
-}
-.message-from-players {
   display: flex;
-  justify-content: flex-end;
+}
+.message-from-player1 {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
 }
 
 .message-content {
@@ -415,9 +423,10 @@ export default {
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
-.user-avatar-message {
+.user-avatar {
   border-radius: 50%;
   width: 50px;
   height: 50px;
 }
+
 </style>
