@@ -91,7 +91,6 @@ export default {
     async handleSubmit() {
       this.changeLoadingState();
       const selectedAnswer = this.currentQuestion.alternatives.find((question, index) => index === this.selectedAnswerIndex );
-      console.log({selectedAnswer})
       await courseService.saveUserAnswer(selectedAnswer.id);
       this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {

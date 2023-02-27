@@ -15,7 +15,6 @@
   },
   methods: {
     handleClick() {
-      console.log('CLICKEDDDDD')
       this.$emit('clicked');
     },
   },

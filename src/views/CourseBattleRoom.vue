@@ -55,7 +55,7 @@
                   :class="handleMessageContainerClass(message.isFromUser)"
                 >
                   <div class="message-content">
-                    <span>{{ message.text }}</span>
+                    <span>{{ message.message }}</span>
                   </div>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export default {
           received: (data) => {
             const userInfo = JSON.parse(localStorage.getItem('vuex')).userInfo
             if(data.userId !== userInfo.id){
-              this.messages.push({text:data.message, isFromUser:false})
+              this.messages.push({message:data.message, isFromUser:false})
             }
           },
           sendMessage({message, userId}) {
@@ -114,11 +114,11 @@ export default {
 
     this.messages = [
       {
-        text: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
+        message: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
         isFromUser: true,
       },
       {
-        text: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
+        message: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
         isFromUser: false,
       },
     ];
@@ -128,7 +128,7 @@ export default {
       courseBattle: "",
       messages: [
         {
-          text: "",
+          message: "",
           isFromUser: "",
         },
       ],
@@ -228,7 +228,7 @@ export default {
       return username;
     },
     async sendMessage() {
-      this.messages.push({isFromUser:true, text:this.message})
+      this.messages.push({isFromUser:true, message:this.message})
       this.subscription.sendMessage({message:this.message, userId: this.userInfo.id});
       await courseService.sendCourseBattleMessage({courseBattleId:this.$route.params.id, userId:this.userInfo.id, message:this.message})
       this.message = ''
@@ -236,10 +236,9 @@ export default {
     async getCourseBattleMessages(){
       const response = await courseService.getCourseBattleMessages(this.$route.params.id)
       const messages = response.data.data.messages
-      this.messages = messages.map(({message, userId, ...rest})=>{
+      this.messages = messages.map(({userId, ...rest})=>{
         return{
           ...rest,
-          text:message,
           isFromUser: String(this.userInfo.id) === String(userId)
         }
       })
