@@ -5,12 +5,10 @@
         <div class="course-battle-creation-container">
           <div class="course-battle-content">
             <div class="player-container">
-              <img class="player-avatar" :src="player1.avatar" />
-              <span
-                class="player-username-container"
-                ref="player1"
-                >{{ formatUsername(player1.name) }}</span
-              >
+              <img class="player-avatar" :src="players[0].avatar" />
+              <span class="player-username-container" ref="player1">{{
+                formatUsername(players[0].name)
+              }}</span>
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
@@ -19,8 +17,8 @@
             <div class="player-container">
               <img
                 class="player-avatar"
-                :src="player2.avatar"
-                v-if="player2.avatar"
+                :src="players[1].avatar"
+                v-if="players[1].avatar"
               />
               <div v-else class="player2-search-container">
                 <div class="search-player2-icons-container">
@@ -39,11 +37,9 @@
                   <span></span>
                 </div>
               </div>
-              <span
-                class="player-username-container"
-                ref="player2"
-                >{{ formatUsername(player2.name) }}</span
-              >
+              <span class="player-username-container" ref="player2">{{
+                formatUsername(players[1].name)
+              }}</span>
             </div>
           </div>
           <div class="course-creation-chat-wrapper">
@@ -54,6 +50,10 @@
                   :key="index"
                   :class="handleMessageContainerClass(message.isFromUser)"
                 >
+                  <img
+                    :src="handleUserAvatarMessage(message.userId)"
+                    class="user-avatar-message"
+                  />
                   <div class="message-content">
                     <span>{{ message.message }}</span>
                   </div>
@@ -66,7 +66,13 @@
                 placeholder="type a message"
                 v-model="message"
               />
-              <div class="send-message-button" @click="sendMessage" @keyup.enter="sendMessage">></div>
+              <div
+                class="send-message-button"
+                @click="sendMessage"
+                @keyup.enter="sendMessage"
+              >
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -80,48 +86,46 @@ import tippy from "tippy.js";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
 import courseService from "../services/courseService";
-import ActionCable from 'actioncable'
+import ActionCable from "actioncable";
 
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
   components: { AuthLayout },
-  created(){
-    this.cable = ActionCable.createConsumer('ws://localhost:4000/cable', { courseBattleId: this.$route.params.id})
+  created() {
+    this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
+      courseBattleId: this.$route.params.id,
+    });
   },
   mounted() {
     this.setPlayers();
-    this.subscription = this.cable.subscriptions.create({
-          channel: "CourseBattleChatChannel",
-          courseBattleId: this.$route.params.id
-        }, {
-          connected: function() {
-            console.log("connected");
-          },
-          disconnected: function() {
-            console.log("disconnected");
-          },
-          received: (data) => {
-            const userInfo = JSON.parse(localStorage.getItem('vuex')).userInfo
-            if(data.userId !== userInfo.id){
-              this.messages.push({message:data.message, isFromUser:false})
-            }
-          },
-          sendMessage({message, userId}) {
-            this.perform('sendMessage', { message, userId });
+    this.subscription = this.cable.subscriptions.create(
+      {
+        channel: "CourseBattleChatChannel",
+        courseBattleId: this.$route.params.id,
+      },
+      {
+        connected: function () {
+          console.log("connected");
+        },
+        disconnected: function () {
+          console.log("disconnected");
+        },
+        received: (data) => {
+          const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
+          if (data.userId !== userInfo.id) {
+            this.messages.push({
+              message: data.message,
+              isFromUser: false,
+              userId: data.userId,
+            });
           }
-        })
-
-    this.messages = [
-      {
-        message: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
-        isFromUser: true,
-      },
-      {
-        message: "Minha mensagem assasaad adsdasdas asdasdadas asdsadsad asdsdas assadsd",
-        isFromUser: false,
-      },
-    ];
+        },
+        sendMessage({ message, userId }) {
+          this.perform("sendMessage", { message, userId });
+        },
+      }
+    );
   },
   data() {
     return {
@@ -130,17 +134,20 @@ export default {
         {
           message: "",
           isFromUser: "",
+          userId: "",
         },
       ],
       invited: false,
-      player1: {
-        avatar: "",
-        name: "",
-      },
-      player2: {
-        avatar: "",
-        name: "",
-      },
+      players: [
+        {
+          avatar: "",
+          name: "",
+        },
+        {
+          avatar: "",
+          name: "",
+        },
+      ],
       courseBattleUsers: [
         {
           userId: "",
@@ -149,9 +156,9 @@ export default {
         },
       ],
       currentUserIsRegistered: true,
-      subscription:null,
-      message:'',
-      cable:null
+      subscription: null,
+      message: "",
+      cable: null,
     };
   },
   methods: {
@@ -169,7 +176,7 @@ export default {
     handleMessageContainerClass(isFromUser) {
       const finalClass = {
         "message-container": true,
-        "message-from-player2": isFromUser,
+        "message-from-players": isFromUser,
       };
 
       return finalClass;
@@ -193,10 +200,10 @@ export default {
       }
       this.currentUserIsRegistered = true;
       tippy(this.$refs.player1, {
-        content: this.player1.name,
+        content: this.players[0].name,
       });
       tippy(this.$refs.player2, {
-        content: this.player2.name,
+        content: this.players[1].name,
       });
       this.changeLoadingState();
     },
@@ -211,13 +218,13 @@ export default {
         this.courseBattleUsers.length === 1 &&
         this.userInfo.id === this.courseBattleUsers[0].userId
       ) {
-        this.player1.avatar = this.userInfo.avatar;
-        this.player1.name = this.userInfo.name;
+        this.players[0].avatar = this.userInfo.avatar;
+        this.players[0].name = this.userInfo.name;
       } else if (this.courseBattleUsers.length === 2) {
-        this.player1.avatar = this.courseBattleUsers[0].avatar;
-        this.player1.name = this.courseBattleUsers[0].name;
-        this.player2.avatar = this.courseBattleUsers[1].avatar;
-        this.player2.name = this.courseBattleUsers[1].name;
+        this.players[0].avatar = this.courseBattleUsers[0].avatar;
+        this.players[0].name = this.courseBattleUsers[0].name;
+        this.players[1].avatar = this.courseBattleUsers[1].avatar;
+        this.players[1].name = this.courseBattleUsers[1].name;
       }
     },
     formatUsername(username) {
@@ -228,21 +235,43 @@ export default {
       return username;
     },
     async sendMessage() {
-      this.messages.push({isFromUser:true, message:this.message})
-      this.subscription.sendMessage({message:this.message, userId: this.userInfo.id});
-      await courseService.sendCourseBattleMessage({courseBattleId:this.$route.params.id, userId:this.userInfo.id, message:this.message})
-      this.message = ''
+      this.messages.push({
+        isFromUser: true,
+        message: this.message,
+        userId: this.userInfo.id,
+      });
+      this.subscription.sendMessage({
+        message: this.message,
+        userId: this.userInfo.id,
+      });
+      await courseService.sendCourseBattleMessage({
+        courseBattleId: this.$route.params.id,
+        userId: this.userInfo.id,
+        message: this.message,
+      });
+      this.message = "";
     },
-    async getCourseBattleMessages(){
-      const response = await courseService.getCourseBattleMessages(this.$route.params.id)
-      const messages = response.data.data.messages
-      this.messages = messages.map(({userId, ...rest})=>{
-        return{
+    async getCourseBattleMessages() {
+      const response = await courseService.getCourseBattleMessages(
+        this.$route.params.id
+      );
+      const messages = response.data.data.messages;
+      this.messages = messages.map(({ userId, ...rest }) => {
+        return {
           ...rest,
-          isFromUser: String(this.userInfo.id) === String(userId)
-        }
-      })
-    }
+          userId,
+          isFromUser: String(this.userInfo.id) === String(userId),
+        };
+      });
+    },
+    handleUserAvatarMessage(userId) {
+      console.log({ userId });
+      if (!userId) return "";
+      const userAvatar = this.courseBattleUsers.find(
+        (user) => user.userId === userId
+      ).avatar;
+      return userAvatar;
+    },
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -371,7 +400,7 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.message-from-player2{
+.message-from-players {
   display: flex;
   justify-content: flex-end;
 }
@@ -385,5 +414,10 @@ export default {
   border-top-right-radius: 15px;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+}
+.user-avatar-message {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
 }
 </style>
