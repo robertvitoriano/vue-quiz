@@ -72,6 +72,15 @@ async function registerUser({ courseBattleId, userId }) {
   const response =  await api.post('/course_battles/register-user',{courseBattleId, userId})
   return response
 }
+
+async function getCourseBattleMessages(courseBattleId){
+  const response = await api.get(`/course_battles/get-course-battle-messages/${courseBattleId}`)
+  return response
+}
+async function sendCourseBattleMessage({courseBattleId, userId, message}){
+  const response = await api.post(`/course_battles/send-course-battle-message`,{courseBattleId, userId, message})
+  return response
+}
 export default {
   getCourses,
   getAllCourses,
@@ -84,5 +93,7 @@ export default {
   saveUserAnswer,
   createCourseBattle,
   getCourseBattleUsers,
-  registerUser
+  registerUser,
+  getCourseBattleMessages,
+  sendCourseBattleMessage
 };

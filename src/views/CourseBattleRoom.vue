@@ -66,7 +66,7 @@
                 placeholder="type a message"
                 v-model="message"
               />
-              <div class="send-message-button" @click="sendMessage">></div>
+              <div class="send-message-button" @click="sendMessage" @keyup.enter="sendMessage">></div>
             </div>
           </div>
         </div>
@@ -104,7 +104,6 @@ export default {
           received: (data) => {
             const userInfo = JSON.parse(localStorage.getItem('vuex')).userInfo
             if(data.userId !== userInfo.id){
-              console.log('HELLO WORLDDD')
               this.messages.push({text:data.message, isFromUser:false})
             }
           },
@@ -180,6 +179,7 @@ export default {
       await this.checkIfUserIsLogged();
       await this.getCourseBattleUsers();
       await this.setCourseBattleUsers();
+      await this.getCourseBattleMessages();
       const isUserAlreadyRegistered = this.courseBattleUsers.some(
         (courseBattleUser) => courseBattleUser.userId === this.userInfo.id
       );
@@ -227,10 +227,22 @@ export default {
       }
       return username;
     },
-    sendMessage() {
+    async sendMessage() {
       this.messages.push({isFromUser:true, text:this.message})
       this.subscription.sendMessage({message:this.message, userId: this.userInfo.id});
+      await courseService.sendCourseBattleMessage({courseBattleId:this.$route.params.id, userId:this.userInfo.id, message:this.message})
       this.message = ''
+    },
+    async getCourseBattleMessages(){
+      const response = await courseService.getCourseBattleMessages(this.$route.params.id)
+      const messages = response.data.data.messages
+      this.messages = messages.map(({message, userId, ...rest})=>{
+        return{
+          ...rest,
+          text:message,
+          isFromUser: String(this.userInfo.id) === String(userId)
+        }
+      })
     }
   },
   computed: {
