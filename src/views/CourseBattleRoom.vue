@@ -44,7 +44,7 @@
           </div>
           <div class="course-creation-chat-wrapper">
             <div class="course-creation-chat-container">
-              <div class="messages-container">
+              <div class="messages-container" ref="messagesContainer">
                 <div
                   v-for="(message, index) in messages"
                   :key="index"
@@ -65,11 +65,12 @@
                 class="course-creation-chat-input"
                 placeholder="type a message"
                 v-model="message"
+                @keyup.enter="sendMessage"
+
               />
               <div
                 class="send-message-button"
                 @click="sendMessage"
-                @keyup.enter="sendMessage"
               >
                 >
               </div>
@@ -111,7 +112,7 @@ export default {
         disconnected: function () {
           console.log("disconnected");
         },
-        received: (data) => {
+        received: async(data) => {
           const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
           if (data.userId !== userInfo.id) {
             this.messages.push({
@@ -119,6 +120,7 @@ export default {
               isFromUser: false,
               userId: data.userId,
             });
+            this.scrollMessagesContainerDown()
           }
         },
         sendMessage({ message, userId }) {
@@ -159,6 +161,7 @@ export default {
       subscription: null,
       message: "",
       cable: null,
+      isSending:false
     };
   },
   methods: {
@@ -187,6 +190,7 @@ export default {
       await this.getCourseBattleUsers();
       await this.setCourseBattleUsers();
       await this.getCourseBattleMessages();
+      this.scrollMessagesContainerDown();
       const isUserAlreadyRegistered = this.courseBattleUsers.some(
         (courseBattleUser) => courseBattleUser.userId === this.userInfo.id
       );
@@ -235,21 +239,24 @@ export default {
       return username;
     },
     async sendMessage() {
+      if(!this.message) return
+      const message = this.message
+      this.message = ''
       this.messages.push({
         isFromUser: true,
-        message: this.message,
+        message,
         userId: this.userInfo.id,
       });
       this.subscription.sendMessage({
-        message: this.message,
+        message,
         userId: this.userInfo.id,
       });
+      this.scrollMessagesContainerDown()
       await courseService.sendCourseBattleMessage({
         courseBattleId: this.$route.params.id,
         userId: this.userInfo.id,
-        message: this.message,
+        message,
       });
-      this.message = "";
     },
     async getCourseBattleMessages() {
       const response = await courseService.getCourseBattleMessages(
@@ -277,6 +284,11 @@ export default {
         'avatar-message-from-user':isFromUser
       }
 
+    },
+    scrollMessagesContainerDown(){
+      setTimeout(() => {
+              this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight - this.$refs.messagesContainer.clientHeight;
+            },50);
     }
   },
   computed: {
