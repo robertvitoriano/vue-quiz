@@ -244,6 +244,7 @@ export default {
         isFromUser: true,
         message,
         userId: this.userInfo.id,
+        createdAt: this.getFormattedTimestamp()
       });
       this.subscription.sendMessage({
         message,
