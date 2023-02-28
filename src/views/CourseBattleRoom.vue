@@ -58,6 +58,7 @@
                     <span>{{ message.message }}</span>
                    <div class="timestamp-container">
                      <span class="message-timestamp">{{ getFormattedTimestamp(message.createdAt) }}</span>
+                     <div :class="handleMessageTriangleClass(message.userId)"></div>
                    </div>
                   </div>
                 </div>
@@ -312,6 +313,19 @@ export default {
         'message-content-player-1':isFromUser,
         'message-content-player-2':!isFromUser
       }
+    },
+    handleMessageTriangleClass(userId){
+      const isFromUser = userId === this.userInfo.id
+      console.log({
+        'message-triangle':true,
+        'message-triangle-player-1':isFromUser,
+        'message-triangle-player-2':!isFromUser
+      })
+      return {
+        'message-triangle':true,
+        'message-triangle-player-1':isFromUser,
+        'message-triangle-player-2':!isFromUser
+      }
     }
   },
   computed: {
@@ -482,5 +496,25 @@ export default {
   height: 50px;
   margin-right: 15px;
   margin-left: 15px;
+}
+.message-triangle {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 16px solid white;
+}
+.message-triangle-player-2 {
+  display: block;
+  position: absolute;
+  left: -5px;
+  bottom: 0;
+}
+.message-triangle-player-1 {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right:-5px;
+  border-bottom: 16px solid black;
 }
 </style>
