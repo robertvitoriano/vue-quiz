@@ -6,7 +6,7 @@
           <div class="course-battle-content">
             <div class="player-container">
               <img class="player-avatar" :src="players[0].avatar" />
-              <span class="player-username-container" ref="player1">{{
+              <span class="player-username" ref="player1">{{
                 formatUsername(players[0].name)
               }}</span>
             </div>
@@ -37,7 +37,7 @@
                   <span></span>
                 </div>
               </div>
-              <span class="player-username-container" ref="player2">{{
+              <span class="player-username" ref="player2">{{
                 formatUsername(players[1].name)
               }}</span>
             </div>
@@ -63,6 +63,9 @@
                   </div>
                 </div>
               </div>
+              <div class="is-typing-container" v-if="isTyping">
+                <span class="is-typing-notification">Robert is typing ...</span>
+            </div>
             </div>
             <div class="chat-input-container">
               <input
@@ -111,16 +114,7 @@ export default {
           console.log("disconnected");
         },
         received: async (data) => {
-          const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
-          if (data.userId !== userInfo.id) {
-            this.messages.push({
-              message: data.message,
-              isFromUser: false,
-              userId: data.userId,
-              createdAt:this.getFormattedTimestamp()
-            });
-            this.scrollMessagesContainerDown();
-          }
+          this.handleWebSocketMessages(data)
         },
         sendMessage({ message, userId }) {
           this.perform("sendMessage", { message, userId });
@@ -161,6 +155,7 @@ export default {
       message: "",
       cable: null,
       isSending: false,
+      isTyping:false
     };
   },
   methods: {
@@ -326,6 +321,21 @@ export default {
         'message-triangle-player-1':isFromUser,
         'message-triangle-player-2':!isFromUser
       }
+    },
+    handleWebSocketMessages(data){
+      const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
+      const isFromOtherPlayer = data.userId !== userInfo.id
+
+      if(isFromOtherPlayer)this.receiveChatMessage(data);
+    },
+    receiveChatMessage(data){
+      this.messages.push({
+        message: data.message,
+        isFromUser: false,
+        userId: data.userId,
+        createdAt:this.getFormattedTimestamp()
+      });
+      this.scrollMessagesContainerDown();
     }
   },
   computed: {
@@ -346,8 +356,8 @@ export default {
 }
 
 .player-avatar {
-  width: 320px;
-  height: 14rem;
+  width: 180px;
+  height: 10rem;
   border-radius: 50px;
 }
 .course-battle-content {
@@ -361,10 +371,10 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.player-username-container {
+.player-username {
   display: block;
   text-align: center;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 .player2-search-container {
@@ -385,7 +395,7 @@ export default {
 .course-battle-creation-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   height: 92vh;
 }
 
@@ -455,6 +465,7 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
   display: flex;
+  align-items: center;
 }
 .message-from-player1 {
   display: flex;
@@ -516,5 +527,15 @@ export default {
   bottom: 0;
   right:-5px;
   border-bottom: 16px solid black;
+}
+.is-typing-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  bottom: 25px;
+}
+.is-typing-notification{
+  color: black;
 }
 </style>
