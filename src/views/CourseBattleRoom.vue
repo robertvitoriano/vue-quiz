@@ -54,8 +54,11 @@
                     :src="handleUserAvatarMessage(message.userId)"
                     :class="handleUserAvatarMessageClass(message.isFromUser)"
                   />
-                  <div class="message-content">
+                  <div :class="handleMessageContentClass(message.userId)">
                     <span>{{ message.message }}</span>
+                   <div class="timestamp-container">
+                     <span class="message-timestamp">{{ getFormattedTimestamp(message.createdAt) }}</span>
+                   </div>
                   </div>
                 </div>
               </div>
@@ -66,14 +69,8 @@
                 placeholder="type a message"
                 v-model="message"
                 @keyup.enter="sendMessage"
-
               />
-              <div
-                class="send-message-button"
-                @click="sendMessage"
-              >
-                >
-              </div>
+              <div class="send-message-button" @click="sendMessage">></div>
             </div>
           </div>
         </div>
@@ -112,15 +109,16 @@ export default {
         disconnected: function () {
           console.log("disconnected");
         },
-        received: async(data) => {
+        received: async (data) => {
           const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
           if (data.userId !== userInfo.id) {
             this.messages.push({
               message: data.message,
               isFromUser: false,
               userId: data.userId,
+              createdAt:this.getFormattedTimestamp()
             });
-            this.scrollMessagesContainerDown()
+            this.scrollMessagesContainerDown();
           }
         },
         sendMessage({ message, userId }) {
@@ -161,7 +159,7 @@ export default {
       subscription: null,
       message: "",
       cable: null,
-      isSending:false
+      isSending: false,
     };
   },
   methods: {
@@ -239,9 +237,9 @@ export default {
       return username;
     },
     async sendMessage() {
-      if(!this.message) return
-      const message = this.message
-      this.message = ''
+      if (!this.message) return;
+      const message = this.message;
+      this.message = "";
       this.messages.push({
         isFromUser: true,
         message,
@@ -251,7 +249,7 @@ export default {
         message,
         userId: this.userInfo.id,
       });
-      this.scrollMessagesContainerDown()
+      this.scrollMessagesContainerDown();
       await courseService.sendCourseBattleMessage({
         courseBattleId: this.$route.params.id,
         userId: this.userInfo.id,
@@ -278,17 +276,41 @@ export default {
       ).avatar;
       return userAvatar;
     },
-    handleUserAvatarMessageClass(isFromUser){
+    handleUserAvatarMessageClass(isFromUser) {
       return {
-        'user-avatar':true,
-        'avatar-message-from-user':isFromUser
-      }
-
+        "user-avatar": true,
+        "avatar-message-from-user": isFromUser,
+      };
     },
-    scrollMessagesContainerDown(){
+    scrollMessagesContainerDown() {
       setTimeout(() => {
-              this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight - this.$refs.messagesContainer.clientHeight;
-            },50);
+        this.$refs.messagesContainer.scrollTop =
+          this.$refs.messagesContainer.scrollHeight -
+          this.$refs.messagesContainer.clientHeight;
+      }, 50);
+    },
+    getFormattedTimestamp(timeStamp) {
+      let dateTime;
+
+      if(timeStamp) dateTime = new Date(timeStamp);
+
+      dateTime = new Date();
+
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+
+      const formattedDateTime = dateTime.toLocaleString("pt-BR", options);
+      return formattedDateTime
+    },
+    handleMessageContentClass(userId){
+      const isFromUser = userId === this.userInfo.id
+      return{
+        'message-content':true,
+        'message-content-player-1':isFromUser,
+        'message-content-player-2':!isFromUser
+      }
     }
   },
   computed: {
@@ -427,18 +449,37 @@ export default {
 
 .message-content {
   width: fit-content;
-  padding: 1rem;
-  background-color: black;
-  color: white;
+  padding: 0.5rem 1rem 0.5rem 1rem;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+  position: relative;
+}
+.message-content-player-1{
+  background-color: black;
+  color:white;
+}
+.message-content-player-2{
+  background-color: #fff;
+  color: black;
+
+
+}
+.message-timestamp {
+  font-size: 0.85rem;
+}
+.timestamp-container{
+ display: flex;
+ justify-content: flex-end;
+ width:100%;
+ color:gray;
 }
 .user-avatar {
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  margin-right: 15px;
+  margin-left: 15px;
 }
-
 </style>
