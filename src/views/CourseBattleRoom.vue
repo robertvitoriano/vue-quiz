@@ -73,6 +73,7 @@
                 placeholder="type a message"
                 v-model="message"
                 @keyup.enter="sendMessage"
+                @keydown="sendTypingNotification"
               />
               <div class="send-message-button" @click="sendMessage">></div>
             </div>
@@ -100,11 +101,13 @@ export default {
     });
   },
   mounted() {
+    const courseBattleId = this.$route.params.id
+    const userId = this.userInfo.id
     this.setPlayers();
     this.subscription = this.cable.subscriptions.create(
       {
         channel: "CourseBattleChatChannel",
-        courseBattleId: this.$route.params.id,
+        courseBattleId
       },
       {
         connected: function () {
@@ -114,11 +117,17 @@ export default {
           console.log("disconnected");
         },
         received: async (data) => {
-          this.handleWebSocketMessages(data)
+          this.handleChatEvents(data)
         },
         sendMessage({ message, userId }) {
-          this.perform("sendMessage", { message, userId });
+          this.perform("send_message", { message, userId });
         },
+        sendIsTyping(){
+          this.perform("send_is_typing",{userId})
+        },
+        sendStopTyping(){
+          this.perform("send_stop_typing",{userId})
+        }
       }
     );
   },
@@ -155,7 +164,8 @@ export default {
       message: "",
       cable: null,
       isSending: false,
-      isTyping:false
+      isTyping:false,
+      typingTimeout: null
     };
   },
   methods: {
@@ -253,6 +263,15 @@ export default {
         message,
       });
     },
+    sendTypingNotification(){
+      if (this.typingTimeout) {
+        clearTimeout(this.typingTimeout)
+      }
+      this.typingTimeout = setTimeout(() => {
+        this.subscription.sendStopTyping()
+      }, 500)
+      this.subscription.sendIsTyping()
+    },
     async getCourseBattleMessages() {
       const response = await courseService.getCourseBattleMessages(
         this.$route.params.id
@@ -311,22 +330,28 @@ export default {
     },
     handleMessageTriangleClass(userId){
       const isFromUser = userId === this.userInfo.id
-      console.log({
-        'message-triangle':true,
-        'message-triangle-player-1':isFromUser,
-        'message-triangle-player-2':!isFromUser
-      })
       return {
         'message-triangle':true,
         'message-triangle-player-1':isFromUser,
         'message-triangle-player-2':!isFromUser
       }
     },
-    handleWebSocketMessages(data){
+    handleChatEvents(data){
       const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
       const isFromOtherPlayer = data.userId !== userInfo.id
-
-      if(isFromOtherPlayer)this.receiveChatMessage(data);
+      if(isFromOtherPlayer){
+        switch(data.type){
+          case "battle_room_message":
+            this.receiveChatMessage(data);
+            break;
+          case "is_typing":
+            this.isTyping = true
+            break
+          case "stop_typing":
+            this.isTyping = false
+            break
+        }
+      }
     },
     receiveChatMessage(data){
       this.messages.push({
