@@ -56,16 +56,20 @@
                   />
                   <div :class="handleMessageContentClass(message.userId)">
                     <span>{{ message.message }}</span>
-                   <div class="timestamp-container">
-                     <span class="message-timestamp">{{ getFormattedTimestamp(message.createdAt) }}</span>
-                     <div :class="handleMessageTriangleClass(message.userId)"></div>
-                   </div>
+                    <div class="timestamp-container">
+                      <span class="message-timestamp">{{
+                        getFormattedTimestamp(message.createdAt)
+                      }}</span>
+                      <div
+                        :class="handleMessageTriangleClass(message.userId)"
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="is-typing-container" v-if="isTyping">
                 <span class="is-typing-notification">Robert is typing ...</span>
-            </div>
+              </div>
             </div>
             <div class="chat-input-container">
               <input
@@ -101,13 +105,13 @@ export default {
     });
   },
   mounted() {
-    const courseBattleId = this.$route.params.id
-    const userId = this.userInfo.id
+    const courseBattleId = this.$route.params.id;
+    const userId = this.userInfo.id;
     this.setPlayers();
     this.subscription = this.cable.subscriptions.create(
       {
         channel: "CourseBattleChatChannel",
-        courseBattleId
+        courseBattleId,
       },
       {
         connected: function () {
@@ -117,17 +121,17 @@ export default {
           console.log("disconnected");
         },
         received: async (data) => {
-          this.handleChatEvents(data)
+          this.handleChatEvents(data);
         },
         sendMessage({ message, userId }) {
           this.perform("send_message", { message, userId });
         },
-        sendIsTyping(){
-          this.perform("send_is_typing",{userId})
+        sendIsTyping() {
+          this.perform("send_is_typing", { userId });
         },
-        sendStopTyping(){
-          this.perform("send_stop_typing",{userId})
-        }
+        sendStopTyping() {
+          this.perform("send_stop_typing", { userId });
+        },
       }
     );
   },
@@ -164,8 +168,8 @@ export default {
       message: "",
       cable: null,
       isSending: false,
-      isTyping:false,
-      typingTimeout: null
+      isTyping: false,
+      typingTimeout: null,
     };
   },
   methods: {
@@ -250,7 +254,7 @@ export default {
         isFromUser: true,
         message,
         userId: this.userInfo.id,
-        createdAt: this.getFormattedTimestamp()
+        createdAt: this.getFormattedTimestamp(),
       });
       this.subscription.sendMessage({
         message,
@@ -263,14 +267,14 @@ export default {
         message,
       });
     },
-    sendTypingNotification(){
+    sendTypingNotification() {
       if (this.typingTimeout) {
-        clearTimeout(this.typingTimeout)
+        clearTimeout(this.typingTimeout);
       }
       this.typingTimeout = setTimeout(() => {
-        this.subscription.sendStopTyping()
-      }, 500)
-      this.subscription.sendIsTyping()
+        this.subscription.sendStopTyping();
+      }, 500);
+      this.subscription.sendIsTyping();
     },
     async getCourseBattleMessages() {
       const response = await courseService.getCourseBattleMessages(
@@ -308,7 +312,7 @@ export default {
     getFormattedTimestamp(timeStamp) {
       let dateTime;
 
-      if(timeStamp) dateTime = new Date(timeStamp);
+      if (timeStamp) dateTime = new Date(timeStamp);
 
       dateTime = new Date();
 
@@ -318,50 +322,61 @@ export default {
       };
 
       const formattedDateTime = dateTime.toLocaleString("pt-BR", options);
-      return formattedDateTime
+      return formattedDateTime;
     },
-    handleMessageContentClass(userId){
-      const isFromUser = userId === this.userInfo.id
-      return{
-        'message-content':true,
-        'message-content-player-1':isFromUser,
-        'message-content-player-2':!isFromUser
-      }
-    },
-    handleMessageTriangleClass(userId){
-      const isFromUser = userId === this.userInfo.id
+    handleMessageContentClass(userId) {
+      const isFromUser = userId === this.userInfo.id;
       return {
-        'message-triangle':true,
-        'message-triangle-player-1':isFromUser,
-        'message-triangle-player-2':!isFromUser
-      }
+        "message-content": true,
+        "message-content-player-1": isFromUser,
+        "message-content-player-2": !isFromUser,
+      };
     },
-    handleChatEvents(data){
+    handleMessageTriangleClass(userId) {
+      const isFromUser = userId === this.userInfo.id;
+      return {
+        "message-triangle": true,
+        "message-triangle-player-1": isFromUser,
+        "message-triangle-player-2": !isFromUser,
+      };
+    },
+    handleChatEvents(data) {
       const userInfo = JSON.parse(localStorage.getItem("vuex")).userInfo;
-      const isFromOtherPlayer = data.userId !== userInfo.id
-      if(isFromOtherPlayer){
-        switch(data.type){
+      const isFromOtherPlayer = data.userId !== userInfo.id;
+      if (isFromOtherPlayer) {
+        switch (data.type) {
           case "battle_room_message":
             this.receiveChatMessage(data);
             break;
           case "is_typing":
-            this.isTyping = true
-            break
+            this.isTyping = true;
+            break;
           case "stop_typing":
-            this.isTyping = false
-            break
+            this.isTyping = false;
+            break;
         }
       }
     },
-    receiveChatMessage(data){
-      this.messages.push({
-        message: data.message,
-        isFromUser: false,
-        userId: data.userId,
-        createdAt:this.getFormattedTimestamp()
-      });
-      this.scrollMessagesContainerDown();
-    }
+    async receiveChatMessage(data) {
+      try {
+        await this.playNotificationSound();
+        this.messages.push({
+          message: data.message,
+          isFromUser: false,
+          userId: data.userId,
+          createdAt: this.getFormattedTimestamp(),
+        });
+        this.scrollMessagesContainerDown();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async playNotificationSound() {
+      const notificationSound = new Audio(
+        "https://rails-quiz.s3.amazonaws.com/rails_quiz_notification_sound.wav"
+      );
+      await notificationSound.play();
+    },
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -507,24 +522,22 @@ export default {
   border-bottom-right-radius: 15px;
   position: relative;
 }
-.message-content-player-1{
+.message-content-player-1 {
   background-color: black;
-  color:white;
+  color: white;
 }
-.message-content-player-2{
+.message-content-player-2 {
   background-color: #fff;
   color: black;
-
-
 }
 .message-timestamp {
   font-size: 0.85rem;
 }
-.timestamp-container{
- display: flex;
- justify-content: flex-end;
- width:100%;
- color:gray;
+.timestamp-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  color: gray;
 }
 .user-avatar {
   border-radius: 50%;
@@ -550,17 +563,20 @@ export default {
   display: block;
   position: absolute;
   bottom: 0;
-  right:-5px;
+  right: -5px;
   border-bottom: 16px solid black;
 }
-.is-typing-container{
+.is-typing-container {
   width: 100%;
   display: flex;
   justify-content: center;
   position: relative;
   bottom: 25px;
 }
-.is-typing-notification{
+.is-typing-notification {
   color: black;
+}
+.hidden-play-button {
+  visibility: hidden;
 }
 </style>
