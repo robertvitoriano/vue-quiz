@@ -122,6 +122,7 @@ export default {
         },
         received: async (data) => {
           this.handleChatEvents(data);
+          this.handleOpponentRegister(data)
         },
         sendMessage({ message, userId }) {
           this.perform("send_message", { message, userId });
@@ -370,6 +371,13 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    handleOpponentRegister(data){
+      const isFromOtherPlayer = this.userInfo.id !== data.userId
+      if(data.type === "user_registered" && isFromOtherPlayer){
+        this.players[1].avatar = data.avatar
+        this.players[1].name = data.name
+        }
     },
     async playNotificationSound() {
       const notificationSound = new Audio(
