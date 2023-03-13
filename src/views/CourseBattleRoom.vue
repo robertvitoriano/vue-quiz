@@ -122,7 +122,7 @@ export default {
         },
         received: async (data) => {
           this.handleChatEvents(data);
-          this.handleOpponentRegister(data)
+          this.handleOpponentRegister(data);
         },
         sendMessage({ message, userId }) {
           this.perform("send_message", { message, userId });
@@ -151,10 +151,12 @@ export default {
         {
           avatar: "",
           name: "",
+          id:""
         },
         {
           avatar: "",
           name: "",
+          id:""
         },
       ],
       courseBattleUsers: [
@@ -233,11 +235,28 @@ export default {
       ) {
         this.players[0].avatar = this.userInfo.avatar;
         this.players[0].name = this.userInfo.name;
-      } else if (this.courseBattleUsers.length === 2) {
+        this.players[0].id = this.userInfo.id
+      } else if (
+        this.courseBattleUsers.length === 1 &&
+        this.userInfo.id !== this.courseBattleUsers[0].userId
+      ) {
         this.players[0].avatar = this.courseBattleUsers[0].avatar;
         this.players[0].name = this.courseBattleUsers[0].name;
+        this.players[0].id = this.courseBattleUsers[0].userId;
+        this.players[1].avatar = this.userInfo.avatar;
+        this.players[1].name = this.userInfo.name;
+        this.players[1].id = this.userInfo.id
+        console.log({
+          playersSetPlayers:this.players
+        })
+      } else if (this.courseBattleUsers.length === 2) {
+        console.log('second else if')
+        this.players[0].avatar = this.courseBattleUsers[0].avatar;
+        this.players[0].name = this.courseBattleUsers[0].name;
+        this.players[0].id = this.courseBattleUsers[0].userId;
         this.players[1].avatar = this.courseBattleUsers[1].avatar;
         this.players[1].name = this.courseBattleUsers[1].name;
+        this.players[1].id = this.courseBattleUsers[1].userId;
       }
     },
     formatUsername(username) {
@@ -291,9 +310,11 @@ export default {
       });
     },
     handleUserAvatarMessage(userId) {
+      console.log({userId})
+      console.log({playsers:this.players})
       if (!userId) return "";
-      const userAvatar = this.courseBattleUsers.find(
-        (user) => user.userId === userId
+      const userAvatar = this.players.find(
+        (user) => user.id === userId
       ).avatar;
       return userAvatar;
     },
@@ -372,12 +393,13 @@ export default {
         console.error(error);
       }
     },
-    handleOpponentRegister(data){
-      const isFromOtherPlayer = this.userInfo.id !== data.userId
-      if(data.type === "user_registered" && isFromOtherPlayer){
-        this.players[1].avatar = data.avatar
-        this.players[1].name = data.name
-        }
+    handleOpponentRegister(data) {
+      const isFromOtherPlayer = this.userInfo.id !== data.userId;
+      if (data.type === "user_registered" && isFromOtherPlayer) {
+        this.players[1].avatar = data.avatar;
+        this.players[1].name = data.name;
+        this.players[1].id = data.userId
+      }
     },
     async playNotificationSound() {
       const notificationSound = new Audio(
