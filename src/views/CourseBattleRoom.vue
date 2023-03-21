@@ -12,7 +12,7 @@
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
-              <div class="courses-selection-container"></div>
+              <Button :title="'Start'" class="start-course-battle-button" v-if="hasPlayer2Joined"/>
             </div>
             <div class="player-container">
               <img
@@ -93,12 +93,13 @@ import tippy from "tippy.js";
 import AuthLayout from "../Layout/AuthLayout.vue";
 import userService from "./../services/userService";
 import courseService from "../services/courseService";
+import Button from "../components/Button.vue";
 import ActionCable from "actioncable";
 
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
-  components: { AuthLayout },
+  components: { AuthLayout, Button },
   created() {
     this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
       courseBattleId: this.$route.params.id,
@@ -173,6 +174,7 @@ export default {
       isSending: false,
       isTyping: false,
       typingTimeout: null,
+      hasPlayer2Joined: false
     };
   },
   methods: {
@@ -246,17 +248,16 @@ export default {
         this.players[1].avatar = this.userInfo.avatar;
         this.players[1].name = this.userInfo.name;
         this.players[1].id = this.userInfo.id
-        console.log({
-          playersSetPlayers:this.players
-        })
       } else if (this.courseBattleUsers.length === 2) {
-        console.log('second else if')
         this.players[0].avatar = this.courseBattleUsers[0].avatar;
         this.players[0].name = this.courseBattleUsers[0].name;
         this.players[0].id = this.courseBattleUsers[0].userId;
         this.players[1].avatar = this.courseBattleUsers[1].avatar;
         this.players[1].name = this.courseBattleUsers[1].name;
         this.players[1].id = this.courseBattleUsers[1].userId;
+        if(this.userInfo.id  === this.courseBattleUsers[0].userId){
+          this.hasPlayer2Joined = true;
+        }
       }
     },
     formatUsername(username) {
@@ -399,6 +400,7 @@ export default {
         this.players[1].avatar = data.avatar;
         this.players[1].name = data.name;
         this.players[1].id = data.userId
+        this.hasPlayer2Joined = true
       }
     },
     async playNotificationSound() {
@@ -608,5 +610,16 @@ export default {
 }
 .hidden-play-button {
   visibility: hidden;
+}
+.middle-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.start-course-battle-button{
+  font-size: 3rem;
+}
+.start-course-battle-button:hover {
+  cursor: pointer;
 }
 </style>

@@ -38,7 +38,7 @@
               </router-link>
             </b-collapse>
             <router-link to="/create-course-battle">
-              <div class="desktop-sidebar-item-container">Start Course Battle</div>
+              <div class="desktop-sidebar-item-container">Create quiz battle</div>
             </router-link>
               <div class="desktop-sidebar-item-container" @click="logout">Logout</div>
           </div>
@@ -74,7 +74,7 @@
             </router-link>
           </b-collapse>
           <router-link to="/create-course-battle">
-            <div class="desktop-sidebar-item-container">Start Course Battle</div>
+            <div class="desktop-sidebar-item-container">Create quiz battle</div>
           </router-link>
           <router-link to="/login">
             <div class="desktop-sidebar-item-container">Logout</div>
