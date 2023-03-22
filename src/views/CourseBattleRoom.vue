@@ -127,6 +127,7 @@ export default {
         received: async (data) => {
           this.handleChatEvents(data);
           this.handleOpponentRegister(data);
+          this.handleBattleCountdownStart(data);
         },
         sendMessage({ message, userId }) {
           this.perform("send_message", { message, userId });
@@ -137,6 +138,9 @@ export default {
         sendStopTyping() {
           this.perform("send_stop_typing", { userId });
         },
+        sendStartCourseBattleCountdown(){
+          this.perform("send_start_course_battle_countdown", { userId });
+        }
       }
     );
   },
@@ -414,6 +418,7 @@ export default {
       await notificationSound.play();
     },
     startCourseBattleCountdown(){
+      if(this.userInfo.id === this.players[0].id) this.subscription.sendStartCourseBattleCountdown()
       this.startQuizCountdown = setInterval(this.decreaseStartQuizCountdown, 1000);
       this.showCourseBattleCountdown = true
     },
@@ -423,6 +428,11 @@ export default {
         this.$router.push(`/quiz/${this.$route.params.id}`)
       }
       this.startQuizCountdownValue = this.startQuizCountdownValue - 1
+    },
+    handleBattleCountdownStart(data){
+      if(data.type === "start_course_battle_countdown" && data.userId !== this.userInfo.id){
+        this.startCourseBattleCountdown()
+      }
     }
   },
   computed: {
