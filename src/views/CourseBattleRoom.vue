@@ -2,8 +2,11 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
-        <div class="start-course-countdown-wrapper" v-if="showCourseBattleCountdown">
-          <h1 class="start-countdown-value">{{startQuizCountdownValue}}</h1>
+        <div
+          class="start-course-countdown-wrapper"
+          v-if="showCourseBattleCountdown"
+        >
+          <h1 class="start-countdown-value">{{ startQuizCountdownValue }}</h1>
         </div>
         <div class="course-battle-creation-container">
           <div class="course-battle-content">
@@ -15,7 +18,13 @@
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
-              <Button :title="'Start'" class="start-course-battle-button" @handleClick="startCourseBattleCountdown" v-if="hasPlayer2Joined" ref="startCourseBattleButton"/>
+              <Button
+                :title="'Start'"
+                class="start-course-battle-button"
+                @handleClick="startCourseBattleCountdown"
+                v-if="hasPlayer2Joined"
+                ref="startCourseBattleButton"
+              />
             </div>
             <div class="player-container">
               <img
@@ -138,9 +147,9 @@ export default {
         sendStopTyping() {
           this.perform("send_stop_typing", { userId });
         },
-        sendStartCourseBattleCountdown(){
+        sendStartCourseBattleCountdown() {
           this.perform("send_start_course_battle_countdown", { userId });
-        }
+        },
       }
     );
   },
@@ -159,12 +168,12 @@ export default {
         {
           avatar: "",
           name: "",
-          id:""
+          id: "",
         },
         {
           avatar: "",
           name: "",
-          id:""
+          id: "",
         },
       ],
       courseBattleUsers: [
@@ -182,9 +191,9 @@ export default {
       isTyping: false,
       typingTimeout: null,
       hasPlayer2Joined: false,
-      startQuizCountdownValue:5,
-      showCourseBattleCountdown:false,
-      startQuizCountdown:null
+      startQuizCountdownValue: 5,
+      showCourseBattleCountdown: false,
+      startQuizCountdown: null,
     };
   },
   methods: {
@@ -247,7 +256,7 @@ export default {
       ) {
         this.players[0].avatar = this.userInfo.avatar;
         this.players[0].name = this.userInfo.name;
-        this.players[0].id = this.userInfo.id
+        this.players[0].id = this.userInfo.id;
       } else if (
         this.courseBattleUsers.length === 1 &&
         this.userInfo.id !== this.courseBattleUsers[0].userId
@@ -257,7 +266,7 @@ export default {
         this.players[0].id = this.courseBattleUsers[0].userId;
         this.players[1].avatar = this.userInfo.avatar;
         this.players[1].name = this.userInfo.name;
-        this.players[1].id = this.userInfo.id
+        this.players[1].id = this.userInfo.id;
       } else if (this.courseBattleUsers.length === 2) {
         this.players[0].avatar = this.courseBattleUsers[0].avatar;
         this.players[0].name = this.courseBattleUsers[0].name;
@@ -265,7 +274,7 @@ export default {
         this.players[1].avatar = this.courseBattleUsers[1].avatar;
         this.players[1].name = this.courseBattleUsers[1].name;
         this.players[1].id = this.courseBattleUsers[1].userId;
-        if(this.userInfo.id  === this.courseBattleUsers[0].userId){
+        if (this.userInfo.id === this.courseBattleUsers[0].userId) {
           this.hasPlayer2Joined = true;
         }
       }
@@ -322,9 +331,7 @@ export default {
     },
     handleUserAvatarMessage(userId) {
       if (!userId) return "";
-      const userAvatar = this.players.find(
-        (user) => user.id === userId
-      ).avatar;
+      const userAvatar = this.players.find((user) => user.id === userId).avatar;
       return userAvatar;
     },
     handleUserAvatarMessageClass(isFromUser) {
@@ -407,8 +414,8 @@ export default {
       if (data.type === "user_registered" && isFromOtherPlayer) {
         this.players[1].avatar = data.avatar;
         this.players[1].name = data.name;
-        this.players[1].id = data.userId
-        this.hasPlayer2Joined = true
+        this.players[1].id = data.userId;
+        this.hasPlayer2Joined = true;
       }
     },
     async playNotificationSound() {
@@ -417,23 +424,54 @@ export default {
       );
       await notificationSound.play();
     },
-    startCourseBattleCountdown(){
-      if(this.userInfo.id === this.players[0].id) this.subscription.sendStartCourseBattleCountdown()
-      this.startQuizCountdown = setInterval(this.decreaseStartQuizCountdown, 1000);
-      this.showCourseBattleCountdown = true
+    async playTickSound() {
+      const tickSound = new Audio(
+        "https://rails-quiz.s3.amazonaws.com/tickSound.wav"
+      );
+      await tickSound.play();
     },
-    decreaseStartQuizCountdown(){
-      if(this.startQuizCountdownValue === 1) {
-        clearInterval(this.startQuizCountdown)
-        this.$router.push(`/quiz/${this.$route.params.id}`)
-      }
-      this.startQuizCountdownValue = this.startQuizCountdownValue - 1
+    async playTockSound() {
+      const tockSound = new Audio(
+        "https://rails-quiz.s3.amazonaws.com/tockSound.wav"
+      );
+      await tockSound.play();
     },
-    handleBattleCountdownStart(data){
-      if(data.type === "start_course_battle_countdown" && data.userId !== this.userInfo.id){
-        this.startCourseBattleCountdown()
+    startCourseBattleCountdown() {
+      if (this.userInfo.id === this.players[0].id){
+        this.subscription.sendStartCourseBattleCountdown();
+
+      } else {
+        document.body.click()
       }
-    }
+
+      this.startQuizCountdown = setInterval(
+        this.decreaseStartQuizCountdown,
+        1000
+      );
+      this.showCourseBattleCountdown = true;
+    },
+    async decreaseStartQuizCountdown() {
+      if (this.startQuizCountdownValue === 1) {
+        clearInterval(this.startQuizCountdown);
+        this.$router.push(`/quiz/${this.$route.params.id}`);
+      }
+
+      if (this.startQuizCountdownValue % 2 !== 0) {
+        await this.playTickSound();
+        this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
+      } else {
+        await this.playTockSound();
+        this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
+      }
+    },
+    handleBattleCountdownStart(data) {
+      if (
+        data.type === "start_course_battle_countdown" &&
+        data.userId !== this.userInfo.id
+      ) {
+        this.startCourseBattleCountdown();
+      }
+    },
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -636,29 +674,28 @@ export default {
 .hidden-play-button {
   visibility: hidden;
 }
-.middle-container{
+.middle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.start-course-battle-button{
+.start-course-battle-button {
   font-size: 3rem;
 }
 .start-course-battle-button:hover {
   cursor: pointer;
 }
-.start-course-countdown-wrapper{
-  top:10vh;
-  height:30vh;
-  width:30vw;
+.start-course-countdown-wrapper {
+  top: 10vh;
+  height: 30vh;
+  width: 30vw;
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.start-countdown-value{
-  color:white;
+.start-countdown-value {
+  color: white;
   font-size: 6rem;
 }
-
 </style>
