@@ -1,11 +1,17 @@
 <template>
- <div class="button">{{title}}</div>
+ <div class="button" @click="emitClickEvent">{{title}}</div>
 </template>
 
 <script>
 export default {
   name:'Button',
-  props:['title']
+  props:['title'],
+  methods: {
+    emitClickEvent(){
+      this.$emit("handleClick")
+    }
+  }
+
 }
 </script>
 

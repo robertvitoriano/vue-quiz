@@ -42,8 +42,8 @@ async function getCourseById(courseId) {
   return responseHandled;
 }
 
-async function getCourseQuestions(courseId) {
-  const response = await api.get(`/courses/${courseId}`);
+async function getCourseQuestions(courseBattleId) {
+  const response = await api.get(`/courses/${courseBattleId}`);
   const responseHandled = handleResponse(response);
   return responseHandled;
 }

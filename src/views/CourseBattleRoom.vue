@@ -2,6 +2,9 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
+        <div class="start-course-countdown-wrapper" v-if="showCourseBattleCountdown">
+          <h1 class="start-countdown-value">{{startQuizCountdownValue}}</h1>
+        </div>
         <div class="course-battle-creation-container">
           <div class="course-battle-content">
             <div class="player-container">
@@ -12,7 +15,7 @@
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
-              <Button :title="'Start'" class="start-course-battle-button" v-if="hasPlayer2Joined"/>
+              <Button :title="'Start'" class="start-course-battle-button" @handleClick="startCourseBattleCountdown" v-if="hasPlayer2Joined" ref="startCourseBattleButton"/>
             </div>
             <div class="player-container">
               <img
@@ -174,7 +177,10 @@ export default {
       isSending: false,
       isTyping: false,
       typingTimeout: null,
-      hasPlayer2Joined: false
+      hasPlayer2Joined: false,
+      startQuizCountdownValue:5,
+      showCourseBattleCountdown:false,
+      startQuizCountdown:null
     };
   },
   methods: {
@@ -311,8 +317,6 @@ export default {
       });
     },
     handleUserAvatarMessage(userId) {
-      console.log({userId})
-      console.log({playsers:this.players})
       if (!userId) return "";
       const userAvatar = this.players.find(
         (user) => user.id === userId
@@ -409,6 +413,17 @@ export default {
       );
       await notificationSound.play();
     },
+    startCourseBattleCountdown(){
+      this.startQuizCountdown = setInterval(this.decreaseStartQuizCountdown, 1000);
+      this.showCourseBattleCountdown = true
+    },
+    decreaseStartQuizCountdown(){
+      if(this.startQuizCountdownValue === 1) {
+        clearInterval(this.startQuizCountdown)
+        this.$router.push(`/quiz/${this.$route.params.id}`)
+      }
+      this.startQuizCountdownValue = this.startQuizCountdownValue - 1
+    }
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -622,4 +637,18 @@ export default {
 .start-course-battle-button:hover {
   cursor: pointer;
 }
+.start-course-countdown-wrapper{
+  top:10vh;
+  height:30vh;
+  width:30vw;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.start-countdown-value{
+  color:white;
+  font-size: 6rem;
+}
+
 </style>

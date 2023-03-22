@@ -48,7 +48,7 @@ export default {
     ...mapActions(['changeLoadingState']),
     async loadQuestions() {
       this.changeLoadingState();
-      const response = await courseService.getCourseQuestions(this.$route.params.id)
+      const response = await courseService.getCourseQuestions(this.$route.params.courseBattleId)
       this.questions = response.data.questions
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]

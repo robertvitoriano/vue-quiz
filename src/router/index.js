@@ -36,7 +36,7 @@ const routes = [
     meta: { authorize: [LEVEL.ADMIN] }
   },
   {
-    path: '/quiz/:id',
+    path: '/quiz/:courseBattleId',
     name: 'Quiz',
     component: Quiz,
     meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
