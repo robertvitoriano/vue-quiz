@@ -23,7 +23,7 @@ import QuestionBox from './../components/QuestionBox.vue';
 import RestartSection from './../components/RestartSection.vue';
 import AuthLayout from './../Layout/AuthLayout.vue'
 import courseService from './../services/courseService'
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'Quiz',
   components: {
@@ -32,7 +32,7 @@ export default {
     AuthLayout
 },
   mounted: function () {
-    this.loadQuestions()
+    this.load()
   },
   data() {
     return {
@@ -41,11 +41,20 @@ export default {
       currentQuestion: {},
       score:0,
       hasFinished:false,
-      courseTitle:''
+      courseTitle:'',
+      players:[]
     }
   },
   methods: {
     ...mapActions(['changeLoadingState']),
+    async load(){
+      const playersResponse = await courseService.getCourseBattleUsers(this.$route.params.courseBattleId)
+      this.players = playersResponse.data.data.courseBattleUsers
+      const isRegisteredInBattle = this.players.some((player)=> player.userId === this.userInfo.id)
+
+      if(!isRegisteredInBattle) return this.$router.push('/home')
+      await this.loadQuestions()
+    },
     async loadQuestions() {
       this.changeLoadingState();
       const response = await courseService.getCourseQuestions(this.$route.params.courseBattleId)
@@ -59,6 +68,7 @@ export default {
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
         this.currentQuestion = this.questions[this.currentQuestionIndex]
+
       }
     },
     finishQuiz(){
@@ -68,6 +78,9 @@ export default {
       this.loadQuestions()
       this.hasFinished = false
     }
+  },
+  computed:{
+    ...mapGetters(["userInfo"]),
   }
 }
 </script>
