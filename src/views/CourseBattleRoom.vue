@@ -466,12 +466,25 @@ export default {
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       }
     },
+    decreaseCountdownWithouSound(){
+      if (this.startQuizCountdownValue % 2 !== 0) {
+        this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
+      } else {
+        this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
+      }
+      if(this.startQuizCountdownValue === 1){
+        return this.$router.push(`/quiz/${this.$route.params.id}`);
+      }
+    },
     handleBattleCountdownStart(data) {
       if (
         data.type === "course_battle_decrease_countdown" &&
         data.userId !== this.userInfo.id
       ) {
-        this.handleTickTockSound()
+        if(!this.showCourseBattleCountdown){
+          this.showCourseBattleCountdown = true
+        }
+        this.decreaseCountdownWithouSound()
       }
     },
     handleEvents(data) {
