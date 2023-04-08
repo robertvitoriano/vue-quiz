@@ -91,7 +91,7 @@ export default {
     async handleSubmit() {
       this.changeLoadingState();
       const selectedAnswer = this.currentQuestion.alternatives.find((question, index) => index === this.selectedAnswerIndex );
-      await courseService.saveUserAnswer(selectedAnswer.id);
+      await courseService.saveUserAnswer(selectedAnswer.id, this.$route.params.courseBattleId);
       this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
         alert("You got it right");

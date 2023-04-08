@@ -134,9 +134,7 @@ export default {
           console.log("disconnected");
         },
         received: async (data) => {
-          this.handleChatEvents(data);
-          this.handleOpponentRegister(data);
-          this.handleBattleCountdownStart(data);
+          this.handleEvents(data);
         },
         sendMessage({ message, userId }) {
           this.perform("send_message", { message, userId });
@@ -147,8 +145,8 @@ export default {
         sendStopTyping() {
           this.perform("send_stop_typing", { userId });
         },
-        sendStartCourseBattleCountdown() {
-          this.perform("send_start_course_battle_countdown", { userId });
+        sendCourseBattleDecreaseCountdown() {
+          this.perform("send_course_battle_decrease_countdown", { userId });
         },
       }
     );
@@ -437,13 +435,6 @@ export default {
       await tockSound.play();
     },
     startCourseBattleCountdown() {
-      if (this.userInfo.id === this.players[0].id){
-        this.subscription.sendStartCourseBattleCountdown();
-
-      } else {
-        document.body.click()
-      }
-
       this.startQuizCountdown = setInterval(
         this.decreaseStartQuizCountdown,
         1000
@@ -451,11 +442,22 @@ export default {
       this.showCourseBattleCountdown = true;
     },
     async decreaseStartQuizCountdown() {
+
       if (this.startQuizCountdownValue === 1) {
         clearInterval(this.startQuizCountdown);
         this.$router.push(`/quiz/${this.$route.params.id}`);
       }
 
+      await this.handleTickTockSound()
+
+      if (this.userInfo.id === this.players[0].id) {
+        this.subscription.sendCourseBattleDecreaseCountdown();
+      }
+    },
+    async handleTickTockSound(){
+      if(this.startQuizCountdownValue === 0){
+        return this.$router.push(`/quiz/${this.$route.params.id}`);
+      }
       if (this.startQuizCountdownValue % 2 !== 0) {
         await this.playTickSound();
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
@@ -466,11 +468,16 @@ export default {
     },
     handleBattleCountdownStart(data) {
       if (
-        data.type === "start_course_battle_countdown" &&
+        data.type === "course_battle_decrease_countdown" &&
         data.userId !== this.userInfo.id
       ) {
-        this.startCourseBattleCountdown();
+        this.handleTickTockSound()
       }
+    },
+    handleEvents(data) {
+      this.handleChatEvents(data);
+      this.handleOpponentRegister(data);
+      this.handleBattleCountdownStart(data);
     },
   },
   computed: {

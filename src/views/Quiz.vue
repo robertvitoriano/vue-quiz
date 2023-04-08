@@ -3,10 +3,10 @@
   <template #content>
   <div class="quiz-wrapper">
     <QuestionBox
-     :currentQuestion="currentQuestion"
-     :currentQuestionIndex="currentQuestionIndex"
-     :questionsCount="questions.length"
-     :courseTitle="courseTitle"
+     :current-question="currentQuestion"
+     :current-question-index="currentQuestionIndex"
+     :questions-count="questions.length"
+     :course-title="courseTitle"
      @nextQuestionEvent="updatedCurrentQuestionIndex"
      @increaseScoreEvent= "score++"
      @hasFinishedEvent = "finishQuiz"
