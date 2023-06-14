@@ -1,16 +1,16 @@
 <template>
-  <AuthLayout #content>
-    <FriendsList :friends="friends"/>
+  <AuthLayout #content :pageTitle="'Friends'">
+    <GridList :items ="friends"/>
   </AuthLayout>
 </template>
 
 <script>
 import AuthLayout from '../Layout/AuthLayout.vue';
-import FriendsList from '../components/FriendsList.vue';
+import GridList from '../components/GridList.vue';
 import  userService from '../services/userService'
  export default {
   name:'Friends',
-  components:{AuthLayout, FriendsList},
+  components:{AuthLayout, GridList},
   data(){
     return{
       friends:[],
@@ -23,7 +23,14 @@ import  userService from '../services/userService'
   methods:{
     async getFriends(){
       const response = await this.userService.getFriends(this.$route.params.userId)
-      this.friends = response.data.data
+      const friendsWithPreparedData = response.data.data.map((friend) =>{
+        return {
+          image:friend.avatar,
+          title:friend.name,
+          link:''
+        }
+      })
+      this.friends = friendsWithPreparedData
     }
   }
  }

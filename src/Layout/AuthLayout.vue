@@ -115,6 +115,9 @@
         </div>
       </div>
       <div class="content-slot-container">
+        <div class="page-title-container">
+          <h1 v-if="pageTitle" class="page-title">{{pageTitle}}</h1>
+        </div>
         <slot name="content"></slot>
       </div>
       <footer class="auth-layout-footer">
@@ -136,7 +139,8 @@ export default {
   },
   computed:{
     ...mapGetters(['userInfo'])
-  }
+  },
+  props:['pageTitle']
 };
 </script>
 
@@ -365,6 +369,14 @@ export default {
   }
   .mobile-go-back-button {
     font-size: 1.8rem;
+  }
+  .page-title{
+    text-decoration: underline;
+  }
+  .page-title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
