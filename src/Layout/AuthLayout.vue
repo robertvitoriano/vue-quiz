@@ -73,6 +73,21 @@
               <div class="sidebar-collapse-item">Users</div>
             </router-link>
           </b-collapse>
+          <div
+          v-b-toggle.friends-collapse
+          class="desktop-sidebar-item-container"
+        >
+          Friends
+        </div>
+        <b-collapse
+          id="friends-collapse"
+          class="sidebar-collapse-items-container"
+        >
+          <router-link :to="`friends-list/${this.userInfo.id}`">
+            <div class="sidebar-collapse-item">My Friends</div>
+          </router-link>
+            <div class="sidebar-collapse-item">add a friend</div>
+        </b-collapse>
           <router-link to="/create-course-battle">
             <div class="desktop-sidebar-item-container">Create quiz battle</div>
           </router-link>

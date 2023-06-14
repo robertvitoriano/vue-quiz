@@ -36,11 +36,17 @@ async function checkUser(){
 async function deleteUser(userId){
   await api.delete(`/users/${userId}`)
 }
+
+async function getFriends(userId){
+  const respose = await api.get(`/users/friends/${userId}`)
+  return respose
+}
 export default {
   login,
   logout,
   getUsers,
   createUser,
   deleteUser,
-  checkUser
+  checkUser,
+  getFriends
 };

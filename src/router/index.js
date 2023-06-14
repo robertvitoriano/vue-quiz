@@ -12,6 +12,7 @@ import CourseBattleRoom from './../views/CourseBattleRoom.vue'
 import {LEVEL} from '../utils/level'
 import userService from '../services/userService'
 import {store} from './../store'
+import Friends from './../views/Friends.vue'
 Vue.use(VueRouter)
 
 
@@ -39,6 +40,13 @@ const routes = [
     path: '/quiz/:courseBattleId',
     name: 'Quiz',
     component: Quiz,
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
+
+  },
+  {
+    path: '/friends-list/:userId',
+    name: 'Friends',
+    component: Friends,
     meta: { authorize: [LEVEL.ADMIN, LEVEL.USER] }
 
   },
