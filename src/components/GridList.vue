@@ -1,27 +1,26 @@
 <template>
   <div>
-    <div class="course-list" v-if="courses.length">
-      <CourseCard v-for="course in courses" :key="course.id" :course="course" />
+    <div class="grid-list" v-if="items.length">
+      <Card v-for="item in items" :key="item.id" :item="item" />
     </div>
-    <h2 v-if="!courses.length" class="no-course-created">You haven't created any course</h2>
   </div>
 </template>
 
 <script>
-import CourseCard from './CourseCard.vue'
+import Card from './Card.vue'
 export default {
-  name: 'CoursesList',
+  name: 'GridList',
   components: {
-    CourseCard
+    Card
   },
-  props: ['courses']
+  props: ['items']
 }
 </script>
 <style scoped>
 
 
 @media (min-width: 280px) {
-  .course-list {
+  .grid-list {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -29,7 +28,7 @@ export default {
 }
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-  .course-list {
+  .grid-list {
     display: grid;
     grid-template-columns: 30% 30% 30%;
     grid-template-rows: auto;
@@ -41,7 +40,5 @@ export default {
 
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
 @media (min-width: 768px) {}
-.no-course-created{
-  margin-top: 2rem;
-}
+
 </style>

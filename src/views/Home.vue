@@ -2,21 +2,22 @@
   <AuthLayout #content>
     <div class="home-container">
       <div class="home-content">
-        <CourseList :courses="courses" v-if="courses.length" />
+        <GridList :items="courses" v-if="courses.length" />
+        <h2 v-else class="no-course-created">You haven't created any course</h2>
       </div>
     </div>
   </AuthLayout>
 </template>
 
 <script>
-import CourseList from "./../components/CoursesList.vue";
+import GridList from "./../components/GridList.vue";
 import AuthLayout from "./../Layout/AuthLayout.vue";
 import { mapActions } from "vuex";
 import courseService from "../services/courseService";
 export default {
   name: "Home",
   components: {
-    CourseList,
+    GridList,
     AuthLayout,
   },
   mounted() {
@@ -42,7 +43,15 @@ export default {
       try {
         this.changeLoadingState();
         const response = await courseService.getCourses()
-        this.courses = response.data.courses;
+        const coursesWithPreparedData = response.data.courses.map((course)=>{
+          return {
+            link:`quiz/${course.id}`,
+            image: course.cover || "https://rails-quiz.s3.amazonaws.com/courseCoverDefaultImage.jpeg",
+            title:course.title
+          }
+        })
+        this.courses = coursesWithPreparedData;
+        console.log({courses:this.courses})
         this.changeLoadingState()
       } catch (error) {
         this.changeLoadingState();
@@ -54,4 +63,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.no-course-created{
+  margin-top: 2rem;
+}
+</style>

@@ -1,11 +1,11 @@
 <template>
-  <div class="course-wrapper">
-    <div class="course-content">
-      <router-link :to="'quiz/'+course.id" class="course-title">
-        {{courseTitleFormatted}}
+  <div class="item-wrapper">
+    <div class="item-content">
+      <router-link :to="item.link" class="item-title">
+        {{itemTitleFormatted}}
       </router-link>
-      <router-link :to="'quiz/'+course.id">
-        <div class="course-container" ref="courseContainer" :style="cardStyle"></div>
+      <router-link :to="item.link">
+        <div class="item-container" ref="itemContainer" :style="cardStyle"></div>
       </router-link>
     </div>
   </div>
@@ -13,17 +13,17 @@
 
 <script>
 export default {
-  name: 'CourseCard',
-  props: ['course'],
+  name: 'Card',
+  props: ['item'],
   data() {
     return {
       cardStyle: {
-        'background-image': this.course.cover ? 'url(' + '"' +  this.course.cover + '"' + ')': 'url(' + "https://rails-quiz.s3.amazonaws.com/courseCoverDefaultImage.jpeg" + ')',
+        'background-image':'url(' + '"' +  this.item.image + '"' + ')',
         'background-position': 'center',
         'background-repeat': 'no-repeat',
         'background-size': 'cover'
       },
-      courseTitleFormatted:this.course.title.length >= 17 ?this.course.title.substring(0,14)+'...': this.course.title
+      itemTitleFormatted:this.item.title.length >= 17 ?this.item.title.substring(0,14)+'...': this.item.title
     }
   }
 }
@@ -32,54 +32,54 @@ export default {
 
 
 @media (min-width: 280px) {
-  .course-wrapper {
+  .item-wrapper {
     margin-bottom: 1rem;
   }
 
-  .course-container {
+  .item-container {
     height: 40vh;
     width: 90vw;
   }
 
-  .course-content {
+  .item-content {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .course-title {
+  .item-title {
     color:white;
     font-size:3rem;
     text-decoration: none;
   }
-  .course-title:hover{
+  .item-title:hover{
     text-decoration: underline;
   }
 }
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-  .course-wrapper {
+  .item-wrapper {
     height: 100px;
   }
 
-  .course-container {
+  .item-container {
     width: 250px;
     height: 250px;
   }
 
-  .course-content {
+  .item-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
   }
 
-  .course-title {
+  .item-title {
     color:white;
     font-size:2rem;
     text-decoration: none;
   }
-  .course-title:hover{
+  .item-title:hover{
     text-decoration: underline;
   }
 }
