@@ -44,7 +44,7 @@
                     <i
                       class="fas fa-user-friends text-white-500 player2-search-option-icon"
                     ></i>
-                    <span>Invite a friend</span>
+                    <span v-b-modal="'friendsListModal'">Invite a friend</span>
                   </div>
                   <span></span>
                 </div>
@@ -95,6 +95,20 @@
             </div>
           </div>
         </div>
+        <Modal modalId="friendsListModal" title="Friends">
+          <template #content>
+            <div class="friends-select-list">
+              <div
+                class="friend-item"
+                v-for="friend in friends"
+                :key="friend.id"
+                @click="sendInviteNotificationToFriend(friend.id)"
+              >
+                {{ friend.name }}
+              </div>
+            </div>
+          </template>
+        </Modal>
       </div>
     </template>
   </AuthLayout>
@@ -107,11 +121,12 @@ import userService from "./../services/userService";
 import courseService from "../services/courseService";
 import Button from "../components/Button.vue";
 import ActionCable from "actioncable";
+import Modal from "../components/Modal.vue";
 
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
-  components: { AuthLayout, Button },
+  components: { AuthLayout, Button, Modal },
   created() {
     this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
       courseBattleId: this.$route.params.id,
@@ -120,6 +135,7 @@ export default {
   mounted() {
     const courseBattleId = this.$route.params.id;
     const userId = this.userInfo.id;
+    this.loadFriends();
     this.setPlayers();
     this.subscription = this.cable.subscriptions.create(
       {
@@ -192,6 +208,7 @@ export default {
       startQuizCountdownValue: 5,
       showCourseBattleCountdown: false,
       startQuizCountdown: null,
+      friends: [],
     };
   },
   methods: {
@@ -213,6 +230,10 @@ export default {
       };
 
       return finalClass;
+    },
+    async loadFriends() {
+      const response = await userService.getFriends(this.userInfo.id)
+      this.friends = response.data.data
     },
     async setPlayers() {
       this.changeLoadingState();
@@ -442,20 +463,19 @@ export default {
       this.showCourseBattleCountdown = true;
     },
     async decreaseStartQuizCountdown() {
-
       if (this.startQuizCountdownValue === 1) {
         clearInterval(this.startQuizCountdown);
         this.$router.push(`/quiz/${this.$route.params.id}`);
       }
 
-      await this.handleTickTockSound()
+      await this.handleTickTockSound();
 
       if (this.userInfo.id === this.players[0].id) {
         this.subscription.sendCourseBattleDecreaseCountdown();
       }
     },
-    async handleTickTockSound(){
-      if(this.startQuizCountdownValue === 0){
+    async handleTickTockSound() {
+      if (this.startQuizCountdownValue === 0) {
         return this.$router.push(`/quiz/${this.$route.params.id}`);
       }
       if (this.startQuizCountdownValue % 2 !== 0) {
@@ -466,13 +486,13 @@ export default {
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       }
     },
-    decreaseCountdownWithouSound(){
+    decreaseCountdownWithouSound() {
       if (this.startQuizCountdownValue % 2 !== 0) {
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       } else {
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       }
-      if(this.startQuizCountdownValue === 1){
+      if (this.startQuizCountdownValue === 1) {
         return this.$router.push(`/quiz/${this.$route.params.id}`);
       }
     },
@@ -481,10 +501,10 @@ export default {
         data.type === "course_battle_decrease_countdown" &&
         data.userId !== this.userInfo.id
       ) {
-        if(!this.showCourseBattleCountdown){
-          this.showCourseBattleCountdown = true
+        if (!this.showCourseBattleCountdown) {
+          this.showCourseBattleCountdown = true;
         }
-        this.decreaseCountdownWithouSound()
+        this.decreaseCountdownWithouSound();
       }
     },
     handleEvents(data) {
@@ -492,6 +512,9 @@ export default {
       this.handleOpponentRegister(data);
       this.handleBattleCountdownStart(data);
     },
+    sendInviteNotificationToFriend(friendId){
+      console.log({friendId})
+    }
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -717,5 +740,26 @@ export default {
 .start-countdown-value {
   color: white;
   font-size: 6rem;
+}
+
+.friends-select-list {
+  height: 200px;
+  overflow: auto;
+}
+.friend-item{
+  padding:15px;
+  text-align: center;
+}
+.friend-item:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.friend-item:nth-child(even) {
+  background-color: black;
+  color:white;
+}
+.friend-item:nth-child(odd) {
+  background-color: white;
+  color:black;
 }
 </style>

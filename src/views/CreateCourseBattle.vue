@@ -24,9 +24,10 @@ import Select from "../components/Form/Select.vue";
 import courseService from "../services/courseService";
 import TextInput from "../components/Form/TextInput.vue";
 import Button from "../components/Form/Button.vue";
+import Modal from "../components/Modal.vue";
 export default {
   name:"CourseBatleRooom",
-  components:{AuthLayout, Select, TextInput, Button},
+  components:{AuthLayout, Select, TextInput, Button, Modal},
   data() {
     return {
       selectedCourse: {
