@@ -164,6 +164,9 @@ export default {
         sendCourseBattleDecreaseCountdown() {
           this.perform("send_course_battle_decrease_countdown", { userId });
         },
+        sendInviteNotificationToFriend(friendId){
+          this.perform("send_invite_notification_to_friend", { userId, friendId, courseBattleUrl: window.location.href });
+        }
       }
     );
   },
@@ -511,9 +514,12 @@ export default {
       this.handleChatEvents(data);
       this.handleOpponentRegister(data);
       this.handleBattleCountdownStart(data);
+      
+      console.log({data})
     },
     sendInviteNotificationToFriend(friendId){
-      console.log({friendId})
+      this.subscription.sendInviteNotificationToFriend(friendId)
+
     }
   },
   computed: {

@@ -129,6 +129,8 @@
 
 <script>
 import userService from '../services/userService';
+import ActionCable from "actioncable";
+
 import { mapGetters } from 'vuex';
 export default {
   name: "AuthLayout",
@@ -137,6 +139,40 @@ export default {
       userService.logout()
     }
   },
+  created(){
+    this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
+      userId: this.userInfo.id,
+    });
+  },
+  mounted(){
+    const userId = this.userInfo.id
+
+    this.subscription = this.cable.subscriptions.create(
+      {
+        channel: "UserNotificationChannel",
+        userId,
+      },
+      {
+        connected: function () {
+          console.log("connected");
+        },
+        disconnected: function () {
+          console.log("disconnected");
+        },
+        received: async (data) => {
+          window.location.href = data.courseBattleUrl
+          // TODO: MOSTRAR MODAL OU NOTIFICAÇÃO NATIVA SE POSSÍVEL PARA DIRECIONAR USUÁRIO PARA O CURSO
+          
+        }
+      }
+    );
+  },
+  data(){
+    return {
+      cable: null,
+      subscription: null
+    } 
+ },
   computed:{
     ...mapGetters(['userInfo'])
   },
