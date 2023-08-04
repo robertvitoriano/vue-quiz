@@ -47,7 +47,7 @@ export default {
     this.loadCourses()
   },
   methods: {
-    ...mapActions(["changeLoadingState"]),
+    ...mapActions(["changeLoadingState", "setSelectedCourse"]),
     handleSelectedCourse(course){
       this.selectedCourse = course
     },
@@ -62,6 +62,7 @@ export default {
       this.changeLoadingState()
       const response = await courseService.createCourseBattle({name:this.courseBattleName, courseId:this.selectedCourse.id, userId:this.userInfo.id})
       const createCourseBattleId = response.data.data.courseBattle.id
+      this.setSelectedCourse(this.selectedCourse);
       this.changeLoadingState()
       this.$router.push("/course-battle-room/"+ createCourseBattleId);
     }

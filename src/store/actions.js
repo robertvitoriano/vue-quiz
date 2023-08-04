@@ -4,5 +4,8 @@ export default {
   },
   setUserInfo:(context) =>{
     context.commit('setUserInfo')
+  },
+  setSelectedCourse({ commit }, course) {
+    commit('setSelectedCourse', course);
   }
 }

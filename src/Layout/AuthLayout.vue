@@ -124,19 +124,34 @@
         <span class="footer-copyright"> Developed By Robert</span>
       </footer>
     </div>
+    <BattleInviteNotification v-if="showBattleNotificationModal" :battleId="battleInviteInfo.battleId" :courseName="battleInviteInfo.courseName"></BattleInviteNotification>
   </div>
 </template>
 
 <script>
+import BattleInviteNotification from '../components/BattleInviteNotification.vue';
 import userService from '../services/userService';
 import ActionCable from "actioncable";
 
 import { mapGetters } from 'vuex';
 export default {
   name: "AuthLayout",
+  components:{BattleInviteNotification},
   methods:{
     logout(){
       userService.logout()
+    },
+    handleReceivedNotifications(notification){
+      switch(notification.type){
+        case "notification_to_join_course_battle":
+          console.log({notification})
+          this.showBattleNotificationModal = true
+                    
+          this.battleInviteInfo.battleId = notification.courseBattleId,
+          this.battleInviteInfo.opponentName = notification.opponentName
+          this.battleInviteInfo.courseName = notification.courseName
+        break;
+      }
     }
   },
   created(){
@@ -160,9 +175,7 @@ export default {
           console.log("disconnected");
         },
         received: async (data) => {
-          window.location.href = data.courseBattleUrl
-          // TODO: MOSTRAR MODAL OU NOTIFICAÇÃO NATIVA SE POSSÍVEL PARA DIRECIONAR USUÁRIO PARA O CURSO
-          
+          this.handleReceivedNotifications(data)
         }
       }
     );
@@ -170,7 +183,12 @@ export default {
   data(){
     return {
       cable: null,
-      subscription: null
+      subscription: null,
+      showBattleNotificationModal:false,
+      battleInviteInfo:{
+        battleId:String,
+        courseName:String
+      }
     } 
  },
   computed:{

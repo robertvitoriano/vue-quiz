@@ -5,4 +5,7 @@ export default {
   setUserInfo: (state, newInfo) =>{
     state.userInfo = newInfo
   },
+  setSelectedCourse(state, course) {
+    state.selectedCourse = course;
+  }
 }

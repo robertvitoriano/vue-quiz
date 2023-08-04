@@ -134,9 +134,10 @@ export default {
   },
   mounted() {
     const courseBattleId = this.$route.params.id;
-    const userId = this.userInfo.id;
+    const {name:userName, id:userId} = this.userInfo;
     this.loadFriends();
     this.setPlayers();
+    const courseName = this.selectedCourse.label
     this.subscription = this.cable.subscriptions.create(
       {
         channel: "CourseBattleChatChannel",
@@ -165,10 +166,11 @@ export default {
           this.perform("send_course_battle_decrease_countdown", { userId });
         },
         sendInviteNotificationToFriend(friendId){
-          this.perform("send_invite_notification_to_friend", { userId, friendId, courseBattleUrl: window.location.href });
+          this.perform("send_invite_notification_to_friend", { userName, friendId, courseName });
         }
       }
     );
+    console.log({selectedCourse:this.selectedCourse})
   },
   data() {
     return {
@@ -523,7 +525,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["userInfo"]),
+    ...mapGetters(["userInfo", "getSelectedCourse"]),
+    selectedCourse() {
+      return this.getSelectedCourse;
+    }
   },
 };
 </script>
