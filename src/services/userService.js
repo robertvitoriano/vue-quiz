@@ -41,6 +41,10 @@ async function getFriends(userId){
   const respose = await api.get(`/users/friends/${userId}`)
   return respose
 }
+async function getNonFriends(){
+  const respose = await api.get(`/users/friends/non-friends`)
+  return respose
+}
 export default {
   login,
   logout,
@@ -48,5 +52,6 @@ export default {
   createUser,
   deleteUser,
   checkUser,
-  getFriends
+  getFriends,
+  getNonFriends,
 };

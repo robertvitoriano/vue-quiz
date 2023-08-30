@@ -51,7 +51,6 @@ export default {
           }
         })
         this.courses = coursesWithPreparedData;
-        console.log({courses:this.courses})
         this.changeLoadingState()
       } catch (error) {
         this.changeLoadingState();

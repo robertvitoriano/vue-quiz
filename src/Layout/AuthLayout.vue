@@ -86,7 +86,7 @@
           <router-link :to="`friends-list/${this.userInfo.id}`">
             <div class="sidebar-collapse-item">My Friends</div>
           </router-link>
-            <div class="sidebar-collapse-item">add a friend</div>
+            <div class="sidebar-collapse-item" v-b-modal="'usersListModal'">add a friend</div>
         </b-collapse>
           <router-link to="/create-course-battle">
             <div class="desktop-sidebar-item-container">Create quiz battle</div>
@@ -125,6 +125,19 @@
       </footer>
     </div>
     <BattleInviteNotification v-if="showBattleNotificationModal" :battleId="battleInviteInfo.battleId" :courseName="battleInviteInfo.courseName"></BattleInviteNotification>
+    <Modal modalId="usersListModal" title="Users">
+      <template #content>
+        <div class="users-select-list">
+          <div
+            class="user-item"
+            v-for="user in users"
+            :key="user.id"
+            @click="sendFriendshipRequest(user)">
+            {{ user.username}}
+          </div>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -132,36 +145,22 @@
 import BattleInviteNotification from '../components/BattleInviteNotification.vue';
 import userService from '../services/userService';
 import ActionCable from "actioncable";
+import Modal from '../components/Modal.vue'
+import { mapGetters, mapActions } from 'vuex';
 
-import { mapGetters } from 'vuex';
 export default {
   name: "AuthLayout",
-  components:{BattleInviteNotification},
-  methods:{
-    logout(){
-      userService.logout()
-    },
-    handleReceivedNotifications(notification){
-      switch(notification.type){
-        case "notification_to_join_course_battle":
-          console.log({notification})
-          this.showBattleNotificationModal = true
-                    
-          this.battleInviteInfo.battleId = notification.courseBattleId,
-          this.battleInviteInfo.opponentName = notification.opponentName
-          this.battleInviteInfo.courseName = notification.courseName
-        break;
-      }
-    }
-  },
+  components:{BattleInviteNotification, Modal},
   created(){
     this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
       userId: this.userInfo.id,
     });
   },
-  mounted(){
+  async mounted(){
+    this.changeLoadingState()
+    await this.getNonFriends()
     const userId = this.userInfo.id
-
+  
     this.subscription = this.cable.subscriptions.create(
       {
         channel: "UserNotificationChannel",
@@ -179,6 +178,7 @@ export default {
         }
       }
     );
+    this.changeLoadingState()
   },
   data(){
     return {
@@ -188,13 +188,46 @@ export default {
       battleInviteInfo:{
         battleId:String,
         courseName:String
-      }
+      },
+      friendRequestData:null,
+      users:[]
     } 
- },
+  },
   computed:{
     ...mapGetters(['userInfo'])
   },
-  props:['pageTitle']
+  props:['pageTitle'],
+  methods:{
+    ...mapActions(["changeLoadingState"]),
+    async load(){
+        await this.getNonFriends()
+    },
+    async getNonFriends(){
+      const nonFriendsResponse = await userService.getNonFriends()
+      this.users = nonFriendsResponse.data.data
+    },
+    logout(){
+      userService.logout()
+    },
+    handleReceivedNotifications(notification){
+      switch(notification.type){
+        case "notification_to_join_course_battle":
+          this.showBattleNotificationModal = true
+                    
+          this.battleInviteInfo.battleId = notification.courseBattleId,
+          this.battleInviteInfo.opponentName = notification.opponentName
+          this.battleInviteInfo.courseName = notification.courseName
+        break;
+        case "friend_request_notification":
+          console.log({notification})
+          
+          break;
+      }
+    },
+    sendFriendshipRequest(friend){
+      console.log({friend})
+    }
+  },
 };
 </script>
 
@@ -400,7 +433,22 @@ export default {
   font-weight: bold;
   margin-bottom: 15px;
 }
-
+.friends-select-list {
+  height: 200px;
+  overflow: auto;
+}
+.friend-item{
+  padding:15px;
+  text-align: center;
+}
+.friend-item:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.friend-item:nth-child(even) {
+  background-color: black;
+  color:white;
+}
 @media only screen and (max-width: 992px) {
 
   .auth-layout-container {
