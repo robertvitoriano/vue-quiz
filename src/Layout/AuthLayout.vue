@@ -40,7 +40,21 @@
             <router-link to="/create-course-battle">
               <div class="desktop-sidebar-item-container">Create quiz battle</div>
             </router-link>
-              <div class="desktop-sidebar-item-container" @click="logout">Logout</div>
+            <div
+            v-b-toggle.friends-collapse
+            class="desktop-sidebar-item-container"
+          >
+            Friends
+          </div>
+          <b-collapse
+          id="friends-collapse"
+          class="sidebar-collapse-items-container">
+          <router-link :to="`friends-list/${this.userInfo.id}`">
+            <div class="sidebar-collapse-item">My Friends</div>
+          </router-link>
+            <div class="sidebar-collapse-item" v-b-modal="'usersListModal'">add a friend</div>
+        </b-collapse>
+          <div class="desktop-sidebar-item-container" @click="logout">Logout</div>
           </div>
         </div>
       </b-sidebar>
@@ -210,6 +224,7 @@ export default {
       userService.logout()
     },
     handleReceivedNotifications(notification){
+      
       switch(notification.type){
         case "notification_to_join_course_battle":
           this.showBattleNotificationModal = true
@@ -218,14 +233,17 @@ export default {
           this.battleInviteInfo.opponentName = notification.opponentName
           this.battleInviteInfo.courseName = notification.courseName
         break;
-        case "friend_request_notification":
+        case "friendship_request_notification":
           console.log({notification})
           
           break;
       }
     },
-    sendFriendshipRequest(friend){
-      console.log({friend})
+    async sendFriendshipRequest(friend){
+      this.changeLoadingState()
+      await userService.sendFriendShipRequest({friendId:friend.id})
+      this.changeLoadingState()
+
     }
   },
 };
@@ -481,4 +499,27 @@ export default {
     justify-content: center;
   }
 }
+    
+.users-select-list {
+  height: 200px;
+  overflow: auto;
+}
+.user-item{
+  padding:15px;
+  text-align: center;
+}
+.user-item:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.user-item:nth-child(even) {
+  background-color: black;
+  color:white;
+}
+.user-item:nth-child(odd) {
+  background-color: white;
+  color:black;
+}
+
+
 </style>

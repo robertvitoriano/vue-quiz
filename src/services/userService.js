@@ -45,6 +45,10 @@ async function getNonFriends(){
   const respose = await api.get(`/users/friends/non-friends`)
   return respose
 }
+async function sendFriendShipRequest(friendShipData){
+  const respose = await api.post(`/users/friends/add-friend`, {userId2: friendShipData.friendId})
+  return respose
+}
 export default {
   login,
   logout,
@@ -54,4 +58,5 @@ export default {
   checkUser,
   getFriends,
   getNonFriends,
+  sendFriendShipRequest
 };
