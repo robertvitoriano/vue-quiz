@@ -14,7 +14,7 @@
       <div class="notifications-bell-container">
         <b-button v-b-toggle.notifications-sidebar class="notification-bell-content">
           <b-icon icon="bell-fill" class="notification-bell-icon" size="lg"></b-icon>
-          <div class="notifications-counter">99+</div>
+          <div class="notifications-counter" v-if="notifications.length">{{notifications.length}}</div>
         </b-button>
       </div>
       <div class="mobile-sidebar-content">
@@ -129,24 +129,14 @@
     right
     >
    <div class="notification-list-container">
-    <div :class="{
+    <div v-for="notification in notifications"
+     :key="notification.id"
+      :class="{
       'notification-item':true,
-      'not-read-notification-background-color':true
+      'not-read-notification-background-color':!notification.read
      }">
-      <span class="notification-type">Friendship Request</span>
-      <span class="notification-description">Fulano has sent you a friendship request</span>
-    </div>
-    <div class="notification-item">
-      <span class="notification-type">Quiz Battle request</span>
-      <span class="notification-description">fulano has sent you a quiz battle request</span>
-    </div>
-    <div class="notification-item">
-      <span class="notification-type">Friendship request</span>
-      <span class="notification-description">Ciclano has sent you a friendship request</span>
-    </div>
-    <div class="notification-item">
-      <span class="notification-type">Friendship request</span>
-      <span class="notification-description">Ciclano has sent you a friendship request</span>
+      <span class="notification-type">{{notification.title}}</span>
+      <span class="notification-description">{{notification.description}}</span>
     </div>
    </div>
 
@@ -154,7 +144,7 @@
     <div class="auth-layout-container">
       <div class="auth-layout-header-mobile">
         <b-button v-b-toggle.sidebar-1 class="toggle-sidbebar-button">
-          <div class='call-for-attention-red-dot'></div>
+          <div class='call-for-attention-red-dot' v-if="notifications.length"></div>
           <img src="./../assets/Hamburger_icon.svg.png" />
         </b-button>
         <b-icon
@@ -174,7 +164,7 @@
           <div class="notifications-bell-container" >
             <b-button v-b-toggle.notifications-sidebar class="notification-bell-content">
               <b-icon icon="bell-fill" class="notification-bell-icon"></b-icon>
-              <div class="notifications-counter">99+</div>
+              <div class="notifications-counter" v-if="notifications.length">{{notifications.length}}</div>
             </b-button>
           </div>
         </div>
@@ -246,6 +236,44 @@ export default {
       }
     );
     this.changeLoadingState()
+    this.notifications = [{
+        type:'friendship_request',
+        description:'Friendship request from fulano',
+        title:'Friendhip Request',
+        read:false,
+        url:'/something'
+    },{
+        type:'friendship_request',
+        description:'Friendship request from fulano',
+        title:'Friendhip Request',
+        read:true,
+        url:'/something'
+    },{
+        type:'friendship_request',
+        description:'Friendship request from fulano',
+        title:'Friendhip Request',
+        read:true,
+        url:'/something'
+    },{
+        type:'quiz_battle_request',
+        description:'quiz battle request from fulano',
+        title:'Quiz Battle Request',
+        read:false,
+        url:'/something'
+    },{
+        type:'friendship_request',
+        description:'Friendship request from fulano',
+        title:'Friendhip Request',
+        read:false,
+        url:'/something'
+    },{
+        type:'friendship_request',
+        description:'Friendship request from fulano',
+        title:'Friendhip Request',
+        read:true,
+        url:'/something'
+    }
+  ]
   },
   data(){
     return {
@@ -257,11 +285,18 @@ export default {
         courseName:String
       },
       friendRequestData:null,
-      users:[]
+      users:[],
+      notifications:[{
+        type:String,
+        description:String,
+        title:String,
+        read:Boolean,
+        url:String
+      }],
     } 
   },
   computed:{
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo']),
   },
   props:['pageTitle'],
   methods:{
@@ -355,11 +390,16 @@ export default {
 .notifications-counter{
   background-color: red;
   color: white;
+  width:1.4rem;
+  height: 1.4rem;
   border-radius: 50%;
-  padding: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 0.6rem;
   position: absolute;
   top: -5px;
+  right:0;
 }
 
 .notification-list-container > .notification-item .notification-description {
@@ -642,9 +682,13 @@ export default {
   .notifications-counter{
     background-color: red;
     color: white;
+    width:1.8rem;
+    height: 1.8rem;
     border-radius: 50%;
-    padding: 4px;
-    font-size: .9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
     position: absolute;
     top: -5px;
   }
