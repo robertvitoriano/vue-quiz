@@ -1,16 +1,23 @@
 <template>
   <div class="auth-layout-wrapper">
+
     <div class="mobile-sidebar-container">
       <b-sidebar
-        id="sidebar-1"
-        title="Menu"
-        shadow
-        bg-variant="dark"
-        text-variant="light"
-        backdrop
-        no-header-close
+      id="sidebar-1"
+      title="Menu"
+      shadow
+      bg-variant="dark"
+      text-variant="light"
+      backdrop
+      no-header-close
       >
-        <div class="mobile-sidebar-content">
+      <div class="notifications-bell-container">
+        <b-button v-b-toggle.notifications-sidebar class="notification-bell-content">
+          <b-icon icon="bell-fill" class="notification-bell-icon" size="lg"></b-icon>
+          <div class="notifications-counter">99+</div>
+        </b-button>
+      </div>
+      <div class="mobile-sidebar-content">
           <img
             :src="userInfo.avatar"
             role="button"
@@ -111,10 +118,43 @@
         </div>
       </div>
     </div>
+    <b-sidebar
+    id="notifications-sidebar"
+    title="Notifications"
+    shadow
+    bg-variant="dark"
+    text-variant="light"
+    backdrop
+    no-header-close
+    right
+    >
+   <div class="notification-list-container">
+    <div :class="{
+      'notification-item':true,
+      'not-read-notification-background-color':true
+     }">
+      <span class="notification-type">Friendship Request</span>
+      <span class="notification-description">Fulano has sent you a friendship request</span>
+    </div>
+    <div class="notification-item">
+      <span class="notification-type">Quiz Battle request</span>
+      <span class="notification-description">fulano has sent you a quiz battle request</span>
+    </div>
+    <div class="notification-item">
+      <span class="notification-type">Friendship request</span>
+      <span class="notification-description">Ciclano has sent you a friendship request</span>
+    </div>
+    <div class="notification-item">
+      <span class="notification-type">Friendship request</span>
+      <span class="notification-description">Ciclano has sent you a friendship request</span>
+    </div>
+   </div>
 
+  </b-sidebar>
     <div class="auth-layout-container">
       <div class="auth-layout-header-mobile">
         <b-button v-b-toggle.sidebar-1 class="toggle-sidbebar-button">
+          <div class='call-for-attention-red-dot'></div>
           <img src="./../assets/Hamburger_icon.svg.png" />
         </b-button>
         <b-icon
@@ -128,6 +168,18 @@
           <div class="logout-link" @click="logout">Log Out</div>
         </div>
       </div>
+      
+      <div class="auth-layout-header-desktop">
+        <div class="notifications-bell-container">
+          <div class="notifications-bell-container" >
+            <b-button v-b-toggle.notifications-sidebar class="notification-bell-content">
+              <b-icon icon="bell-fill" class="notification-bell-icon"></b-icon>
+              <div class="notifications-counter">99+</div>
+            </b-button>
+          </div>
+        </div>
+      </div>
+      
       <div class="content-slot-container">
         <div class="page-title-container">
           <h1 v-if="pageTitle" class="page-title">{{pageTitle}}</h1>
@@ -139,6 +191,7 @@
       </footer>
     </div>
     <BattleInviteNotification v-if="showBattleNotificationModal" :battleId="battleInviteInfo.battleId" :courseName="battleInviteInfo.courseName"></BattleInviteNotification>
+
     <Modal modalId="usersListModal" title="Users">
       <template #content>
         <div class="users-select-list">
@@ -254,10 +307,74 @@ export default {
   display: flex;
   flex-direction: row;
 }
+.notification-item{
+  border-bottom:1px white solid;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.notification-item:first-child {
+  border-top: rgb(71, 71, 71) solid 2px;
+}
+
+.notification-item:hover{
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+.auth-layout-header-desktop{
+  height: 8vh;
+  background-color: gray;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.notification-bell-container{
+  position: relative;
+}
+.notification-bell-content{
+  position: relative;
+  background-color: transparent;
+  border: none;
+  width: fit-content;
+  height: fit-content;
+}
+
+.notification-bell-content:hover{
+  cursor: pointer;
+  background-color: initial;
+}
+
+.notifications-counter{
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 4px;
+  font-size: 0.6rem;
+  position: absolute;
+  top: -5px;
+}
+
+.notification-list-container > .notification-item .notification-description {
+  font-size: 1rem;
+}
+.notification-list-container > .notification-item .notification-type {
+  font-size: 1.5rem;
+}
+.not-read-notification-background-color{
+  background-color: #383838;
+}
 .auth-layout-header-mobile {
   height: 10vh;
   background-color: gray;
-  display: flex;
+  display: none;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -442,10 +559,6 @@ export default {
   display: block;
 }
 
-.auth-layout-header-mobile {
-  display: none;
-}
-
 .sidebar-name{
   color: white;
   font-weight: bold;
@@ -467,8 +580,11 @@ export default {
   background-color: black;
   color:white;
 }
-@media only screen and (max-width: 992px) {
 
+@media only screen and (max-width: 992px) { /*MOBILE */
+  .auth-layout-header-desktop{
+    display: none;
+  }
   .auth-layout-container {
     overflow: hidden;
   }
@@ -498,6 +614,41 @@ export default {
     display: flex;
     justify-content: center;
   }
+  .toggle-sidbebar-button{
+    position: relative;
+  }
+  .call-for-attention-red-dot{
+    width: 1rem;
+    height: 1rem;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top:-5px;
+    right:-8px;
+  }
+  .notifications-bell-container{
+    position: absolute;
+    top:1rem;
+    right:1rem;
+  }
+  .notification-bell-icon.b-icon.bi{
+    font-size: 2.3rem;
+  }
+  .notification-bell-content{
+    position: relative;
+    background-color: transparent;
+    border: none;
+  }
+  .notifications-counter{
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 4px;
+    font-size: .9rem;
+    position: absolute;
+    top: -5px;
+  }
+
 }
     
 .users-select-list {
