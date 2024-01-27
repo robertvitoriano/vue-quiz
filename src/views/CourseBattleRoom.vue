@@ -137,7 +137,7 @@ export default {
     const {name:userName, id:userId} = this.userInfo;
     this.loadFriends();
     this.setPlayers();
-    const courseName = this.selectedCourse.label
+    const courseName = this.selectedCourse?.label
     this.subscription = this.cable.subscriptions.create(
       {
         channel: "CourseBattleChatChannel",
@@ -421,7 +421,7 @@ export default {
     },
     async receiveChatMessage(data) {
       try {
-        await this.playNotificationSound();
+        //await this.playNotificationSound();
         this.messages.push({
           message: data.message,
           isFromUser: false,
@@ -484,10 +484,10 @@ export default {
         return this.$router.push(`/quiz/${this.$route.params.id}`);
       }
       if (this.startQuizCountdownValue % 2 !== 0) {
-        await this.playTickSound();
+        //await this.playTickSound();
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       } else {
-        await this.playTockSound();
+        //await this.playTockSound();
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       }
     },
