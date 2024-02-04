@@ -122,7 +122,7 @@ import courseService from "../services/courseService";
 import Button from "../components/Button.vue";
 import ActionCable from "actioncable";
 import Modal from "../components/Modal.vue";
-
+import { Howl } from 'howler';
 import "tippy.js/dist/tippy.css";
 export default {
   name: "CourseBatleRooom",
@@ -421,7 +421,7 @@ export default {
     },
     async receiveChatMessage(data) {
       try {
-        //await this.playNotificationSound();
+        this.playNotificationSound();
         this.messages.push({
           message: data.message,
           isFromUser: false,
@@ -442,23 +442,30 @@ export default {
         this.hasPlayer2Joined = true;
       }
     },
-    async playNotificationSound() {
-      const notificationSound = new Audio(
-        "https://rails-quiz.s3.amazonaws.com/rails_quiz_notification_sound.wav"
-      );
-      await notificationSound.play();
+    playNotificationSound() {
+      const notification = new Howl({
+      src: [
+        require('@/assets/rails_quiz_notification_sound.wav')
+      ],
+      onloaderror(id, err) {
+        console.warn('failed to load sound file:', { id, err })
+      }
+    })
+      notification.play();
     },
-    async playTickSound() {
-      const tickSound = new Audio(
-        "https://rails-quiz.s3.amazonaws.com/tickSound.wav"
-      );
-      await tickSound.play();
+    playTickSound() {
+      const tickSound = new Howl({
+        src: [require('@/assets/timerSound.mp3')],
+        volume: 1
+      });
+      tickSound.play();
     },
-    async playTockSound() {
-      const tockSound = new Audio(
-        "https://rails-quiz.s3.amazonaws.com/tockSound.wav"
-      );
-      await tockSound.play();
+    playTockSound() {
+      const tockSound = new Howl({
+        src: [require('@/assets/timerSound.mp3')],
+        volume: 1
+      });
+      tockSound.play();
     },
     startCourseBattleCountdown() {
       this.startQuizCountdown = setInterval(
@@ -484,10 +491,10 @@ export default {
         return this.$router.push(`/quiz/${this.$route.params.id}`);
       }
       if (this.startQuizCountdownValue % 2 !== 0) {
-        //await this.playTickSound();
+        this.playTickSound();
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       } else {
-        //await this.playTockSound();
+        this.playTockSound();
         this.startQuizCountdownValue = this.startQuizCountdownValue - 1;
       }
     },
