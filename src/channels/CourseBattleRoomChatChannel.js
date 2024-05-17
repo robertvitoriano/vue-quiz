@@ -1,5 +1,5 @@
 import { createConsumer } from "actioncable"
 
-const consumer = createConsumer("ws://localhost:3000/cable")
+const consumer = createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL}/cable`)
 
 export default consumer

@@ -128,7 +128,7 @@ export default {
   name: "CourseBatleRooom",
   components: { AuthLayout, Button, Modal },
   created() {
-    this.cable = ActionCable.createConsumer("ws://localhost:4000/cable", {
+    this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL}/cable`, {
       courseBattleId: this.$route.params.id,
     });
   },
