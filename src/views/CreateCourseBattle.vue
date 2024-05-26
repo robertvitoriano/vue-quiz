@@ -88,9 +88,7 @@ export default {
   align-items: center;
 
 }
-.course-course-battle{
 
-}
 .course-battle-content {
   padding: 2rem;
 }
@@ -101,20 +99,32 @@ export default {
   border-color: white;
   outline: none;
   color: black;
-  width: 30%;
   text-align: center;
   margin-top: 1rem;
 }
 .courses-select :hover{
   cursor: pointer;
 }
-.course-battle-input{
-  width: 30%;
-}
 
 .course-cover-image{
   margin: 20px;
   width:30%;
+}
+@media (min-width: 280px) {
+  .course-battle-input{
+    width: 70vw;
+  }
+  .courses-select {
+    width: 60vw;
+  }
+}
+@media (min-width: 992px) {
+  .course-battle-input{
+    width: 30vw;
+  }
+  .courses-select {
+    width: 30vw;
+  }
 }
 
 </style>
