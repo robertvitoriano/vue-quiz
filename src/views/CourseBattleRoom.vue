@@ -2,10 +2,7 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
-        <div
-          class="start-course-countdown-wrapper"
-          v-if="showCourseBattleCountdown"
-        >
+        <div class="start-course-countdown-wrapper" v-if="showCourseBattleCountdown">
           <h1 class="start-countdown-value">{{ startQuizCountdownValue }}</h1>
         </div>
         <div class="course-battle-creation-container">
@@ -14,36 +11,23 @@
               <img class="player-avatar" :src="players[0].avatar" />
               <span class="player-username" ref="player1">{{
                 formatUsername(players[0].name)
-              }}</span>
+                }}</span>
             </div>
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
-              <Button
-                :title="'Start'"
-                class="start-course-battle-button"
-                @handleClick="startCourseBattleCountdown"
-                v-if="hasPlayer2Joined"
-                ref="startCourseBattleButton"
-              />
+              <Button :title="'Start'" class="start-course-battle-button" @handleClick="startCourseBattleCountdown"
+                v-if="hasPlayer2Joined" ref="startCourseBattleButton" />
             </div>
             <div class="player-container">
-              <img
-                class="player-avatar"
-                :src="players[1].avatar"
-                v-if="players[1].avatar"
-              />
+              <img class="player-avatar" :src="players[1].avatar" v-if="players[1].avatar" />
               <div v-else class="player2-search-container">
                 <div class="search-player2-icons-container">
                   <div class="player2-search-option" @click="handleCopyToast">
-                    <i
-                      class="fas fa-copy text-white-500 player2-search-option-icon"
-                    ></i>
+                    <i class="fas fa-copy text-white-500 player2-search-option-icon"></i>
                     <span>Copy course battle link</span>
                   </div>
                   <div class="player2-search-option">
-                    <i
-                      class="fas fa-user-friends text-white-500 player2-search-option-icon"
-                    ></i>
+                    <i class="fas fa-user-friends text-white-500 player2-search-option-icon"></i>
                     <span v-b-modal="'friendsListModal'">Invite a friend</span>
                   </div>
                   <span></span>
@@ -51,30 +35,23 @@
               </div>
               <span class="player-username" ref="player2">{{
                 formatUsername(players[1].name)
-              }}</span>
+                }}</span>
             </div>
           </div>
           <div class="course-creation-chat-wrapper">
             <div class="course-creation-chat-container">
               <div class="messages-container" ref="messagesContainer">
-                <div
-                  v-for="(message, index) in messages"
-                  :key="index"
-                  :class="handleMessageContainerClass(message.isFromUser)"
-                >
-                  <img
-                    :src="handleUserAvatarMessage(message.userId)"
-                    :class="handleUserAvatarMessageClass(message.isFromUser)"
-                  />
+                <div v-for="(message, index) in messages" :key="index"
+                  :class="handleMessageContainerClass(message.isFromUser)">
+                  <img :src="handleUserAvatarMessage(message.userId)"
+                    :class="handleUserAvatarMessageClass(message.isFromUser)" />
                   <div :class="handleMessageContentClass(message.userId)">
                     <span>{{ message.message }}</span>
                     <div class="timestamp-container">
                       <span class="message-timestamp">{{
                         getFormattedTimestamp(message.createdAt)
-                      }}</span>
-                      <div
-                        :class="handleMessageTriangleClass(message.userId)"
-                      ></div>
+                        }}</span>
+                      <div :class="handleMessageTriangleClass(message.userId)"></div>
                     </div>
                   </div>
                 </div>
@@ -84,13 +61,8 @@
               </div>
             </div>
             <div class="chat-input-container">
-              <input
-                class="course-creation-chat-input"
-                placeholder="type a message"
-                v-model="message"
-                @keyup.enter="sendMessage"
-                @keydown="sendTypingNotification"
-              />
+              <input class="course-creation-chat-input" placeholder="type a message" v-model="message"
+                @keyup.enter="sendMessage" @keydown="sendTypingNotification" />
               <div class="send-message-button" @click="sendMessage">></div>
             </div>
           </div>
@@ -98,12 +70,8 @@
         <Modal modalId="friendsListModal" title="Friends">
           <template #content>
             <div class="friends-select-list">
-              <div
-                class="friend-item"
-                v-for="friend in friends"
-                :key="friend.id"
-                @click="sendInviteNotificationToFriend(friend.id)"
-              >
+              <div class="friend-item" v-for="friend in friends" :key="friend.id"
+                @click="sendInviteNotificationToFriend(friend.id)">
                 {{ friend.name }}
               </div>
             </div>
@@ -134,7 +102,7 @@ export default {
   },
   mounted() {
     const courseBattleId = this.$route.params.id;
-    const {name:userName, id:userId} = this.userInfo;
+    const { name: userName, id: userId } = this.userInfo;
     this.loadFriends();
     this.setPlayers();
     const courseName = this.selectedCourse?.label
@@ -165,12 +133,12 @@ export default {
         sendCourseBattleDecreaseCountdown() {
           this.perform("send_course_battle_decrease_countdown", { userId });
         },
-        sendInviteNotificationToFriend(friendId){
+        sendInviteNotificationToFriend(friendId) {
           this.perform("send_invite_notification_to_friend", { userName, friendId, courseName });
         }
       }
     );
-    console.log({selectedCourse:this.selectedCourse})
+    console.log({ selectedCourse: this.selectedCourse })
   },
   data() {
     return {
@@ -444,13 +412,13 @@ export default {
     },
     playNotificationSound() {
       const notification = new Howl({
-      src: [
-        require('@/assets/rails_quiz_notification_sound.wav')
-      ],
-      onloaderror(id, err) {
-        console.warn('failed to load sound file:', { id, err })
-      }
-    })
+        src: [
+          require('@/assets/rails_quiz_notification_sound.wav')
+        ],
+        onloaderror(id, err) {
+          console.warn('failed to load sound file:', { id, err })
+        }
+      })
       notification.play();
     },
     playTickSound() {
@@ -523,10 +491,10 @@ export default {
       this.handleChatEvents(data);
       this.handleOpponentRegister(data);
       this.handleBattleCountdownStart(data);
-      
-      console.log({data})
+
+      console.log({ data })
     },
-    sendInviteNotificationToFriend(friendId){
+    sendInviteNotificationToFriend(friendId) {
       this.subscription.sendInviteNotificationToFriend(friendId)
 
     }
@@ -547,34 +515,31 @@ export default {
   display: flex;
   justify-content: center;
 }
-.course-battle-content {
-  padding: 2rem;
-}
 
 .player-avatar {
-  width: 180px;
   height: 10rem;
   border-radius: 50px;
 }
+
 .course-battle-content {
   display: flex;
 }
+
 .vs-symbol {
-  font-size: 50px;
-  width: 320px;
   height: 14rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .player-username {
   display: block;
   text-align: center;
   font-size: 2rem;
   font-weight: bold;
 }
+
 .player2-search-container {
-  width: 320px;
   height: 14rem;
   border-radius: 50px;
   border-color: black;
@@ -588,6 +553,7 @@ export default {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+
 .course-battle-creation-container {
   display: flex;
   flex-direction: column;
@@ -600,6 +566,7 @@ export default {
   align-items: center;
   font-size: 1.5rem;
 }
+
 .search-player2-icons-container {
   display: flex;
   flex-direction: column;
@@ -613,31 +580,34 @@ export default {
   font-size: 1.5rem;
   outline: none;
 }
+
 .chat-input-container {
   display: flex;
   width: 100%;
 }
+
 .send-message-button {
   background-color: black;
   color: white;
   font-weight: bold;
-  height: 2rem;
-  width: 4%;
-  font-size: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .send-message-button:hover {
   cursor: pointer;
 }
+
 .player2-search-option :hover {
   text-decoration: underline;
   cursor: pointer;
 }
+
 .player2-search-option-icon {
   margin-right: 10px;
 }
+
 .messages-container {
   width: 100%;
   height: 100%;
@@ -656,6 +626,7 @@ export default {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgb(0, 0, 0);
 }
+
 .message-container {
   width: 100%;
   margin-top: 15px;
@@ -663,6 +634,7 @@ export default {
   display: flex;
   align-items: center;
 }
+
 .message-from-player1 {
   display: flex;
   justify-content: flex-start;
@@ -678,23 +650,28 @@ export default {
   border-bottom-right-radius: 15px;
   position: relative;
 }
+
 .message-content-player-1 {
   background-color: black;
   color: white;
 }
+
 .message-content-player-2 {
   background-color: #fff;
   color: black;
 }
+
 .message-timestamp {
   font-size: 0.85rem;
 }
+
 .timestamp-container {
   display: flex;
   justify-content: flex-end;
   width: 100%;
   color: gray;
 }
+
 .user-avatar {
   border-radius: 50%;
   width: 50px;
@@ -702,6 +679,7 @@ export default {
   margin-right: 15px;
   margin-left: 15px;
 }
+
 .message-triangle {
   width: 0;
   height: 0;
@@ -709,12 +687,14 @@ export default {
   border-right: 8px solid transparent;
   border-bottom: 16px solid white;
 }
+
 .message-triangle-player-2 {
   display: block;
   position: absolute;
   left: -5px;
   bottom: 0;
 }
+
 .message-triangle-player-1 {
   display: block;
   position: absolute;
@@ -722,6 +702,7 @@ export default {
   right: -5px;
   border-bottom: 16px solid black;
 }
+
 .is-typing-container {
   width: 100%;
   display: flex;
@@ -729,23 +710,29 @@ export default {
   position: relative;
   bottom: 25px;
 }
+
 .is-typing-notification {
   color: black;
 }
+
 .hidden-play-button {
   visibility: hidden;
 }
+
 .middle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .start-course-battle-button {
   font-size: 3rem;
 }
+
 .start-course-battle-button:hover {
   cursor: pointer;
 }
+
 .start-course-countdown-wrapper {
   top: 10vh;
   height: 30vh;
@@ -755,7 +742,13 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .start-countdown-value {
+  .player-avatar {
+    width: 180px;
+
+  }
+
   color: white;
   font-size: 6rem;
 }
@@ -764,20 +757,110 @@ export default {
   height: 200px;
   overflow: auto;
 }
-.friend-item{
-  padding:15px;
+
+.friend-item {
+  padding: 15px;
   text-align: center;
 }
+
 .friend-item:hover {
   text-decoration: underline;
   cursor: pointer;
 }
+
 .friend-item:nth-child(even) {
   background-color: black;
-  color:white;
+  color: white;
 }
+
 .friend-item:nth-child(odd) {
   background-color: white;
-  color:black;
+  color: black;
+}
+
+@media (min-width: 280px) {
+
+  /*course-creation-chat-container*/
+  /*player-avatar */
+  /*player-container */
+  /*course-battle-content */
+  /*.vs-symbol */
+  /*player2-search-container*/
+  /*course-creation-chat-input */
+  .player-avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .vs-symbol {
+    font-size: 20px;
+    width: 90px;
+  }
+
+  .course-battle-content {
+    padding: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .player2-search-option {
+    font-size: small;
+    display: flex;
+    gap: 1rem;
+    width: fit-content;
+    line-height: 1.5rem;
+  }
+
+  .course-battle-room-wrapper {
+    padding: .5rem;
+  }
+  .send-message-button{
+    height: 2rem;
+    width: 20%;
+    font-size: 3rem;
+  }
+
+}
+
+@media (min-width: 992px) {
+
+  /*course-creation-chat-container*/
+  /*player-avatar */
+  /*player-container */
+  /*course-battle-content */
+  /*.vs-symbol */
+  /*player2-search-container*/
+  /*course-creation-chat-input */
+  .player2-search-container {
+    width: 320px;
+  }
+
+  .player-avatar {
+    width: 180px;
+    height: 180px;
+  }
+
+  .vs-symbol {
+    font-size: 50px;
+    width: 320px;
+  }
+
+  .course-battle-content {
+    padding: 2rem;
+  }
+
+  .player2-search-option {
+    font-size: 25px;
+    display: flex;
+    width: fit-content;
+  }
+  .send-message-button {
+    height: 2rem;
+    width: 4%;
+    font-size: 2rem;
+  }
+
 }
 </style>
