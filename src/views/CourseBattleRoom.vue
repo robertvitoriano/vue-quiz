@@ -800,7 +800,7 @@ export default {
 
   .vs-symbol {
     font-size: 20px;
-    width: 90px;
+    width: 50px;
   }
 
   .course-battle-content {
