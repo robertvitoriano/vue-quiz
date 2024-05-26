@@ -791,6 +791,12 @@ export default {
     width: 64px;
     height: 64px;
   }
+  
+  .player-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
   .vs-symbol {
     font-size: 20px;
