@@ -190,7 +190,6 @@ export default {
 }
 
 .login-input {
-  width: 25rem;
   height: 2.5rem;
   border-top: none;
   border-left: none;
@@ -242,5 +241,15 @@ export default {
 .call-to-challenge {
   color: white;
   margin-bottom: 20px;
+}
+@media (min-width: 280px) {
+  .login-input {
+    width: 70vw;
+  }
+}
+@media (min-width: 992px) {
+  .login-input {
+    width: 25rem;
+  }
 }
 </style>
