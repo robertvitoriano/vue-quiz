@@ -123,12 +123,10 @@ export default {
         if (avatarImage) formData.append("avatar", avatarImage);
 
         formData.append("userInfo", JSON.stringify(rest));
-        const response = await userService.createUser(formData);
-        if (response.status === 200) {
-          this.changeLoadingState();
-          this.$swal.fire("User successfully created!", "", "success");
-          this.handleFormSwitch();
-        }
+        await userService.createUser(formData);
+        this.handleFormSwitch();
+        this.changeLoadingState();
+        this.$swal.fire("User successfully created!", "", "success");
       } catch (error) {
         this.changeLoadingState();
         this.$swal.fire("Error on user creation", "", "error");
