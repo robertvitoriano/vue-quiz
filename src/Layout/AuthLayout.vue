@@ -19,7 +19,7 @@
       </div>
       <div class="mobile-sidebar-content">
           <img
-            :src="userInfo.avatar"
+            :src="userInfo.avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'"
             role="button"
             alt="vue logo"
             class="avatar-image"
@@ -69,7 +69,7 @@
     <div class="desktop-sidebar-container">
       <div class="desktop-sidebar-content">
         <img
-          :src="userInfo.avatar"
+          :src="userInfo.avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'"
           role="button"
           alt="vue logo"
           class="avatar-image"

@@ -2,7 +2,7 @@
   <div class="wrapper">
     <h4 v-if="courseBattleCreatorName" class="call-to-challenge">Enter your account and accept {{courseBattleCreatorName}} challenge!</h4>
     <div class="content">
-        <h1 class="login-form-title" >Vue Quiz App</h1>
+        <h1 class="login-form-title" >Quiz Battle</h1>
       <form class="form-container" v-if="!isSigningUp" @submit.prevent="login">
         <input
           v-model="loginForm.username"

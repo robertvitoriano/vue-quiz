@@ -8,7 +8,7 @@
         <div class="course-battle-creation-container">
           <div class="course-battle-content">
             <div class="player-container">
-              <img class="player-avatar" :src="players[0].avatar" />
+              <img class="player-avatar" :src="players[0].avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'" />
               <span class="player-username" ref="player1">{{
                 formatUsername(players[0].name)
                 }}</span>
@@ -19,7 +19,7 @@
                 v-if="hasPlayer2Joined" ref="startCourseBattleButton" />
             </div>
             <div class="player-container">
-              <img class="player-avatar" :src="players[1].avatar" v-if="players[1].avatar" />
+              <img class="player-avatar" :src="players[1].avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'" v-if="players[1].avatar" />
               <div v-else class="player2-search-container">
                 <div class="search-player2-icons-container">
                   <div class="player2-search-option" @click="handleCopyToast">
@@ -324,7 +324,7 @@ export default {
     handleUserAvatarMessage(userId) {
       if (!userId) return "";
       const userAvatar = this.players.find((user) => user.id === userId).avatar;
-      return userAvatar;
+      return userAvatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png';
     },
     handleUserAvatarMessageClass(isFromUser) {
       return {
