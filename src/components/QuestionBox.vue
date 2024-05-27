@@ -92,6 +92,9 @@ export default {
       this.submitButtonText = "Answered";
       this.disableSubmitButton = true;
       this.hasAnswered = true;
+      const {id, questionId} = selectedAnswer
+      this.$emit("addUserChosenAlternative", {id, questionId});
+
     },
     selectAnswerIndex(index) {
       if (!this.hasAnswered) {
@@ -137,10 +140,13 @@ export default {
     },
     verifyIfQuestionWasAnswered(){
       if (this.currentQuestion.userAlternative) {
+        const { questionAlternativeId, questionId} = this.currentQuestion.userAlternative
         this.submitButtonText = "Answered";
         this.disableSubmitButton = true;
         this.hasAnswered = true;
-        this.selectedAnswerIndex = this.currentQuestion.alternatives.find(alternative => alternative.id === this.currentQuestion.userAlternative.questionAlternativeId).id
+        const userChosenAlternative = this.currentQuestion.alternatives.find(alternative => alternative.id === questionAlternativeId)
+        this.selectedAnswerIndex = userChosenAlternative.id
+        this.$emit("addUserChosenAlternative",{id:questionAlternativeId, questionId});
       }
     },
     shuffleAlternatives() {

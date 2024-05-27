@@ -10,6 +10,7 @@
      @nextQuestionEvent="updatedCurrentQuestionIndex"
      @increaseScoreEvent= "score++"
      @hasFinishedEvent = "finishQuiz"
+     @addUserChosenAlternative="addUserChosenAlternative"
       v-if="(questions.length > 0) && !hasFinished"></QuestionBox>
     <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
   </div>
@@ -42,7 +43,9 @@ export default {
       score:0,
       hasFinished:false,
       courseTitle:'',
-      players:[]
+      courseId:null,
+      players:[],
+      userChosenAlternatives:[]
     }
   },
   methods: {
@@ -62,6 +65,7 @@ export default {
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]
       this.courseTitle = response.data.course.title
+      this.courseId = response.data.course.id
       this.changeLoadingState();
     },
     updatedCurrentQuestionIndex() {
@@ -71,8 +75,18 @@ export default {
 
       }
     },
-    finishQuiz(){
+    async finishQuiz(){
       this.hasFinished = true
+      await courseService.finishCourseBattle({
+           courseBattleId:this.$route.params.courseBattleId,
+           courseId: this.courseId,
+           userChosenAlternatives: this.userChosenAlternatives
+          })
+    },
+    addUserChosenAlternative(userChosenAlternative){
+      if(this.userChosenAlternatives.includes(alternative => alternative.id === userChosenAlternative.id)) return 
+      this.userChosenAlternatives.push(this.userChosenAlternatives)
+      
     },
     restart(){
       this.loadQuestions()
