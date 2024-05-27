@@ -1,35 +1,23 @@
 <template>
   <div class="question-box-container">
-    <Header
-      :questions-count="questionsCount"
-      :current-question-index="currentQuestionIndex"
-    />
+    <Header :questions-count="questionsCount" :current-question-index="currentQuestionIndex" />
     <div class="question-box-content">
       <h2>{{ courseTitle }}</h2>
       <div class="question-container">
         <div class="question-section">
-          <p>{{ currentQuestion.text}}</p>
+          <p>{{ currentQuestion.text }}</p>
         </div>
         <div class="alternatives-section">
           <b-list-group class="alternatives-list">
-            <b-list-group-item
-              :class="alternativeClass(index)"
-              :key="index"
-              v-for="(alternative, index) in currentQuestion.alternatives"
-              @click="selectAnswerIndex(index)"
-            >
-              {{ alternative.text }}</b-list-group-item
-            >
+            <b-list-group-item :class="alternativeClass(index)" :key="index"
+              v-for="(alternative, index) in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
+              {{ alternative.text }}</b-list-group-item>
           </b-list-group>
         </div>
       </div>
       <div class="question-box-buttons-container">
-        <b-button
-          variant="primary"
-          href="#"
-          :disabled="disableSubmitButton"
-          @click.prevent="handleSubmit"
-          >{{ submitButtonText }}
+        <b-button variant="primary" href="#" :disabled="disableSubmitButton" @click.prevent="handleSubmit">{{
+          submitButtonText }}
         </b-button>
         <b-button variant="success" href="#" @click="emitNextQuestionEvent">{{
           nextButtonText
@@ -71,9 +59,11 @@ export default {
           (alternative) => alternative.isRight === 1
         );
         this.hasAnswered = this.currentQuestion.alternatives.some(alternative => !!alternative.hasAnswered)
+        this.verifyIfQuestionWasAnswered()
       },
     },
   },
+
   methods: {
     ...mapActions(["changeLoadingState"]),
     emitNextQuestionEvent() {
@@ -90,8 +80,8 @@ export default {
     },
     async handleSubmit() {
       this.changeLoadingState();
-      const selectedAnswer = this.currentQuestion.alternatives.find((question, index) => index === this.selectedAnswerIndex );
-      await courseService.saveUserAnswer(selectedAnswer.id, this.$route.params.courseBattleId);
+      const selectedAnswer = this.currentQuestion.alternatives.find((question, index) => index === this.selectedAnswerIndex);
+      await courseService.saveUserAnswer(selectedAnswer.id, this.$route.params.courseBattleId, this.currentQuestion.id);
       this.changeLoadingState();
       if (this.selectedAnswerIndex === this.rightAnswerIndex) {
         alert("You got it right");
@@ -115,6 +105,7 @@ export default {
       this.selectedAnswerIndex = null;
     },
     alternativeClass(index) {
+
       return {
         alternative: true,
         selected: this.getAlternativeBackground("selected-alternative", index),
@@ -143,6 +134,14 @@ export default {
         "correct-alternative": isRight && this.hasAnswered,
       };
       return validationTypes[validationType];
+    },
+    verifyIfQuestionWasAnswered(){
+      if (this.currentQuestion.userAlternative) {
+        this.submitButtonText = "Answered";
+        this.disableSubmitButton = true;
+        this.hasAnswered = true;
+        this.selectedAnswerIndex = this.currentQuestion.alternatives.find(alternative => alternative.id === this.currentQuestion.userAlternative.questionAlternativeId).id
+      }
     },
     shuffleAlternatives() {
       this.currentQuestion.alternatives =
@@ -237,20 +236,25 @@ export default {
   .question-box-buttons-container {
     width: 60%;
   }
+
   .question-box-content {
     height: 80vh;
   }
+
   .question-container {
     width: 90%;
   }
 }
+
 @media only screen and (min-width: 992px) {
   .question-box-buttons-container {
     width: 60%;
   }
+
   .question-box-content {
     height: 80vh;
   }
+
   .question-container {
     width: 90%;
     height: 50vh;

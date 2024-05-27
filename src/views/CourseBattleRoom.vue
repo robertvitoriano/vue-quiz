@@ -19,7 +19,7 @@
                 v-if="hasPlayer2Joined" ref="startCourseBattleButton" />
             </div>
             <div class="player-container">
-              <img class="player-avatar" :src="players[1].avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'" v-if="players[1].avatar" />
+              <img class="player-avatar" :src="players[1].avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'"  v-if="hasPlayer2Joined"/>
               <div v-else class="player2-search-container">
                 <div class="search-player2-icons-container">
                   <div class="player2-search-option" @click="handleCopyToast">
@@ -266,9 +266,7 @@ export default {
         this.players[1].avatar = this.courseBattleUsers[1].avatar;
         this.players[1].name = this.courseBattleUsers[1].name;
         this.players[1].id = this.courseBattleUsers[1].userId;
-        if (this.userInfo.id === this.courseBattleUsers[0].userId) {
-          this.hasPlayer2Joined = true;
-        }
+        this.hasPlayer2Joined = true;
       }
     },
     formatUsername(username) {

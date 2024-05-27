@@ -48,10 +48,11 @@ async function getCourseQuestions(courseBattleId) {
   return responseHandled;
 }
 
-async function saveUserAnswer(questionAlternativeId, courseBattleId) {
+async function saveUserAnswer(questionAlternativeId, courseBattleId, questionId) {
   const response = await api.post(`/alternatives/save-user-answer`, {
     questionAlternativeId,
-    courseBattleId
+    courseBattleId,
+    questionId,
   });
   const responseHandled = handleResponse(response);
   return responseHandled;
