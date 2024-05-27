@@ -2,16 +2,13 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
-        <div class="course-battle-creation-container" >
-          <TextInput v-model="courseBattleName" placeholder="Enter course battle name" class="course-battle-input"></TextInput>
-          <Select
-          :options="courses"
-          @optionSelected="handleSelectedCourse"
-          class="courses-select"
-          label="Select the battle course"
-          ></Select>
+        <div class="course-battle-creation-container">
+          <TextInput v-model="courseBattleName" placeholder="Enter course battle name" class="course-battle-input">
+          </TextInput>
+          <Select :options="courses" @optionSelected="handleSelectedCourse" class="courses-select"
+            label="Select the battle course"></Select>
           <img :src="selectedCourse.cover" v-if="selectedCourse" class="course-cover-image">
-          <Button title="Create course battle" @clicked="createCourseBattle"/>
+          <Button title="Create course battle" @clicked="createCourseBattle" />
         </div>
       </div>
     </template>
@@ -26,45 +23,49 @@ import TextInput from "../components/Form/TextInput.vue";
 import Button from "../components/Form/Button.vue";
 import Modal from "../components/Modal.vue";
 export default {
-  name:"CourseBatleRooom",
-  components:{AuthLayout, Select, TextInput, Button, Modal},
+  name: "CourseBatleRooom",
+  components: { AuthLayout, Select, TextInput, Button, Modal },
   data() {
     return {
       selectedCourse: {
-        label:'',
-        id:'',
-        cover:''
+        label: '',
+        id: '',
+        cover: ''
       },
-      courseBattleName:"",
-      courses:[{
-        label:'',
-        id:'',
-        cover:''
+      courseBattleName: "",
+      courses: [{
+        label: '',
+        id: '',
+        cover: ''
       }]
     };
   },
-  mounted(){
+  mounted() {
     this.loadCourses()
   },
   methods: {
     ...mapActions(["changeLoadingState", "setSelectedCourse"]),
-    handleSelectedCourse(course){
+    handleSelectedCourse(course) {
       this.selectedCourse = course
     },
-    async loadCourses(){
+    async loadCourses() {
       this.changeLoadingState()
       const response = await courseService.getCourses();
       this.changeLoadingState()
-      const courses = response.data.courses.map(({cover, title, id})=>({id, cover, label:title}));
+      const courses = response.data.courses.map(({ cover, title, id }) => ({
+        id,
+        cover: cover || 'https://rails-quiz-images.s3.amazonaws.com/course-default.png',
+        label: title
+      }));
       this.courses = courses;
     },
-    async createCourseBattle(){
+    async createCourseBattle() {
       this.changeLoadingState()
-      const response = await courseService.createCourseBattle({name:this.courseBattleName, courseId:this.selectedCourse.id, userId:this.userInfo.id})
+      const response = await courseService.createCourseBattle({ name: this.courseBattleName, courseId: this.selectedCourse.id, userId: this.userInfo.id })
       const createCourseBattleId = response.data.data.courseBattle.id
       this.setSelectedCourse(this.selectedCourse);
       this.changeLoadingState()
-      this.$router.push("/course-battle-room/"+ createCourseBattleId);
+      this.$router.push("/course-battle-room/" + createCourseBattleId);
     }
   },
   computed: {
@@ -74,12 +75,12 @@ export default {
 </script>
 
 <style scoped>
-.course-battle-room-wrapper{
+.course-battle-room-wrapper {
   width: 100%;
   height: 100%;
 }
 
-.course-battle-creation-container{
+.course-battle-creation-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -92,7 +93,8 @@ export default {
 .course-battle-content {
   padding: 2rem;
 }
-.courses-select{
+
+.courses-select {
   border-top: none;
   border-right: none;
   border-left: none;
@@ -102,29 +104,33 @@ export default {
   text-align: center;
   margin-top: 1rem;
 }
-.courses-select :hover{
+
+.courses-select :hover {
   cursor: pointer;
 }
 
-.course-cover-image{
+.course-cover-image {
   margin: 20px;
-  width:30%;
+  width: 30%;
 }
+
 @media (min-width: 280px) {
-  .course-battle-input{
+  .course-battle-input {
     width: 70vw;
   }
+
   .courses-select {
     width: 60vw;
   }
 }
+
 @media (min-width: 992px) {
-  .course-battle-input{
+  .course-battle-input {
     width: 30vw;
   }
+
   .courses-select {
     width: 30vw;
   }
 }
-
 </style>
