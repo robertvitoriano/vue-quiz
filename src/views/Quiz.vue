@@ -1,21 +1,16 @@
 <template>
-<AuthLayout>
-  <template #content>
-  <div class="quiz-wrapper">
-    <QuestionBox
-     :current-question="currentQuestion"
-     :current-question-index="currentQuestionIndex"
-     :questions-count="questions.length"
-     :course-title="courseTitle"
-     @nextQuestionEvent="updatedCurrentQuestionIndex"
-     @increaseScoreEvent= "score++"
-     @hasFinishedEvent = "finishQuiz"
-     @addUserChosenAlternative="addUserChosenAlternative"
-      v-if="(questions.length > 0) && !hasFinished"></QuestionBox>
-    <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
-  </div>
-</template>
-</AuthLayout>
+  <AuthLayout>
+    <template #content>
+      <div class="quiz-wrapper">
+        <QuestionBox :current-question="currentQuestion" :current-question-index="currentQuestionIndex"
+          :questions-count="questions.length" :course-title="courseTitle"
+          @nextQuestionEvent="updatedCurrentQuestionIndex" @increaseScoreEvent="score++" @hasFinishedEvent="finishQuiz"
+          @addUserChosenAlternative="addUserChosenAlternative" v-if="(questions.length > 0) && !hasFinished">
+        </QuestionBox>
+        <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
+      </div>
+    </template>
+  </AuthLayout>
 
 </template>
 
@@ -31,7 +26,7 @@ export default {
     QuestionBox,
     RestartSection,
     AuthLayout
-},
+  },
   mounted: function () {
     this.load()
   },
@@ -40,22 +35,22 @@ export default {
       questions: [],
       currentQuestionIndex: 0,
       currentQuestion: {},
-      score:0,
-      hasFinished:false,
-      courseTitle:'',
-      courseId:null,
-      players:[],
-      userChosenAlternatives:[]
+      score: 0,
+      hasFinished: false,
+      courseTitle: '',
+      courseId: null,
+      players: [],
+      userChosenAlternatives: []
     }
   },
   methods: {
     ...mapActions(['changeLoadingState']),
-    async load(){
+    async load() {
       const playersResponse = await courseService.getCourseBattleUsers(this.$route.params.courseBattleId)
       this.players = playersResponse.data.data.courseBattleUsers
-      const isRegisteredInBattle = this.players.some((player)=> player.userId === this.userInfo.id)
+      const isRegisteredInBattle = this.players.some((player) => player.userId === this.userInfo.id)
 
-      if(!isRegisteredInBattle) return this.$router.push('/home')
+      if (!isRegisteredInBattle) return this.$router.push('/home')
       await this.loadQuestions()
     },
     async loadQuestions() {
@@ -75,25 +70,25 @@ export default {
 
       }
     },
-    async finishQuiz(){
+    async finishQuiz() {
       this.hasFinished = true
       await courseService.finishCourseBattle({
-           courseBattleId:this.$route.params.courseBattleId,
-           courseId: this.courseId,
-           userChosenAlternatives: this.userChosenAlternatives
-          })
+        courseBattleId: this.$route.params.courseBattleId,
+        courseId: this.courseId,
+        userChosenAlternatives: this.userChosenAlternatives
+      })
     },
-    addUserChosenAlternative(userChosenAlternative){
-      if(this.userChosenAlternatives.includes(alternative => alternative.id === userChosenAlternative.id)) return 
-      this.userChosenAlternatives.push(this.userChosenAlternatives)
-      
+    addUserChosenAlternative(userChosenAlternative) {
+      if (this.userChosenAlternatives.includes(alternative => alternative.id === userChosenAlternative.id)) return
+      this.userChosenAlternatives.push(userChosenAlternative)
+
     },
-    restart(){
+    restart() {
       this.loadQuestions()
       this.hasFinished = false
     }
   },
-  computed:{
+  computed: {
     ...mapGetters(["userInfo"]),
   }
 }
@@ -105,8 +100,8 @@ export default {
   margin: 0;
   box-sizing: border-box;
 }
-.quiz-wrapper {
-  width:100%;
-}
 
+.quiz-wrapper {
+  width: 100%;
+}
 </style>
