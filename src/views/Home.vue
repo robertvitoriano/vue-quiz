@@ -46,7 +46,7 @@ export default {
         const coursesWithPreparedData = response.data.courses.map((course)=>{
           return {
             link:`quiz/${course.id}`,
-            image: course.cover || "https://rails-quiz.s3.amazonaws.com/courseCoverDefaultImage.jpeg",
+            image: course.cover || "https://rails-quiz-images.s3.amazonaws.com/course-default.png",
             title:course.title
           }
         })
