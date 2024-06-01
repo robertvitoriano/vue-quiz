@@ -1,8 +1,8 @@
 {
-  "name": "vue-quiz",
+  "name": "quiz-battle",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://quiz-battle.s3-website-us-east-1.amazonaws.com/",
+  "homepage": "https://quiz-battle.robertvitoriano.com/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

@@ -8,146 +8,76 @@
               {{ isUpdating ? "Update Course" : "Create the course" }}
             </h1>
             <form class="course-creation-form">
-              <input
-                class="course-creation-input"
-                placeholder="Enter course Title"
-                v-model="course.title"
-              />
-              <input
-                class="course-creation-input"
-                placeholder="Enter course Goal"
-                v-model="course.goal"
-              />
-              <label
-                class="course-creation-file-input-container"
-                role="button"
-                for="course-creation-file-input"
-              >
-                <input
-                  class="course-creation-file-input"
-                  id="course-creation-file-input"
-                  placeholder="Chose course cover"
-                  type="file"
-                  @change="handleCoverInput($event)"
-                  ref="coverInput"
-                />
+              <input class="course-creation-input" placeholder="Enter course Title" v-model="course.title" />
+              <input class="course-creation-input" placeholder="Enter course Goal" v-model="course.goal" />
+              <label class="course-creation-file-input-container" role="button" for="course-creation-file-input">
+                <input class="course-creation-file-input" id="course-creation-file-input"
+                  placeholder="Chose course cover" type="file" @change="handleCoverInput($event)" ref="coverInput" />
                 <b-icon icon="cloud-upload" class="upload-icon"></b-icon>
                 <label class="cover-upload-label">{{
                   course.cover && isUpdating
                     ? "Change Cover"
                     : course.cover
-                    ? "Image Selected"
-                    : "Select Cover"
+                      ? "Image Selected"
+                      : "Select Cover"
                 }}</label>
               </label>
-              <img
-                class="course-cover-image"
-                v-if="isUpdating && !updatedCover && course.cover"
-                :src="course.cover"
-                alt="course cover"
-              />
-              <v-select
-                class="course-creation-select"
-                :options="courseTypes"
-                v-model="course.courseType"
-              ></v-select>
-              <div
-                class="question-section-container"
-                v-for="(question, questionIndex) in course.questions"
-                v-bind:key="questionIndex"
-              >
+              <img class="course-cover-image" v-if="isUpdating && !updatedCover && course.cover" :src="course.cover"
+                alt="course cover" />
+              <v-select class="course-creation-select" :options="courseTypes" v-model="course.courseType"></v-select>
+              <div class="question-section-container" v-for="(question, questionIndex) in course.questions"
+                v-bind:key="questionIndex">
                 <h1>Question {{ questionIndex + 1 }}
                   <b-icon icon="trash-fill" class="delete-icon" @click="removeQuestion(questionIndex)"></b-icon>
                 </h1>
                 <div class="question-section-content">
-                  <input
-                    class="course-creation-input"
-                    :placeholder="
-                      'enter the question ' + (Number(questionIndex) + 1)
-                    "
-                    v-model="question.text"
-                  />
+                  <input class="course-creation-input" :placeholder="'enter the question ' + (Number(questionIndex) + 1)
+                    " v-model="question.text" />
                   <div class="course-creation-answers-container">
-                    <div
-                      class="course-answer-container"
-                      v-for="(
+                    <div class="course-answer-container" v-for="(
                         alternative, alternativeIndex
-                      ) in question.alternatives"
-                      v-bind:key="alternativeIndex"
-                    >
-                    <input
-                    class="course-creation-input"
-                    :placeholder="'enter answer ' + (alternativeIndex + 1)"
-                    v-model="alternative.text"
-                    />
-                    <b-icon icon="trash-fill" class="delete-icon delete-alternative-icon" @click="removeAlternative(alternativeIndex, questionIndex)"></b-icon>
+                      ) in question.alternatives" v-bind:key="alternativeIndex">
+                      <input :class="{
+                        'course-creation-input': true,
+                        'input-error': alternativeNotFilledErrorInfo.questionIndex === questionIndex &&
+                          alternativeNotFilledErrorInfo.alternativeIndex === alternativeIndex && !alternative.text
+                      }" :placeholder="'enter answer ' + (alternativeIndex + 1)" v-model="alternative.text" />
+                      <b-icon icon="trash-fill" class="delete-icon delete-alternative-icon"
+                        @click="removeAlternative(alternativeIndex, questionIndex)"></b-icon>
                       <div class="wrong-right-switch">
-                        <div
-                          :class="{
-                            'wrong-right-switch-input-container': true,
-                            'wrong-right-input-selected': alternative.isRight,
-                          }"
-                          @click="
-                            changeWrongRightSwitch({
-                              questionIndex,
-                              alternativeIndex,
-                            })
-                          "
-                        >
+                        <div :class="{
+                          'wrong-right-switch-input-container': true,
+                          'wrong-right-input-selected': alternative.isRight,
+                        }" @click="
+                          changeWrongRightSwitch({
+                            questionIndex,
+                            alternativeIndex,
+                          })
+                          ">
                           <label for="">right</label>
-                          <input
-                            type="radio"
-                            name="wrong-right"
-                            value="right"
-                            :checked="alternative.isRight"
-                            class="wrong-right-switch-input"
-                          />
+                          <input type="radio" name="wrong-right" value="right" :checked="alternative.isRight"
+                            class="wrong-right-switch-input" />
                         </div>
-                        <div
-                          :class="{
-                            'wrong-right-switch-input-container': true,
-                            'wrong-right-input-selected': !alternative.isRight,
-                          }"
-                          @click="
-                            changeWrongRightSwitch({
-                              questionIndex,
-                              alternativeIndex,
-                            })
-                          "
-                        >
+                        <div :class="{
+                          'wrong-right-switch-input-container': true,
+                          'wrong-right-input-selected': !alternative.isRight,
+                        }" @click="
+                          changeWrongRightSwitch({
+                            questionIndex,
+                            alternativeIndex,
+                          })
+                          ">
                           <label for="">wrong</label>
-                          <input
-                            type="radio"
-                            name="wrong-right"
-                            value="wrong"
-                            :checked="!alternative.isRight"
-                            class="wrong-right-switch-input"
-                          />
+                          <input type="radio" name="wrong-right" value="wrong" :checked="!alternative.isRight"
+                            class="wrong-right-switch-input" />
                         </div>
                       </div>
                     </div>
                     <div class=""></div>
                   </div>
-                  <div class="add-new-answer-container">
-                    <div
-                      class="add-new-answer"
-                      role="button"
-                      @click="addAnswerToForm(questionIndex)"
-                    >
-                      <b-icon
-                        icon="plus-circle"
-                        class="add-question-icon"
-                      ></b-icon>
-                      <span>Add new answer</span>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <div
-                class="add-new-question"
-                role="button"
-                @click="addQuestionToForm"
-              >
+              <div class="add-new-question" role="button" @click="addQuestionToForm">
                 <b-icon icon="plus-circle" class="add-question-icon"></b-icon>
                 <span>Add new question</span>
               </div>
@@ -155,7 +85,7 @@
           </div>
           <Button class="create-course-button" @click="handleSubmit">{{
             isUpdating ? "Update Course" : "Create Course"
-          }}</Button>
+            }}</Button>
         </div>
       </div>
     </template>
@@ -183,12 +113,29 @@ export default {
         questions: [
           {
             text: "",
-            new:false,
+            new: false,
             alternatives: [
               {
                 isRight: false,
                 text: "",
-                new:false
+                new: false
+              },
+              {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
               },
             ],
           },
@@ -203,8 +150,12 @@ export default {
       isLoading: false,
       isUpdating: false,
       updatedCover: false,
-      deletedQuestions:[],
-      deletedAlternatives:[]
+      deletedQuestions: [],
+      deletedAlternatives: [],
+      alternativeNotFilledErrorInfo: {
+        questionIndex: null,
+        alternativeIndex: null
+      }
     };
   },
   mounted() {
@@ -219,23 +170,17 @@ export default {
     addQuestionToForm() {
       this.course.questions.push({
         text: "",
-        new:true,
+        new: true,
         alternatives: [
           {
             text: "",
             isRight: false,
-            new:true
+            new: true
           },
         ],
       });
     },
-    addAnswerToForm(questionIndex) {
-      this.course.questions[questionIndex].alternatives.push({
-        text: "",
-        isRight: false,
-        new:true
-      });
-    },
+
     changeWrongRightSwitch({ questionIndex, alternativeIndex }) {
       this.course.questions[questionIndex].alternatives[
         alternativeIndex
@@ -265,21 +210,36 @@ export default {
       }
     },
     async handleSubmit() {
+      for (const [questionIndex, question] of this.course.questions.entries()) {
+        for (const [alternativeIndex, alternative] of question.alternatives.entries()) {
+          if (!alternative.text) {
+            this.alternativeNotFilledErrorInfo.alternativeIndex = alternativeIndex;
+            this.alternativeNotFilledErrorInfo.questionIndex = questionIndex;
+
+            this.$swal.fire(
+              `You should fill all 5 alternatives`,
+              "",
+              "error"
+            );
+            return;
+          }
+        }
+      }
+
       const { courseType, cover, ...rest } = this.course;
-      const course = { courseTypeId: courseType.id,  ...rest };
+      const course = { courseTypeId: courseType.id, ...rest };
       const formData = new FormData();
 
       if (this.updatedCover) formData.append("cover", cover);
-
       formData.append("course", JSON.stringify(course));
       this.changeLoadingState();
       try {
 
         const swalResult = await this.$swal.fire({
-          title: `Do you really want to ${this.isUpdating? "update":"create"} this course ?`,
-          showDenyButton:true,
-          confirmButtonText: this.isUpdating? "Update!":"Create!",
-          denyButtonText:"Cancel"
+          title: `Do you really want to ${this.isUpdating ? "update" : "create"} this course ?`,
+          showDenyButton: true,
+          confirmButtonText: this.isUpdating ? "Update!" : "Create!",
+          denyButtonText: "Cancel"
         });
 
         if (!swalResult.isConfirmed) return
@@ -300,7 +260,7 @@ export default {
             "",
             "success"
           );
-          if(this.isUpdating){
+          if (this.isUpdating) {
             await this.loadCourse()
             return
           }
@@ -315,12 +275,12 @@ export default {
             questions: [
               {
                 text: "",
-                new:false,
+                new: false,
                 alternatives: [
                   {
                     isRight: false,
                     text: "",
-                    new:false
+                    new: false
                   },
                 ],
               },
@@ -329,7 +289,7 @@ export default {
         }
       } catch (error) {
         console.error(error);
-        this.$swal.fire(`Error ${this.isUpdating? "updating":"creating!"} the course`, "", "error");
+        this.$swal.fire(`Error ${this.isUpdating ? "updating" : "creating!"} the course`, "", "error");
         this.changeLoadingState();
       }
     },
@@ -343,7 +303,7 @@ export default {
       this.course = {
         ...this.course,
         ...course,
-        oldCover:course.cover,
+        oldCover: course.cover,
         questions,
         courseType: {
           label: courseType.title,
@@ -352,14 +312,14 @@ export default {
       };
       this.changeLoadingState();
     },
-    removeQuestion(questionIndex){
-      if(this.isUpdating){
+    removeQuestion(questionIndex) {
+      if (this.isUpdating) {
         this.deletedQuestions.push(this.course.questions[questionIndex].id)
       }
-      this.course.questions = this.course.questions.filter((_, index)=> index !== questionIndex)
+      this.course.questions = this.course.questions.filter((_, index) => index !== questionIndex)
     },
-    removeAlternative(alternativeIndex, questionIndex){
-      if(this.isUpdating){
+    removeAlternative(alternativeIndex, questionIndex) {
+      if (this.isUpdating) {
         this.deletedAlternatives.push(this.course.questions[questionIndex].alternatives[alternativeIndex].id)
       }
       this.course.questions[questionIndex].alternatives = this.course.questions[questionIndex].alternatives.filter((_, index) => index !== alternativeIndex)
@@ -417,6 +377,10 @@ export default {
   width: 100%;
   text-align: center;
   height: 4rem;
+}
+
+.input-error {
+  border-color: red;
 }
 
 .course-creation-answers-container {
@@ -524,8 +488,7 @@ export default {
   margin-bottom: 1rem;
 }
 
-.add-question-icon {
-}
+.add-question-icon {}
 
 .wrong-right-switch {
   position: absolute;
@@ -582,17 +545,18 @@ export default {
 .course-cover-image {
   width: 20%;
 }
-.delete-icon{
-  color:red;
+
+.delete-icon {
+  color: red;
   font-size: 2rem;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.delete-alternative-icon{
+.delete-alternative-icon {
   font-size: 1rem;
   position: absolute;
-  top:0.2rem;
-  right:0.3rem;
+  top: 0.2rem;
+  right: 0.3rem;
 }
 
 * {

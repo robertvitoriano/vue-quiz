@@ -11,7 +11,7 @@
           <b-list-group class="alternatives-list">
             <b-list-group-item :class="alternativeClass(index)" :key="index"
               v-for="(alternative, index) in currentQuestion.alternatives" @click="selectAnswerIndex(index)">
-              {{ alternative.text }}</b-list-group-item>
+              {{`${alternatives[index]} ${alternative.text}` }}</b-list-group-item>
           </b-list-group>
         </div>
       </div>
@@ -48,6 +48,7 @@ export default {
       submitButtonText: "Save Answer",
       nextButtonText: "Next Question",
       disableSubmitButton: false,
+      alternatives:['a)', 'b)', 'c)', 'd)', 'e)']
     };
   },
   watch: {
