@@ -42,8 +42,6 @@
                         'input-error': alternativeNotFilledErrorInfo.questionIndex === questionIndex &&
                           alternativeNotFilledErrorInfo.alternativeIndex === alternativeIndex && !alternative.text
                       }" :placeholder="'enter answer ' + (alternativeIndex + 1)" v-model="alternative.text" />
-                      <b-icon icon="trash-fill" class="delete-icon delete-alternative-icon"
-                        @click="removeAlternative(alternativeIndex, questionIndex)"></b-icon>
                       <div class="wrong-right-switch">
                         <div :class="{
                           'wrong-right-switch-input-container': true,
@@ -85,7 +83,7 @@
           </div>
           <Button class="create-course-button" @click="handleSubmit">{{
             isUpdating ? "Update Course" : "Create Course"
-            }}</Button>
+          }}</Button>
         </div>
       </div>
     </template>
@@ -172,12 +170,29 @@ export default {
         text: "",
         new: true,
         alternatives: [
-          {
-            text: "",
-            isRight: false,
-            new: true
-          },
-        ],
+              {
+                isRight: false,
+                text: "",
+                new: false
+              },
+              {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
+              }, {
+                isRight: false,
+                text: "",
+                new: false
+              },
+            ],
       });
     },
 
@@ -247,7 +262,6 @@ export default {
         let response;
         if (this.isUpdating) {
           formData.append("deletedQuestionIds", JSON.stringify(this.deletedQuestions))
-          formData.append("deletedAlternativeIds", JSON.stringify(this.deletedAlternatives))
 
           response = await courseService.updateCourse(this.$route.params.id, formData);
         } else {
@@ -278,6 +292,23 @@ export default {
                 new: false,
                 alternatives: [
                   {
+                    isRight: false,
+                    text: "",
+                    new: false
+                  },
+                  {
+                    isRight: false,
+                    text: "",
+                    new: false
+                  }, {
+                    isRight: false,
+                    text: "",
+                    new: false
+                  }, {
+                    isRight: false,
+                    text: "",
+                    new: false
+                  }, {
                     isRight: false,
                     text: "",
                     new: false
@@ -318,13 +349,6 @@ export default {
       }
       this.course.questions = this.course.questions.filter((_, index) => index !== questionIndex)
     },
-    removeAlternative(alternativeIndex, questionIndex) {
-      if (this.isUpdating) {
-        this.deletedAlternatives.push(this.course.questions[questionIndex].alternatives[alternativeIndex].id)
-      }
-      this.course.questions[questionIndex].alternatives = this.course.questions[questionIndex].alternatives.filter((_, index) => index !== alternativeIndex)
-
-    }
   },
 };
 </script>
