@@ -145,8 +145,8 @@ export default {
         this.submitButtonText = "Answered";
         this.disableSubmitButton = true;
         this.hasAnswered = true;
-        const userChosenAlternative = this.currentQuestion.alternatives.find(alternative => alternative.id === questionAlternativeId)
-        this.selectedAnswerIndex = userChosenAlternative.id
+        const userChosenAlternativeIndex = this.currentQuestion.alternatives.findIndex(alternative => alternative.id === questionAlternativeId)
+        this.selectedAnswerIndex = userChosenAlternativeIndex
         this.$emit("addUserChosenAlternative",{id:questionAlternativeId, questionId});
       }
     },

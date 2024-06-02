@@ -43,7 +43,7 @@ async function getCourseById(courseId) {
 }
 
 async function getCourseQuestions(courseBattleId) {
-  const response = await api.get(`/courses/${courseBattleId}`);
+  const response = await api.get(`/courses/course-battles/${courseBattleId}`);
   const responseHandled = handleResponse(response);
   return responseHandled;
 }
