@@ -2,7 +2,7 @@
   <AuthLayout #content>
     <div class="home-container">
       <div class="home-content">
-        <GridList :items="courses" v-if="courses.length" />
+        <GridList :items="courseBattles" v-if="courseBattles.length" />
         <h2 v-else class="no-course-created">You haven't created any course</h2>
       </div>
     </div>
@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      courses: [
+      courseBattles: [
         {
           course_type_id: null,
           cover: null,
@@ -42,19 +42,20 @@ export default {
     async getCourses() {
       try {
         this.changeLoadingState();
-        const response = await courseService.getCourses()
-        const coursesWithPreparedData = response.data.courses.map((course)=>{
+        const response = await courseService.getUserCourseBattles()
+        console.log(response.data)
+        const coursesWithPreparedData = response.data.data.courseBattles.map((courseBattle)=>{
           return {
-            link:`quiz/${course.id}`,
-            image: course.cover || "https://rails-quiz-images.s3.amazonaws.com/course-default.png",
-            title:course.title
+            link:`course-battle-room/${courseBattle.id}`,
+            image: courseBattle.cover || "https://rails-quiz-images.s3.amazonaws.com/course-default.png",
+            title:courseBattle.name
           }
         })
-        this.courses = coursesWithPreparedData;
+        this.courseBattles = coursesWithPreparedData;
         this.changeLoadingState()
       } catch (error) {
         this.changeLoadingState();
-        this.$swal.fire("unable to  load courses!", "", "error");
+        this.$swal.fire("unable to  load Course Battles!", "", "error");
         console.error(error)
       }
     },

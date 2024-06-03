@@ -106,6 +106,12 @@ async function finishCourseBattle({
   });
   return response;
 }
+async function getUserCourseBattles() {
+  const response = await api.get(
+    `/course_battles`
+  );
+  return response;
+}
 export default {
   getCourses,
   getAllCourses,
@@ -122,4 +128,5 @@ export default {
   getCourseBattleMessages,
   sendCourseBattleMessage,
   finishCourseBattle,
+  getUserCourseBattles,
 };
