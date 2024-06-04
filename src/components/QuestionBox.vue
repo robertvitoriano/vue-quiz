@@ -1,6 +1,6 @@
 <template>
   <div class="question-box-container">
-    <Header :questions-count="questionsCount" :current-question-index="currentQuestionIndex" />
+    <Header :questions-count="questionsCount" :current-question-index="currentQuestionIndex" :run-timer="runTimer" @timer-finished="getTotalTimeInSeconds"/>
     <div class="question-box-content">
       <h2>{{ courseTitle }}</h2>
       <div class="question-container">
@@ -48,7 +48,9 @@ export default {
       submitButtonText: "Save Answer",
       nextButtonText: "Next Question",
       disableSubmitButton: false,
-      alternatives:['a)', 'b)', 'c)', 'd)', 'e)']
+      alternatives:['a)', 'b)', 'c)', 'd)', 'e)'],
+      runTimer:false,
+      totalTimeInSeconds:0,
     };
   },
   watch: {
@@ -61,6 +63,7 @@ export default {
         );
         this.hasAnswered = this.currentQuestion.alternatives.some(alternative => !!alternative.hasAnswered)
         this.verifyIfQuestionWasAnswered()
+        this.runTimer = true
       },
     },
   },
@@ -74,7 +77,7 @@ export default {
         this.nextButtonText = "Finish Quiz";
       }
       if (this.currentQuestionIndex + 1 === this.questionsCount) {
-        this.$emit("hasFinishedEvent");
+        this.$emit("hasFinishedEvent", this.totalTimeInSeconds);
       }
       this.$emit("nextQuestionEvent");
       this.resetAnswerState();
@@ -95,6 +98,9 @@ export default {
       this.hasAnswered = true;
       const {id, questionId} = selectedAnswer
       this.$emit("addUserChosenAlternative", {id, questionId});
+      if (this.currentQuestionIndex + 1 === this.questionsCount) {
+        this.runTimer = false;
+      }
 
     },
     selectAnswerIndex(index) {
@@ -154,6 +160,9 @@ export default {
       this.currentQuestion.alternatives =
         this.currentQuestion.alternatives.sort(() => Math.random() - 0.5);
     },
+    getTotalTimeInSeconds(seconds){
+      this.totalTimeInSeconds = seconds
+    }
   },
 };
 </script>

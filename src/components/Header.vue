@@ -4,19 +4,59 @@
       <p> Questions: {{ currentQuestionIndex + 1 }}/{{ questionsCount }}</p>
     </div>
     <div class="header-item">
-      <p>Time: 00:00:00</p>
+      <p>Time: {{displayedTime}}</p>
     </div>
   </div>
 </template>
-<script>
-export default {
-  props: ['questionsCount', 'currentQuestionIndex', 'score']
 
+<script>
+import { getFormattedTime } from './../utils/time'
+
+export default {
+  props: ['questionsCount', 'currentQuestionIndex', 'score', 'runTimer'],
+  data() {
+    return {
+      currentTimeInSeconds: 0,
+      displayedTime: getFormattedTime(0),
+      timerId: null,
+    }
+  },
+  mounted() {
+    if (this.runTimer) {
+      this.startTimer();
+    }
+  },
+  beforeDestroy() {
+    this.stopTimer();
+  },
+  watch: {
+    runTimer(newVal) {
+      if (newVal) {
+        this.startTimer();
+      } else {
+        this.stopTimer();
+        this.$emit('timer-finished', this.currentTimeInSeconds);
+      }
+    }
+  },
+  methods: {
+    startTimer() {
+      this.timerId = setInterval(() => {
+        this.currentTimeInSeconds++;
+        this.displayedTime = getFormattedTime(this.currentTimeInSeconds);
+      }, 1000);
+    },
+    stopTimer() {
+      if (this.timerId) {
+        clearInterval(this.timerId);
+        this.timerId = null;
+      }
+    },
+  },
 }
 </script>
 
 <style scoped>
-
 .header-container {
   height: 5vh;
   width: 100%;
@@ -27,7 +67,7 @@ export default {
   padding-left: 1rem;
 }
 
-p{
+p {
   margin-bottom: 0;
 }
 </style>

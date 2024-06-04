@@ -98,11 +98,13 @@ async function finishCourseBattle({
   courseBattleId,
   courseId,
   userChosenAlternatives,
+  timeSpent
 }) {
   const response = await api.post(`/course_battles/finish-course-battle`, {
     courseBattleId,
     courseId,
     userChosenAlternatives,
+    timeSpent
   });
   return response;
 }

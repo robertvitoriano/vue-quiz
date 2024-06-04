@@ -70,12 +70,13 @@ export default {
 
       }
     },
-    async finishQuiz() {
+    async finishQuiz(timeInSeconds) {
       this.hasFinished = true
       await courseService.finishCourseBattle({
         courseBattleId: this.$route.params.courseBattleId,
         courseId: this.courseId,
-        userChosenAlternatives: this.userChosenAlternatives
+        userChosenAlternatives: this.userChosenAlternatives,
+        timeSpent:timeInSeconds,
       })
     },
     addUserChosenAlternative(userChosenAlternative) {
