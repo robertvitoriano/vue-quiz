@@ -399,7 +399,6 @@ export default {
       }
     },
     handleOpponentRegister(data) {
-      const isFromOtherPlayer = this.userInfo.id !== data.userId;
       if (data.type === "user_registered") {
         this.players[1].avatar = data.avatar;
         this.players[1].name = data.name;
