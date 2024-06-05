@@ -49,7 +49,9 @@ export default {
       const playersResponse = await courseService.getCourseBattleUsers(this.$route.params.courseBattleId)
       this.players = playersResponse.data.data.courseBattleUsers
       const isRegisteredInBattle = this.players.some((player) => player.userId === this.userInfo.id)
-
+      const courseBattleResult =(await courseService.getCourseBattleResult(this.$route.params.courseBattleId)).data
+      this.hasFinished = courseBattleResult.data.result !== 'not-finished'
+      if(this.hasFinished) this.score = courseBattleResult.data.userPerformance
       if (!isRegisteredInBattle) return this.$router.push('/home')
       await this.loadQuestions()
     },
@@ -72,12 +74,15 @@ export default {
     },
     async finishQuiz(timeInSeconds) {
       this.hasFinished = true
-      await courseService.finishCourseBattle({
+      const finishResult = await courseService.finishCourseBattle({
         courseBattleId: this.$route.params.courseBattleId,
         courseId: this.courseId,
         userChosenAlternatives: this.userChosenAlternatives,
         timeSpent:timeInSeconds,
       })
+      console.log({finishResult})
+      this.hasFinished = finishResult.data.data.result !== 'not-finished'
+      if(this.hasFinished) this.score = finishResult.data.data.userPerformance
     },
     addUserChosenAlternative(userChosenAlternative) {
       if (this.userChosenAlternatives.includes(alternative => alternative.id === userChosenAlternative.id)) return

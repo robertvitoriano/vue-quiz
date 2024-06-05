@@ -114,6 +114,13 @@ async function getUserCourseBattles() {
   );
   return response;
 }
+
+async function getCourseBattleResult(courseBattleId){
+  const response = await api.get(
+    `/course_battles/result/${courseBattleId}`
+  );
+  return response;
+}
 export default {
   getCourses,
   getAllCourses,
@@ -131,4 +138,5 @@ export default {
   sendCourseBattleMessage,
   finishCourseBattle,
   getUserCourseBattles,
+  getCourseBattleResult
 };

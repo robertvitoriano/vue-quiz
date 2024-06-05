@@ -4,14 +4,10 @@
       <h1>{{performanceText}}</h1>
       <h3>Do you want to try again ?</h3>
       <div class='restart-buttons-container'>
-        <b-button class="restart-button" variant="danger" href="#" @click="finishCourse">
-          finish course
-        </b-button>
         <b-button class="restart-button" variant="success" href="#" @click="emitRestart">try again ?</b-button>
+        <b-button class="restart-button" href="#" @click="goBack">Go Back</b-button>
+
         </div>
-      </div>
-      <div v-if="courseFinished" class="course-finished-section">
-        <h1>This is it, I know you did your best!</h1>
       </div>
     </div>
 </template>
@@ -35,20 +31,23 @@ export default {
     },
     getPerformanceText() {
       if (this.score === 0) return 'Unfortunately you have not scored, try again, I know you can improve'
-      return `Congratulations, you obtained ${this.score} points !`
+      return `Congratulations, you achieved ${this.score} % !`
     },
     finishCourse() {
       this.courseFinished = true
-    }
+    },
+    goBack() {
+            this.$router.go(-1);
+        }
   }
 }
 
 </script>
 <style scoped>
 .restart-buttons-container {
-  width: 20%;
+  width: 50%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 
 }
 
@@ -63,7 +62,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100%;
+  padding: 2rem;
 }
 .course-finished-section{
   display: flex;

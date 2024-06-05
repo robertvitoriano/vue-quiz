@@ -16,7 +16,7 @@
             <div class="middle-container">
               <span class="vs-symbol">VS</span>
               <Button :title="'Start'" class="start-course-battle-button" @handleClick="startCourseBattleCountdown"
-                v-if="hasPlayer2Joined" ref="startCourseBattleButton" />
+                v-if="hasPlayer2Joined && currentUserIsTheHost" ref="startCourseBattleButton" />
             </div>
             <div class="player-container">
               <img class="player-avatar" :src="players[1].avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'"  v-if="hasPlayer2Joined"/>
@@ -33,7 +33,7 @@
                   <span></span>
                 </div>
               </div>
-              <span class="player-username" ref="player2">{{
+              <span class="player-username" ref="player2" v-if="hasPlayer2Joined">{{
                 formatUsername(players[1].name)
                 }}</span>
             </div>
@@ -400,8 +400,10 @@ export default {
       }
     },
     handleOpponentRegister(data) {
+      console.log({data})
       const isFromOtherPlayer = this.userInfo.id !== data.userId;
-      if (data.type === "user_registered" && isFromOtherPlayer) {
+      console.log({isFromOtherPlayer})
+      if (data.type === "user_registered") {
         this.players[1].avatar = data.avatar;
         this.players[1].name = data.name;
         this.players[1].id = data.userId;
@@ -501,6 +503,9 @@ export default {
     ...mapGetters(["userInfo", "getSelectedCourse"]),
     selectedCourse() {
       return this.getSelectedCourse;
+    },
+    currentUserIsTheHost(){
+      return this?.userInfo.id === this?.players[0].id
     }
   },
 };
@@ -785,6 +790,9 @@ export default {
   /*.vs-symbol */
   /*player2-search-container*/
   /*course-creation-chat-input */
+  .start-course-battle-button {
+    font-size: 2rem;
+  }
   .player-avatar {
     width: 64px;
     height: 64px;
