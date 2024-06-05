@@ -19,9 +19,7 @@ import Button from './Button.vue';
 export default {
   name: "BattleInviteNotification",
   components:{Button},
-  mounted() {
-    console.log({courseName:this.courseName})
-  },
+
   props: ["battleId", "courseName", "opponentName"],
   methods:{
     goToCourseBattle(){

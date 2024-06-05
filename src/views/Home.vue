@@ -43,7 +43,6 @@ export default {
       try {
         this.changeLoadingState();
         const response = await courseService.getUserCourseBattles()
-        console.log(response.data)
         const coursesWithPreparedData = response.data.data.courseBattles.map((courseBattle)=>{
           return {
             link:`course-battle-room/${courseBattle.id}`,

@@ -138,7 +138,6 @@ export default {
         }
       }
     );
-    console.log({ selectedCourse: this.selectedCourse })
   },
   data() {
     return {
@@ -400,9 +399,7 @@ export default {
       }
     },
     handleOpponentRegister(data) {
-      console.log({data})
       const isFromOtherPlayer = this.userInfo.id !== data.userId;
-      console.log({isFromOtherPlayer})
       if (data.type === "user_registered") {
         this.players[1].avatar = data.avatar;
         this.players[1].name = data.name;

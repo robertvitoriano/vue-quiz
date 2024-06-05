@@ -80,7 +80,6 @@ export default {
         userChosenAlternatives: this.userChosenAlternatives,
         timeSpent:timeInSeconds,
       })
-      console.log({finishResult})
       this.hasFinished = finishResult.data.data.result !== 'not-finished'
       if(this.hasFinished) this.score = finishResult.data.data.userPerformance
     },
