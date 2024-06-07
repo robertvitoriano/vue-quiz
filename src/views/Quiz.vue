@@ -7,7 +7,7 @@
           @nextQuestionEvent="updatedCurrentQuestionIndex" @increaseScoreEvent="score++" @hasFinishedEvent="finishQuiz"
           @addUserChosenAlternative="addUserChosenAlternative" v-if="(questions.length > 0) && !hasFinished">
         </QuestionBox>
-        <RestartSection v-if="hasFinished" :score="score" @restartEvent="restart"></RestartSection>
+        <RestartSection v-if="hasFinished" :score="score" :result="result" @restartEvent="restart"></RestartSection>
       </div>
     </template>
   </AuthLayout>
@@ -40,7 +40,8 @@ export default {
       courseTitle: '',
       courseId: null,
       players: [],
-      userChosenAlternatives: []
+      userChosenAlternatives: [],
+      result:'not-finished'
     }
   },
   methods: {
@@ -51,19 +52,21 @@ export default {
       const isRegisteredInBattle = this.players.some((player) => player.userId === this.userInfo.id)
       const courseBattleResult =(await courseService.getCourseBattleResult(this.$route.params.courseBattleId)).data
       this.hasFinished = courseBattleResult.data.result !== 'not-finished'
+      this.result = courseBattleResult.data.result
       if(this.hasFinished) this.score = courseBattleResult.data.userPerformance
       if (!isRegisteredInBattle) return this.$router.push('/home')
-      await this.loadQuestions()
+      
+      await this.loadQuestions({showLoading:false})
     },
-    async loadQuestions() {
-      this.changeLoadingState();
+    async loadQuestions({showLoading}) {
+      if(showLoading) this.changeLoadingState();
       const response = await courseService.getCourseQuestions(this.$route.params.courseBattleId)
       this.questions = response.data.questions
       this.currentQuestionIndex = 0
       this.currentQuestion = this.questions[this.currentQuestionIndex]
       this.courseTitle = response.data.course.title
       this.courseId = response.data.course.id
-      this.changeLoadingState();
+      if(showLoading) this.changeLoadingState();
     },
     updatedCurrentQuestionIndex() {
       if (this.currentQuestionIndex < this.questions.length - 1) {
@@ -73,14 +76,17 @@ export default {
       }
     },
     async finishQuiz(timeInSeconds) {
-      this.hasFinished = true
+      this.changeLoadingState();
       const finishResult = await courseService.finishCourseBattle({
         courseBattleId: this.$route.params.courseBattleId,
         courseId: this.courseId,
         userChosenAlternatives: this.userChosenAlternatives,
         timeSpent:timeInSeconds,
-      })
-      this.hasFinished = finishResult.data.data.result !== 'not-finished'
+        })
+        this.changeLoadingState();
+        this.hasFinished = true
+        this.hasFinished = finishResult.data.data.result !== 'not-finished'
+        this.result = finishResult.data.data.result
       if(this.hasFinished) this.score = finishResult.data.data.userPerformance
     },
     addUserChosenAlternative(userChosenAlternative) {

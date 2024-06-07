@@ -6,7 +6,6 @@
       <div class='restart-buttons-container'>
         <b-button class="restart-button" variant="success" href="#" @click="emitRestart">try again ?</b-button>
         <b-button class="restart-button" href="#" @click="goBack">Go Back</b-button>
-
         </div>
       </div>
     </div>
@@ -14,12 +13,13 @@
 <script>
 export default {
   props: {
-    score: Number
+    score: Number,
+    result: String
   },
   data() {
     return {
       performanceText: '',
-      courseFinished: false
+      courseFinished: false,
     }
   },
   mounted() {
@@ -30,8 +30,15 @@ export default {
       this.$emit('restartEvent')
     },
     getPerformanceText() {
-      if (this.score === 0) return 'Unfortunately you have not scored, try again, I know you can improve'
-      return `Congratulations, you achieved ${this.score} % !`
+      const resultTexts = {
+        'not-finished':"Error, You haven't finished the course!",
+        'won':"Congratulations, you won this battle!",
+        'lost':"Unfortunately you lost this battle!",
+        'awaiting-opponent':'Awaiting opponent to finish battle!' ,
+        'draw':'There was a draw in this battle!'
+      }
+
+      return resultTexts[this.result];
     },
     finishCourse() {
       this.courseFinished = true
