@@ -49,6 +49,11 @@ async function sendFriendShipRequest(friendShipData){
   const respose = await api.post(`/users/friends/add-friend`, {userId2: friendShipData.friendId})
   return respose
 }
+
+async function setFriendshipResult(result, notifierId){
+  const respose = await api.put(`/users/friends/friendship-result`, {userId1: notifierId,result})
+  return respose
+}
 export default {
   login,
   logout,
@@ -58,5 +63,6 @@ export default {
   checkUser,
   getFriends,
   getNonFriends,
-  sendFriendShipRequest
+  sendFriendShipRequest,
+  setFriendshipResult
 };

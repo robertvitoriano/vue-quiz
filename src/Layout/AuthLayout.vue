@@ -134,7 +134,7 @@
       :class="{
       'notification-item':true,
       'not-read-notification-background-color':!notification.read
-     }">
+     }" @click="handleFriendshipRequestNotificationClick(notification)">
       <span class="notification-type">{{notification.title}}</span>
       <span class="notification-description">{{notification.description}}</span>
     </div>
@@ -195,19 +195,29 @@
         </div>
       </template>
     </Modal>
+    <Modal modalId="friendShipRequestModal" ref="friendShipRequestModal" title="Friendship request!">
+      <template #content>
+        <h1>Accept friendship from {{selectedNotificationInfo.friendName}}</h1>
+        <Button class="friendship-request-modal-button" :title="'Accept'" @clicked="setFriendshipResult(selectedNotificationInfo.notifierId, 'accepted')"/>
+        <Button class="friendship-request-modal-button" :title="'Deny'" @clicked="setFriendshipResult(selectedNotificationInfo.notifierId, 'rejected')"/>
+
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
 import BattleInviteNotification from '../components/BattleInviteNotification.vue';
 import userService from '../services/userService';
+import notificationService from '../services/notificationService'
 import ActionCable from "actioncable";
 import Modal from '../components/Modal.vue'
 import { mapGetters, mapActions } from 'vuex';
+import Button from "../components/Form/Button.vue";
 
 export default {
   name: "AuthLayout",
-  components:{BattleInviteNotification, Modal},
+  components:{BattleInviteNotification, Modal, Button},
   created(){
     this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL}/cable`, {
       userId: this.userInfo.id,
@@ -215,6 +225,7 @@ export default {
   },
   async mounted(){
     this.changeLoadingState()
+    await this.getUserNotifications()
     await this.getNonFriends()
     const userId = this.userInfo.id
   
@@ -236,44 +247,7 @@ export default {
       }
     );
     this.changeLoadingState()
-    this.notifications = [{
-        type:'friendship_request',
-        description:'Friendship request from fulano',
-        title:'Friendhip Request',
-        read:false,
-        url:'/something'
-    },{
-        type:'friendship_request',
-        description:'Friendship request from fulano',
-        title:'Friendhip Request',
-        read:true,
-        url:'/something'
-    },{
-        type:'friendship_request',
-        description:'Friendship request from fulano',
-        title:'Friendhip Request',
-        read:true,
-        url:'/something'
-    },{
-        type:'quiz_battle_request',
-        description:'quiz battle request from fulano',
-        title:'Quiz Battle Request',
-        read:false,
-        url:'/something'
-    },{
-        type:'friendship_request',
-        description:'Friendship request from fulano',
-        title:'Friendhip Request',
-        read:false,
-        url:'/something'
-    },{
-        type:'friendship_request',
-        description:'Friendship request from fulano',
-        title:'Friendhip Request',
-        read:true,
-        url:'/something'
-    }
-  ]
+
   },
   data(){
     return {
@@ -285,14 +259,16 @@ export default {
         courseName:String
       },
       friendRequestData:null,
+      showFriendshipRequestModal:false,
       users:[],
       notifications:[{
         type:String,
         description:String,
         title:String,
         read:Boolean,
-        url:String
+        url:String,
       }],
+      selectedNotificationInfo:Object,
     } 
   },
   computed:{
@@ -308,6 +284,11 @@ export default {
       const nonFriendsResponse = await userService.getNonFriends()
       this.users = nonFriendsResponse.data.data
     },
+    async getUserNotifications(){
+      const userNotificationsResponse = await notificationService.getUserNotifications()
+      const userNotificationsParsed = this.parseLoadedNotificationsContent(userNotificationsResponse.data); 
+      this.notifications = userNotificationsParsed
+    },
     logout(){
       userService.logout()
     },
@@ -315,11 +296,13 @@ export default {
       
       switch(notification.type){
         case "notification_to_join_course_battle":
+          console.log({notification})
           this.showBattleNotificationModal = true
                     
           this.battleInviteInfo.battleId = notification.courseBattleId,
           this.battleInviteInfo.opponentName = notification.opponentName
           this.battleInviteInfo.courseName = notification.courseName
+
         break;
         case "friendship_request_notification":
           console.log({notification})
@@ -332,7 +315,37 @@ export default {
       await userService.sendFriendShipRequest({friendId:friend.id})
       this.changeLoadingState()
 
-    }
+    },
+    parseLoadedNotificationsContent(notifications){
+      return notifications.map(notification=>{
+        
+        switch (notification.type) {
+          case 'friendship_request_notification':
+             return {
+              id:notification.id,
+              type:notification.type,
+              title:'Friendship request',
+              description:`You received a friendship request from ${notification.notifierName}`,
+              read: notification.isRead,
+              friendName: notification.notifierName,
+              notifierId: notification.notifierId
+             }
+        
+          default: 'none'
+            break;
+        }
+      })
+    },
+    handleFriendshipRequestNotificationClick(notification){
+      this.selectedNotificationInfo = notification
+      this.$refs.friendShipRequestModal.showModal();
+
+    },
+   async setFriendshipResult(notifierId, result){
+    console.log({notifierId, result})
+      await userService.setFriendshipResult(result, notifierId)
+    },
+
   },
 };
 </script>
@@ -715,6 +728,8 @@ export default {
   background-color: white;
   color:black;
 }
-
+.friendship-request-modal-button{
+  cursor: pointer;
+} 
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <b-modal :id="modalId">
+  <b-modal :id="modalId" ref="modal">
     <template #modal-header>
       <div class="modal-header-container">
         <h2>{{title}}</h2>
@@ -19,6 +19,15 @@
 export default {
   name: "Modal",
   props: ["modalId", "title"],
+  methods: {
+    showModal() {
+      console.log({refs: this.$refs})
+      this.$refs.modal.show();
+    },
+    hideModal() {
+      this.$refs.modal.hide();
+    }
+  }
 };
 </script>
 
