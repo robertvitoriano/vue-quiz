@@ -58,7 +58,8 @@
     },
     "rules": {
       "vue/no-unused-components": "warn",
-      "vue/valid-v-for": "warn"
+      "vue/valid-v-for": "warn",
+      "no-unused-vars":"off"
     }
   },
   "browserslist": [

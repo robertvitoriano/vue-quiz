@@ -25,7 +25,7 @@ import  userService from '../services/userService'
       const response = await this.userService.getFriends(this.$route.params.userId)
       const friendsWithPreparedData = response.data.data.map((friend) =>{
         return {
-          image:friend.avatar,
+          image:friend.avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png',
           title:friend.name,
           link:''
         }
