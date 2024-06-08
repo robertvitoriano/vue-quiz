@@ -1,0 +1,7 @@
+{
+  "name": "\"quiz-battle\"",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
