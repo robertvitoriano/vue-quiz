@@ -79,4 +79,10 @@ export default {
   height: 100%;
 
 }
+@media only screen and (min-width: 280px) {
+  .restart-buttons-container {
+    width: 100%;
+  }
+  
+}
 </style>
