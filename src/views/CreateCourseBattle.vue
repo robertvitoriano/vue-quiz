@@ -3,8 +3,6 @@
     <template #content>
       <div class="course-battle-room-wrapper">
         <div class="course-battle-creation-container">
-          <TextInput v-model="courseBattleName" placeholder="Enter course battle name" class="course-battle-input">
-          </TextInput>
           <Select :options="courses" @optionSelected="handleSelectedCourse" class="courses-select"
             label="Select the battle course"></Select>
           <img :src="selectedCourse.cover" v-if="selectedCourse" class="course-cover-image">
@@ -31,7 +29,6 @@ export default {
         id: '',
         cover: ''
       },
-      courseBattleName: "",
       courses: [{
         label: '',
         id: '',
@@ -60,7 +57,7 @@ export default {
     },
     async createCourseBattle() {
       this.changeLoadingState()
-      const response = await courseService.createCourseBattle({ name: this.courseBattleName, courseId: this.selectedCourse.id, userId: this.userInfo.id })
+      const response = await courseService.createCourseBattle({ courseId: this.selectedCourse.id, userId: this.userInfo.id })
       const createCourseBattleId = response.data.data.courseBattle.id
       this.setSelectedCourse(this.selectedCourse);
       this.changeLoadingState()

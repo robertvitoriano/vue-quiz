@@ -387,7 +387,7 @@ export default {
 }
 
 .auth-layout-header-mobile {
-  height: 10vh;
+  height: 8vh;
   background-color: gray;
   display: none;
   flex-direction: row;

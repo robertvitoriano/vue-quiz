@@ -7,7 +7,14 @@
           @nextQuestionEvent="updatedCurrentQuestionIndex" @increaseScoreEvent="score++" @hasFinishedEvent="finishQuiz"
           @addUserChosenAlternative="addUserChosenAlternative" v-if="(questions.length > 0) && !hasFinished">
         </QuestionBox>
-        <RestartSection v-if="hasFinished" :score="score" :result="result" @restartEvent="restart"></RestartSection>
+        <RestartSection 
+        v-if="hasFinished" 
+        :score="score" 
+        :result="result" 
+        :course-title="courseTitle" 
+        @restartEvent="restart"
+        :players="players"
+        ></RestartSection>
       </div>
     </template>
   </AuthLayout>
