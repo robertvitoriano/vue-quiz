@@ -61,13 +61,16 @@ export default {
       this.hasFinished = courseBattleResult.data.result !== 'not-finished'
       this.result = courseBattleResult.data.result
 
-      
       if(this.players[0].id === this.userInfo.id){
         this.players[0].score = courseBattleResult.data.userPerformance;
         this.players[1].score = courseBattleResult.data.opponentPerformance;
+        this.players[0].timeSpent = courseBattleResult.data.userTimeSpent;
+        this.players[1].timeSpent = courseBattleResult.data.opponentTimeSpent;
       } else {
         this.players[1].score = courseBattleResult.data.userPerformance;
         this.players[0].score = courseBattleResult.data.opponentPerformance;
+        this.players[1].timeSpent = courseBattleResult.data.userTimeSpent;
+        this.players[0].timeSpent = courseBattleResult.data.opponentTimeSpent;
       }
       
       if(this.hasFinished) this.score = courseBattleResult.data.userPerformance

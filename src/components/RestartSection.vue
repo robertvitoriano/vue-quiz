@@ -13,7 +13,7 @@
           <h3 class="player-name">{{ player.name }}</h3>
           <div class="player-course-status">
             <h3>Score: {{ player.score }}%</h3>
-            <h3>Time: 00:20:52</h3>
+            <h3>Time: {{getFormattedTime(player.timeSpent)}}</h3>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
   </div>
 </template>
 <script>
-
+  import { getFormattedTime } from '../utils/time';
 export default {
   props: {
     score: Number,
@@ -80,6 +80,9 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
+    },
+    getFormattedTime(timeInSeconds){
+      return getFormattedTime(timeInSeconds)
     }
   }
 }
