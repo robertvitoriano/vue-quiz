@@ -71,7 +71,7 @@ export default {
         'won': require('./../assets/win-icon.jpeg'),
         'lost': require('./../assets/lost-icon.jpeg'),
         'awaiting-opponent': require('./../assets/lost-icon.jpeg'),
-        'draw': require('./../assets/lost-icon.jpeg')
+        'draw': require('./../assets/draw-icon.jpeg')
       };
       return resultIcons[this.result];
     },
