@@ -12,7 +12,7 @@
             :src="player.avatar || 'https://rails-quiz-images.s3.amazonaws.com/default-avatar.png'" />
           <h3 class="player-name">{{ player.name }}</h3>
           <div class="player-course-status">
-            <h3>Score: {{ score }}%</h3>
+            <h3>Score: {{ player.score }}%</h3>
             <h3>Time: 00:20:52</h3>
           </div>
         </div>

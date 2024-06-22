@@ -60,6 +60,16 @@ export default {
       const courseBattleResult =(await courseService.getCourseBattleResult(this.$route.params.courseBattleId)).data
       this.hasFinished = courseBattleResult.data.result !== 'not-finished'
       this.result = courseBattleResult.data.result
+
+      
+      if(this.players[0].id === this.userInfo.id){
+        this.players[0].score = courseBattleResult.data.userPerformance;
+        this.players[1].score = courseBattleResult.data.opponentPerformance;
+      } else {
+        this.players[1].score = courseBattleResult.data.userPerformance;
+        this.players[0].score = courseBattleResult.data.opponentPerformance;
+      }
+      
       if(this.hasFinished) this.score = courseBattleResult.data.userPerformance
       if (!isRegisteredInBattle) return this.$router.push('/home')
       
@@ -94,6 +104,7 @@ export default {
         this.hasFinished = true
         this.hasFinished = finishResult.data.data.result !== 'not-finished'
         this.result = finishResult.data.data.result
+        console.log(finishResult.data.data);
       if(this.hasFinished) this.score = finishResult.data.data.userPerformance
     },
     addUserChosenAlternative(userChosenAlternative) {
