@@ -13,13 +13,14 @@
     "build-android": "ionic capacitor build android",
     "update-icon-and-splash": "npx capacitor-assets generate",
     "show-logs": "logkitty android 'console.log'",
-    "ionic:build":"npm run build"
-
+    "ionic:build": "npm run build",
+    "view-keystore":"keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
     "@capacitor/cli": "^6.0.0",
     "@capacitor/core": "^6.0.0",
+    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",

@@ -16,6 +16,12 @@ async function login(credentials) {
   store.commit("setUserInfo", user)
 }
 
+async function serverLoginWithGoogle(accessToken){
+  const response = await api.post('/users/oauth-login',{token:accessToken})
+  const { token, user } = handleResponse(response);
+  localStorage.setItem("token", token);
+  store.commit("setUserInfo", user)
+}
 async function getUsers(currentPage, usersPerPage, usersOrder){
   const response = await api.get(`/users?page=${currentPage}&limit=${usersPerPage}&order=${usersOrder}`);
   const responseHandled = handleResponse(response);
@@ -64,5 +70,6 @@ export default {
   getFriends,
   getNonFriends,
   sendFriendShipRequest,
-  setFriendshipResult
+  setFriendshipResult,
+  serverLoginWithGoogle
 };

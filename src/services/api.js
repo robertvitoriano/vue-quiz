@@ -1,5 +1,4 @@
 import axios from 'axios'
-import userService from "./userService";
 
 const api = axios.create({
   baseURL:`${process.env.VUE_APP_API_URL}/api/v1`,
@@ -10,27 +9,24 @@ const requestIntercepter = (config) => {
   "Bearer " + localStorage.getItem("token");
   return config;
 };
-const responseIntercepter = (response) => {
-  return response;
-};
 
 api.interceptors.request.use(requestIntercepter);
 
 
-api.interceptors.response.use(responseIntercepter, (err) => {
-  const authorizedUserError = err.response && err.response.status === 400 && err.response.status < 500;
-  const unauthorizedUserError = err.response.status === 401
-  if(authorizedUserError){
-    console.error(err);
-  }
-  if (unauthorizedUserError) {
-      userService.logout();
-      location.reload(true);
-    }
+// api.interceptors.response.use(responseIntercepter, (err) => {
+//   const authorizedUserError = err.response && err.response.status === 400 && err.response.status < 500;
+//   const unauthorizedUserError = err.response.status === 401
+//   if(authorizedUserError){
+//     console.error(err);
+//   }
+//   if (unauthorizedUserError) {
+//       userService.logout();
+//       location.reload(true);
+//     }
 
-    return Promise.reject(err);
+//     return Promise.reject(err);
 
-});
+// });
 
 export default api
 
