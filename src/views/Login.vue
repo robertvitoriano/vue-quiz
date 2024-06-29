@@ -85,11 +85,17 @@ export default {
       }
     },
     async loginWithGoogle() {
-
+      
       const response = await GoogleAuth.signIn();
       const accessToken = response.authentication.accessToken;
-      await userService.serverLoginWithGoogle(accessToken)
-      this.$router.push(this.pathToRedirectAfterLogin);
+      try{
+        this.changeLoadingState();
+        await userService.serverLoginWithGoogle(accessToken)
+        this.changeLoadingState();
+        this.$router.push(this.pathToRedirectAfterLogin);
+      }catch(error){
+        console.error(error);
+      }
 
     },
     async signUp() {
