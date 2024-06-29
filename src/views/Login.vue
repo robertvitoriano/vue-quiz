@@ -94,6 +94,8 @@ export default {
         this.changeLoadingState();
         this.$router.push(this.pathToRedirectAfterLogin);
       }catch(error){
+        this.changeLoadingState();
+
         console.error(error);
       }
 
