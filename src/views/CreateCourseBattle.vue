@@ -2,6 +2,9 @@
   <AuthLayout>
     <template #content>
       <div class="course-battle-room-wrapper">
+        <router-link to="/course-creation">
+          <Button title="Create Course" class="course-creation-button" ></Button>
+        </router-link>
         <div class="course-battle-creation-container">
           <Select :options="courses" @optionSelected="handleSelectedCourse" class="courses-select"
             label="Select the battle course"></Select>
@@ -71,6 +74,11 @@ export default {
 </script>
 
 <style scoped>
+.course-creation-button {
+  margin: 0 auto;
+  margin-top: 2rem;
+  width: fit-content;
+}
 .course-battle-room-wrapper {
   width: 100%;
   height: 100%;

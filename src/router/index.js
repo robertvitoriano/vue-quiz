@@ -28,7 +28,7 @@ const routes = [
     path: '/course-creation',
     name: 'CourseCreation',
     component: CourseCreation,
-    meta: { authorize: [LEVEL.ADMIN] }
+    meta: { authorize: [LEVEL.ADMIN, LEVEL.USER]  }
   },
   {
     path:'/course-update/:id',
