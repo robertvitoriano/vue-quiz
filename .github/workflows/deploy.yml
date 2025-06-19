@@ -24,8 +24,8 @@ jobs:
         run: npm run build
       - name: Create .env file
         run: |
-          echo "VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}" >> .env
-          echo "VUE_APP_WEB_SOCKET_URL=${{ secrets.VUE_APP_WEB_SOCKET_URL }}" >> .env
+          echo "VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}" >> .env.local
+          echo "VUE_APP_WEB_SOCKET_URL=${{ secrets.VUE_APP_WEB_SOCKET_URL }}" >> .env.local
           
 
       - name: Upload .env to S3

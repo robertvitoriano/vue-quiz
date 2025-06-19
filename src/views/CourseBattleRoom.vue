@@ -96,7 +96,7 @@ export default {
   name: "CourseBatleRooom",
   components: { AuthLayout, Button, Modal },
   created() {
-    this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL}/cable`, {
+    this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL || "wss://api.robertvitoriano.com:3000"}/cable`, {
       courseBattleId: this.$route.params.id,
     });
   },
