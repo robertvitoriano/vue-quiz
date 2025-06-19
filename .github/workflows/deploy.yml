@@ -26,7 +26,8 @@ jobs:
         run: |
           echo "VUE_APP_API_URL=${{ secrets.VUE_APP_API_URL }}" >> .env.local
           echo "VUE_APP_WEB_SOCKET_URL=${{ secrets.VUE_APP_WEB_SOCKET_URL }}" >> .env.local
-          
+          echo "VUE_APP_GOOGLE_CLIENT_ID=${{ secrets.VUE_APP_GOOGLE_CLIENT_ID }}" >> .env.local
+
 
       - name: Upload .env to S3
         env:
