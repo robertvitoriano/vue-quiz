@@ -5,7 +5,7 @@
   "homepage": "https://quiz-battle.robertvitoriano.com/",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "npm run build && aws s3 sync dist/ s3://quiz-battle-web --acl public-read",
     "android": "npx cap run android",
@@ -14,7 +14,8 @@
     "update-icon-and-splash": "npx capacitor-assets generate",
     "show-logs": "logkitty android 'console.log'",
     "ionic:build": "npm run build",
-    "view-keystore":"keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore"
+    "view-keystore":"keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore",
+    "postinstall": "npx update-browserslist-db@latest --update-db"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
