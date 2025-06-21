@@ -165,7 +165,7 @@ export default {
   name: "AuthLayout",
   components: { BattleInviteNotification, Modal, Button },
   created() {
-    this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL || "wss://api.robertvitoriano.com:3000"}/cable`, {
+    this.cable = ActionCable.createConsumer(`${process.env.VUE_APP_WEB_SOCKET_URL}/cable`, {
       userId: this.userInfo.id,
     });
   },
